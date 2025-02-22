@@ -1,16 +1,60 @@
-import { Content } from "@vuepress/client";
-import { h } from "vue";
+import { isNumber } from "@vuepress/helper/client";
+import { useElementHover } from "@vueuse/core";
+import type { VNode } from "vue";
+import { computed, defineComponent, h, onMounted, ref, watch } from "vue";
+import { Content } from "vuepress/client";
 
-import type { FunctionalComponent, VNode } from "vue";
+import { useThemeData } from "@theme-hope/composables/index";
 
-const MarkdownContent: FunctionalComponent<{ custom?: boolean }> = ({
-  custom,
-}): VNode => h(Content, { class: ["theme-hope-content", { custom }] });
+import "../styles/markdown-content.scss";
 
-MarkdownContent.displayName = "MarkdownContent";
+export default defineComponent({
+  name: "MarkdownContent",
 
-MarkdownContent.props = {
-  custom: Boolean,
-};
+  props: {
+    /** whether use customized layout */
+    custom: Boolean,
+  },
 
-export default MarkdownContent;
+  setup(props) {
+    const themeData = useThemeData();
+
+    const contentElement = ref<HTMLElement>();
+
+    const isHovered = useElementHover(contentElement, {
+      delayEnter: isNumber(themeData.value.focus)
+        ? themeData.value.focus
+        : 1500,
+      delayLeave: 0,
+    });
+
+    const enableFocus = computed(
+      () =>
+        Boolean(themeData.value.focus ?? themeData.value.pure) &&
+        isHovered.value,
+    );
+
+    onMounted(() => {
+      const html = document.documentElement;
+
+      watch(
+        enableFocus,
+        (value) => {
+          if (value) {
+            html.classList.add("is-focusing");
+          } else {
+            html.classList.remove("is-focusing");
+          }
+        },
+        { immediate: true },
+      );
+    });
+
+    return (): VNode =>
+      h(Content, {
+        ref: contentElement,
+        class: ["theme-hope-content", { custom: props.custom }],
+        "vp-content": "",
+      });
+  },
+});

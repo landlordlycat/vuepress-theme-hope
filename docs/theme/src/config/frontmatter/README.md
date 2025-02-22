@@ -1,9 +1,9 @@
 ---
 title: Frontmatter Config
-icon: config
+icon: gears
 index: false
 dir:
-  order: 5
+  order: 6
 category:
   - Config
 tag:
@@ -11,10 +11,4 @@ tag:
   - Frontmatter
 ---
 
-## Catalog
-
-- [Information Frontmatter Config](info.md)
-
-- [Layout Frontmatter Config](layout.md)
-
-- [Plugin Frontmatter Config](plugins.md)
+<Catalog />

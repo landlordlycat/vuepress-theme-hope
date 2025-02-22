@@ -2,18 +2,20 @@
 home: true
 title: 主页
 icon: home
-heroImage: /logo.svg
 heroText: vuepress-plugin-lightgallery
 tagline: VuePress2 的 gallery 插件
 actions:
-  - text: 快速上手 💡
-    link: /zh/guide.html
+  - text: 快速上手
+    icon: lightbulb
+    link: ./guide.html
     type: primary
 
-  - text: 配置 🛠
-    link: /zh/config.html
+  - text: 配置
+    icon: tools
+    link: ./config.html
 
-footer: MIT Licensed | Copyright © 2019-present Mr.Hope
+footer: 使用 <a href="https://theme-hope.vuejs.press/zh/" target="_blank">VuePress Theme Hope</a> 主题 | MIT 协议, 版权所有 © 2019-至今 Mr.Hope
+
 copyright: false
 ---
 
@@ -26,19 +28,19 @@ copyright: false
 @tab pnpm
 
 ```bash
-pnpm add -D vuepress-plugin-lightgallery@next
+pnpm add -D vuepress-plugin-lightgallery
 ```
 
 @tab yarn
 
 ```bash
-yarn add -D vuepress-plugin-lightgallery@next
+yarn add -D vuepress-plugin-lightgallery
 ```
 
 @tab npm
 
 ```bash
-npm i -D vuepress-plugin-lightgallery@next
+npm i -D vuepress-plugin-lightgallery
 ```
 
 :::
@@ -49,8 +51,7 @@ npm i -D vuepress-plugin-lightgallery@next
 
 @tab TS
 
-```ts
-// .vuepress/config.ts
+```ts title=".vuepress/config.ts"
 import { lightgalleryPlugin } from "vuepress-plugin-lightgallery";
 
 export default {
@@ -64,8 +65,7 @@ export default {
 
 @tab JS
 
-```js
-// .vuepress/config.js
+```js title=".vuepress/config.js"
 import { lightgalleryPlugin } from "vuepress-plugin-lightgallery";
 
 export default {
@@ -79,7 +79,7 @@ export default {
 
 :::
 
-::: danger 许可证限制
+::: caution 许可证限制
 
 请注意，虽然这个插件是在 MIT 协议下发布的，但我们目前正在通过 VuePress Theme Hope 的内置 [lightgallery 组织许可](https://www.lightgalleryjs.com/license/) 来实现这一点，并且 如果你将其用于非商业用途，我们愿意承认你是我们组织的成员。
 
@@ -89,4 +89,8 @@ export default {
 
 你被警告了！
 
+如果你对此表示担忧，你可以考虑使用 [@vuepress/plugin-photo-swipe][photo-swipe]。
+
 :::
+
+[photo-swipe]: https://ecosystem.vuejs.press/zh/plugins/features/photo-swipe.html

@@ -1,28 +1,37 @@
-import { copyrightPlugin } from "vuepress-plugin-copyright2";
-import { getAuthor } from "vuepress-shared";
+import { isPlainObject } from "@vuepress/helper";
+import type { CopyrightPluginOptions } from "@vuepress/plugin-copyright";
+import { copyrightPlugin } from "@vuepress/plugin-copyright";
+import type { Page, Plugin } from "vuepress/core";
+import { getAuthor } from "vuepress-shared/node";
 
-import type { Page, Plugin } from "@vuepress/core";
-import type { CopyrightOptions } from "vuepress-plugin-copyright2";
 import type {
-  HopeThemeConfig,
-  HopeThemeNormalPageFrontmatter,
+  ThemeData,
+  ThemeNormalPageFrontmatter,
 } from "../../shared/index.js";
 
+/**
+ * @private
+ *
+ * Resolve options for vuepress-plugin-copyright
+ */
 export const getCopyrightPlugin = (
-  themeConfig: HopeThemeConfig,
-  options?: Partial<CopyrightOptions> | true,
-  hostname?: string
+  themeData: ThemeData,
+  options?: Partial<CopyrightPluginOptions> | boolean,
+  hostname?: string,
 ): Plugin | null => {
   if (!options) return null;
 
-  return copyrightPlugin(<CopyrightOptions>{
-    hostname,
-    author: (
-      page: Page<Record<string, never>, HopeThemeNormalPageFrontmatter>
-    ) =>
-      getAuthor(page.frontmatter.author)?.[0]?.name ||
-      getAuthor(themeConfig.author)?.[0]?.name ||
-      "",
-    ...(typeof options === "object" ? options : { global: true }),
-  });
+  return copyrightPlugin({
+    canonical: hostname,
+    author: getAuthor(themeData.author ?? themeData.locales["/"].author)[0]
+      ?.name,
+    license: themeData.license,
+    authorGetter: (
+      page: Page<Record<string, never>, ThemeNormalPageFrontmatter>,
+    ) => getAuthor(page.frontmatter.author)[0]?.name,
+    licenseGetter: (
+      page: Page<Record<string, never>, ThemeNormalPageFrontmatter>,
+    ) => page.frontmatter.license,
+    ...(isPlainObject(options) ? options : { global: true }),
+  } as CopyrightPluginOptions);
 };

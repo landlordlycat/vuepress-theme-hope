@@ -2,9 +2,9 @@
 # This is the title of the article
 title: Page Config
 # This is the icon of the page
-icon: page
+icon: file
 # This control sidebar order
-order: 1
+order: 3
 # Set author
 author: Ms.Hope
 # Set writing time
@@ -30,9 +30,21 @@ Content before `more` comment is regarded as page excerpt.
 
 <!-- more -->
 
+## Page Title
+
+The first H1 title in Markdown will be regarded as page title.
+
+You can also set title in Markdown's Frontmatter:
+
+```md
+---
+title: Page Title
+---
+```
+
 ## Page Information
 
-You can set page information in Markdown’s Frontmatter.
+You can set page information in Markdown's Frontmatter.
 
 - The author is Ms.Hope.
 - The writing date is January 1, 2020
@@ -45,28 +57,65 @@ You are free to write your Markdown here.
 
 ::: tip Assets
 
-- You can place images besides your Markdown files, but you should use **relative links** (i.e.: starting with `./`) for them.
-
-- For images in `.vuepress/public` directory, please use absolute links (i.e.: startingwith `/`) for them.
+- You can place images besides your Markdown files and use **relative links**.
+- For images in `.vuepress/public` directory, please use absolute links (i.e.: starting with `/`).
 
 :::
 
-The theme contains a custom badge:
+## Components
 
-> A dark blue badge text badge at the end of line. <Badge text="Badge text" color="#242378" />
+Each markdown page is converted into a Vue component, which means you can use Vue syntax in Markdown:
 
-## Page Structure
+{{ 1 + 1 }}
 
-This page should contain:
+<!-- markdownlint-disable MD033 -->
 
-- [BreadCrumb](https://vuepress-theme-hope.github.io/v2/guide/layout/breadcrumb.html)
-- [Title and infomation](https://vuepress-theme-hope.github.io/v2/guide/feature/page-info.html)
-- [TOC (Table of Contents)](https://vuepress-theme-hope.github.io/v2/guide/layout/page.html#header-list)
-- [Meta infomation including update time and contributors](https://vuepress-theme-hope.github.io/v2/guide/feature/meta.html)
-- [Comments](https://vuepress-theme-hope.github.io/v2/guide/feature/comment.html)
-- [Navbar](https://vuepress-theme-hope.github.io/v2/guide/layout/navbar.html)
-- [Sidebar](https://vuepress-theme-hope.github.io/v2/guide/layout/sidebar.html)
-- [Footer](https://vuepress-theme-hope.github.io/v2/guide/layout/footer.html)
-- Back to top button
+<ul>
+  <li v-for="i in 3">{{ i }}</li>
+</ul>
 
-You can customize them in theme options and page frontmatter.
+<!-- markdownlint-enable MD033 -->
+
+You can also create and import your own components.
+
+<MyComponent />
+
+<script setup>
+import { defineComponent, h, ref } from 'vue';
+
+const MyComponent = defineComponent({
+  setup() {
+    const input = ref('Hello world!');
+    const onInput = (e) => {
+      input.value = e.target.value;
+    };
+
+    return () => [
+      h('p', [
+        h('span','Input: '),
+        h('input', {
+          value: input.value,
+          onInput,
+        }),
+      ]),
+      h('p', [h('span','Output: '), input.value]),
+    ];
+  },
+});
+</script>
+
+---
+
+The theme contains some useful components. Here are some examples:
+
+- A dark blue badge text badge at the end of line. <Badge text="Badge text" color="#242378" />
+
+- A card:
+
+  ```component VPCard
+  title: Mr.Hope
+  desc: Where there is light, there is hope
+  logo: https://mister-hope.com/logo.svg
+  link: https://mister-hope.com
+  background: rgba(253, 230, 138, 0.15)
+  ```

@@ -1,25 +1,25 @@
-import { config } from "docs-shared";
+import { addViteSsrNoExternal, config } from "docs-shared";
+
 import theme from "./theme.js";
 
-export default config(
-  {
-    base: `components`,
-    indexName: "vuepress-theme-hope-components",
-  },
-  {
-    locales: {
-      "/": {
-        lang: "en-US",
-        title: "Components Lib",
-        description: "Components Lib plugin for VuePress",
-      },
-      "/zh/": {
-        lang: "zh-CN",
-        title: "组件库",
-        description: "VuePress 的组件库插件",
-      },
+// The config wrapper is located in <root>/docs-shared/src/config-wrapper.ts
+export default config("components", {
+  locales: {
+    "/": {
+      lang: "en-US",
+      title: "Components Lib",
+      description: "Useful components for VuePress2",
     },
+    "/zh/": {
+      lang: "zh-CN",
+      title: "组件库",
+      description: "面向 VuePress2 的常用组件",
+    },
+  },
 
-    theme,
-  }
-);
+  extendsBundlerOptions: (bundlerOptions, app) => {
+    addViteSsrNoExternal(bundlerOptions, app, "artplayer-plugin-danmuku");
+  },
+
+  theme,
+});

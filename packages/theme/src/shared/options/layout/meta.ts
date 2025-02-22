@@ -1,4 +1,4 @@
-export interface HopeThemeMetaLocateData {
+export interface MetaLocateData {
   /**
    * Author label text
    *
@@ -96,9 +96,16 @@ export interface HopeThemeMetaLocateData {
    * 编辑此页
    */
   editLink: string;
+
+  /**
+   * Print button
+   *
+   * 打印按钮
+   */
+  print: string;
 }
 
-export interface HopeThemeMetaLocaleOptions {
+export interface MetaLocaleOptions {
   /**
    * Whether to show "Last Updated" or not
    *

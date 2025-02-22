@@ -1,21 +1,25 @@
 # Demo
 
-- AddThis (Global Components)
-
-- BackToTop (Global Components)
+- [ArtPlayer](art-player.md)
 
 - [Badge](badge.md)
 
-- [BiliBili](bilibili.md)
+- [BiliBili](bili-bili.md)
 
-- [CodePen](codepen.md)
-
-- [FontIcon](fonticon.md)
+- [CodePen](code-pen.md)
 
 - [PDF](pdf.md)
 
-- [StackBlitz](stackblitz.md)
+- [Share](share.md)
 
-- [VideoPlayer](videoplayer.md)
+- [SiteInfo](site-info.md)
 
-- [YouTube](youtube.md)
+- [StackBlitz](stack-blitz.md)
+
+- [VPBanner](vp-banner.md)
+
+- [VPCard](vp-card.md)
+
+- [VidStack](vid-stack.md)
+
+- [XiGua](xi-gua.md)

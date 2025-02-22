@@ -1,8 +1,9 @@
 ---
 title: 文件结构介绍
 icon: folder
+order: 3
 category:
-  - 教程知识
+  - 教程
   - VuePress
 tag:
   - 文件结构

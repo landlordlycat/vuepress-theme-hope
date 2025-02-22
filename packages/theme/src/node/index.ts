@@ -1,50 +1,15 @@
-// TODO: remove in v2 stable version
-import {
-  // v1
-  convertFrontmatter,
-  convertNavbarConfig,
-  convertSidebarConfig,
-  convertThemeConfig,
-  config,
-  navbarConfig,
-  sidebarConfig,
-  themeConfig,
+// TODO: Remove this in v2 stable
+export * from "./compact/index.js";
 
-  // v2
-  defineHopeConfig,
-  defineThemeConfig,
-  defineNavbarConfig,
-  defineSidebarArrayConfig,
-  defineSidebarConfig,
-  defineSidebarObjectConfig,
-} from "./compact/index.js";
-
-export {
-  config,
-  navbarConfig,
-  sidebarConfig,
-  themeConfig,
-  convertFrontmatter,
-  convertNavbarConfig,
-  convertSidebarConfig,
-  convertThemeConfig,
-  defineHopeConfig,
-  defineThemeConfig,
-  defineNavbarConfig,
-  defineSidebarArrayConfig,
-  defineSidebarConfig,
-  defineSidebarObjectConfig,
-};
-
-export * from "./themeConfig.js";
 export * from "./helpers.js";
+export * from "./hopeTheme.js";
 export * from "./locales/index.js";
-export * from "./theme.js";
+export * from "./typings/index.js";
 export * from "../shared/index.js";
 
-export default {
-  config,
-  navbarConfig,
-  sidebarConfig,
-  themeConfig,
-};
+// Internal methods
+export * from "./config/index.js";
+export * from "./extendsBundlerOptions.js";
+export * from "./getAlias.js";
+export * from "./plugins/index.js";
+export * from "./prepare/index.js";

@@ -25,17 +25,20 @@
  * © 2019 GitHub, Inc.
  */
 
+import { keys } from "@vuepress/helper/client";
+
 export class Message {
   private containerElement: HTMLElement;
   private messageElements: Record<number, HTMLDivElement> = {};
 
-  // generate or make sure message container element
+  // Generate or make sure message container element
   constructor() {
     const containerId = "message-container";
     const containerElement = document.getElementById(containerId);
 
-    if (containerElement) this.containerElement = containerElement;
-    else {
+    if (containerElement) {
+      this.containerElement = containerElement;
+    } else {
       this.containerElement = document.createElement("div");
       this.containerElement.id = containerId;
       document.body.appendChild(this.containerElement);
@@ -63,20 +66,20 @@ export class Message {
     if (messageId) {
       const messageElement = this.messageElements[messageId];
 
-      messageElement.className = messageElement.className.replace(
-        "move-in",
-        ""
-      );
-      messageElement.className += "move-out";
+      messageElement.classList.remove("move-in");
+      messageElement.classList.add("move-out");
       messageElement.addEventListener("animationend", () => {
         messageElement.remove();
         delete this.messageElements[messageId];
       });
-    } else
-      Object.keys(this.messageElements).forEach((id) => this.close(Number(id)));
+    } else {
+      keys(this.messageElements).forEach((id) => {
+        this.close(Number(id));
+      });
+    }
   }
 
-  destory(): void {
+  destroy(): void {
     document.body.removeChild(this.containerElement);
   }
 }

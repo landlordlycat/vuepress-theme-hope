@@ -1,17 +1,25 @@
-import { withBase } from "@vuepress/client";
-import { defineComponent, h, toRef, unref } from "vue";
-import { RouterLink } from "vue-router";
+import type { PropType, SlotsType, VNode } from "vue";
+import { defineComponent, h, toRef } from "vue";
+import { RouteLink, useRouter, withBase } from "vuepress/client";
 
-import PageInfo from "@theme-hope/modules/info/components/PageInfo.js";
 import {
   SlideIcon,
   StickyIcon,
-} from "@theme-hope/modules/blog/components/icons/index.js";
-import { useArticleInfo } from "@theme-hope/modules/blog/composables/index.js";
-import { LockIcon } from "@theme-hope/modules/encrypt/components/icons.js";
+} from "@theme-hope/modules/blog/components/icons";
+import { useArticleInfo } from "@theme-hope/modules/blog/composables/index";
+import { LockIcon } from "@theme-hope/modules/encrypt/components/icons";
+import type { PageInfoProps } from "@theme-hope/modules/info/components/PageInfo";
+import PageInfo from "@theme-hope/modules/info/components/PageInfo";
 
-import type { PropType, VNode } from "vue";
-import type { ArticleInfo } from "../../../../shared/index.js";
+import type {
+  ArticleInfoData,
+  PageInfoData,
+} from "../../../../shared/index.js";
+import {
+  ArticleInfo,
+  PageInfo as PageInfoEnum,
+  PageType,
+} from "../../../../shared/index.js";
 
 import "../styles/article-item.scss";
 
@@ -19,48 +27,116 @@ export default defineComponent({
   name: "ArticleItem",
 
   props: {
+    /**
+     * Article information
+     *
+     * 文章信息
+     */
     info: {
-      type: Object as PropType<ArticleInfo>,
+      type: Object as PropType<PageInfoData & ArticleInfoData>,
       required: true,
     },
+
+    /**
+     * Article path
+     *
+     * 文章路径
+     */
     path: { type: String, required: true },
   },
 
-  setup(props) {
-    const info = toRef(props, "info");
+  slots: Object as SlotsType<{
+    cover?: (props: { cover: string | undefined }) => VNode[] | VNode | null;
+    title?: (props: {
+      title: string;
+      isEncrypted?: boolean;
+      type: string;
+    }) => VNode[] | VNode | null;
+    excerpt?: (props: {
+      excerpt: string | undefined;
+    }) => VNode[] | VNode | null;
+    info?: (props: { info: PageInfoProps }) => VNode[] | VNode | null;
+  }>,
 
-    const { config, items } = useArticleInfo(info);
+  setup(props, { slots }) {
+    const articleInfo = toRef(props, "info");
+    const { info: pageInfo, items } = useArticleInfo(props);
+    const router = useRouter();
 
-    return (): VNode =>
-      h(
-        "article",
+    return (): VNode => {
+      const {
+        [PageInfoEnum.title]: title,
+        [ArticleInfo.type]: type,
+        [ArticleInfo.isEncrypted]: isEncrypted = false,
+        [ArticleInfo.cover]: cover,
+        [ArticleInfo.excerpt]: excerpt,
+        [ArticleInfo.sticky]: sticky,
+      } = articleInfo.value;
+      const info = pageInfo.value;
+
+      return h(
+        "div",
         {
-          class: "article",
-          vocab: "https://schema.org/",
-          typeof: "Article",
+          class: "vp-article-wrapper",
+          onClick: (event: MouseEvent) => {
+            if ((event.target as HTMLElement | undefined)?.matches("summary"))
+              return;
+
+            event.preventDefault();
+            void router.push(props.path);
+          },
         },
-        h(RouterLink, { to: props.path }, () => [
-          info.value.sticky ? h(StickyIcon) : null,
-          h("header", { class: "title" }, [
-            info.value.isEncrypted ? h(LockIcon) : null,
-            info.value.type === "slide" ? h(SlideIcon) : null,
-            h("span", { property: "headline" }, info.value.title),
-            info.value.cover
-              ? h("meta", {
-                  property: "image",
-                  content: withBase(info.value.cover),
-                })
-              : null,
-          ]),
-          info.value.excerpt
-            ? h("div", { class: "excerpt", innerHTML: info.value.excerpt })
-            : null,
-          h("hr", { class: "hr" }),
-          h(PageInfo, {
-            config: unref(config),
-            ...(items.value ? { items: items.value } : {}),
-          }),
-        ])
+        h(
+          "article",
+          {
+            class: "vp-article-item",
+            vocab: "https://schema.org/",
+            typeof: "Article",
+          },
+          [
+            slots.cover?.({ cover }) ??
+              (cover
+                ? [
+                    h("img", {
+                      class: "vp-article-cover",
+                      src: withBase(cover),
+                      alt: "",
+                      loading: "lazy",
+                    }),
+                    h("meta", {
+                      property: "image",
+                      content: withBase(cover),
+                    }),
+                  ]
+                : []),
+            sticky ? h(StickyIcon) : null,
+            h(
+              RouteLink,
+              { to: props.path },
+              () =>
+                slots.title?.({ title, isEncrypted, type }) ??
+                h("header", { class: "vp-article-title" }, [
+                  isEncrypted ? h(LockIcon) : null,
+                  type === PageType.slide ? h(SlideIcon) : null,
+                  h("span", { property: "headline" }, title),
+                ]),
+            ),
+            slots.excerpt?.({ excerpt }) ??
+              (excerpt
+                ? h("div", {
+                    class: "vp-article-excerpt",
+                    innerHTML: excerpt,
+                  })
+                : null),
+            h("hr", { class: "vp-article-hr" }),
+            slots.info?.({ info }) ??
+              h(PageInfo, {
+                info,
+                ...(items.value ? { items: items.value } : {}),
+              }),
+          ],
+        ),
       );
+    };
   },
 });

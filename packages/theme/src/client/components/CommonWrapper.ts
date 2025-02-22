@@ -1,62 +1,107 @@
-import { useEventListener, useThrottleFn } from "@vueuse/core";
-import { usePageData, usePageFrontmatter } from "@vuepress/client";
+import { hasGlobalComponent } from "@vuepress/helper/client";
+import {
+  useEventListener,
+  useScrollLock,
+  useThrottleFn,
+  useToggle,
+} from "@vueuse/core";
+import type { ComponentOptions, SlotsType, VNode } from "vue";
 import {
   Transition,
   computed,
   defineComponent,
   h,
-  onBeforeUnmount,
   onMounted,
+  onUnmounted,
   ref,
   resolveComponent,
   watch,
 } from "vue";
-import { useRouter } from "vue-router";
-import {
-  isComponentRegistered,
-  RenderDefault,
-} from "vuepress-shared/lib/client";
+import { usePageFrontmatter, useRouter } from "vuepress/client";
+import { RenderDefault } from "vuepress-shared/client";
 
-import PageFooter from "@theme-hope/components/PageFooter.js";
+import PageFooter from "@theme-hope/components/PageFooter";
 import {
-  useMobile,
+  usePure,
+  useThemeData,
   useThemeLocaleData,
-} from "@theme-hope/composables/index.js";
-import { useSidebarItems } from "@theme-hope/modules/sidebar/composables/index.js";
+  useWindowSize,
+} from "@theme-hope/composables/index";
+import Navbar from "@theme-hope/modules/navbar/components/Navbar";
+import Sidebar from "@theme-hope/modules/sidebar/components/Sidebar";
+import { useSidebarItems } from "@theme-hope/modules/sidebar/composables/index";
 
-import type { ComponentOptions, VNode } from "vue";
-import type { HopeThemePageFrontmatter } from "../../shared/index.js";
+import type {
+  ThemeNormalPageFrontmatter,
+  ThemeProjectHomePageFrontmatter,
+} from "../../shared/index.js";
 
-import "../styles/common.scss";
+import "../styles/common-wrapper.scss";
 
 export default defineComponent({
   name: "CommonWrapper",
 
   props: {
-    /** @description Whether enable navbar */
-    navbar: {
-      type: Boolean,
-      default: true,
-    },
-    /** @description Whether enable sidebar */
-    sidebar: {
-      type: Boolean,
-      default: true,
-    },
+    /**
+     * Extra class of container
+     *
+     * 容器额外类名
+     */
+    containerClass: String,
+
+    /**
+     * Whether disable navbar
+     *
+     * 是否禁用导航栏
+     */
+    noNavbar: Boolean,
+
+    /**
+     * Whether disable sidebar
+     *
+     * 是否禁用侧边栏
+     */
+    noSidebar: Boolean,
+
+    /**
+     * Whether disable toc
+     */
+    noToc: Boolean,
   },
+
+  slots: Object as SlotsType<{
+    default: () => VNode[] | VNode | null;
+
+    // Nav Screen
+    navScreenTop?: () => VNode[] | VNode | null;
+    navScreenBottom?: () => VNode[] | VNode | null;
+
+    // Sidebar
+    sidebar?: () => VNode[] | VNode;
+    sidebarTop?: () => VNode[] | VNode | null;
+    sidebarBottom?: () => VNode[] | VNode | null;
+  }>,
 
   setup(props, { slots }) {
     const router = useRouter();
-    const page = usePageData();
-    const frontmatter = usePageFrontmatter<HopeThemePageFrontmatter>();
+    const frontmatter = usePageFrontmatter<
+      ThemeProjectHomePageFrontmatter | ThemeNormalPageFrontmatter
+    >();
+    const themeData = useThemeData();
     const themeLocale = useThemeLocaleData();
-    const isMobile = useMobile();
+    const { isMobile, isPC } = useWindowSize();
+    const isPure = usePure();
 
-    // navbar
+    const [isMobileSidebarOpen, toggleMobileSidebar] = useToggle(false);
+    const [isDesktopSidebarCollapsed, toggleDesktopSidebar] = useToggle(false);
+
+    const sidebarItems = useSidebarItems();
+
+    // Navbar
     const hideNavbar = ref(false);
 
     const enableNavbar = computed(() => {
-      if (props.navbar === false) return false;
+      if (props.noNavbar) return false;
 
       if (
         frontmatter.value.navbar === false ||
@@ -65,18 +110,14 @@ export default defineComponent({
         return false;
 
       return Boolean(
-        page.value.title ||
-          themeLocale.value.logo ||
-          themeLocale.value.repo ||
-          themeLocale.value.navbar
+        themeLocale.value.logo ??
+          themeLocale.value.repo ??
+          themeLocale.value.navbar,
       );
     });
 
-    // sidebar
-    const sidebarItems = useSidebarItems();
-
     const enableSidebar = computed(() => {
-      if (props.sidebar === false) return false;
+      if (props.noSidebar) return false;
 
       return (
         frontmatter.value.sidebar !== false &&
@@ -85,16 +126,20 @@ export default defineComponent({
       );
     });
 
-    const isMobileSidebarOpen = ref(false);
-    const isDesktopSidebarCollapsed = ref(false);
-    const toggleMobileSidebar = (value?: boolean): void => {
-      isMobileSidebarOpen.value =
-        typeof value === "boolean" ? value : !isMobileSidebarOpen.value;
-    };
-    const toggleDesktopSidebar = (value?: boolean): void => {
-      isDesktopSidebarCollapsed.value =
-        typeof value === "boolean" ? value : !isDesktopSidebarCollapsed.value;
-    };
+    // external-link-icon
+    const enableExternalLinkIcon = computed(
+      () =>
+        frontmatter.value.externalLinkIcon ??
+        themeData.value.externalLinkIcon ??
+        true,
+    );
+
+    const enableToc = computed(
+      () =>
+        !props.noToc &&
+        !frontmatter.value.home &&
+        (frontmatter.value.toc ?? themeLocale.value.toc ?? true),
+    );
 
     const touchStart = { x: 0, y: 0 };
     const onTouchStart = (e: TouchEvent): void => {
@@ -106,50 +151,35 @@ export default defineComponent({
       const dy = e.changedTouches[0].clientY - touchStart.y;
 
       if (
-        // horizontal swipe
+        // Horizontal swipe
         Math.abs(dx) > Math.abs(dy) * 1.5 &&
         Math.abs(dx) > 40
-      ) {
+      )
         if (dx > 0 && touchStart.x <= 80) toggleMobileSidebar(true);
         else toggleMobileSidebar(false);
-      }
     };
 
-    const enableToc = computed(
-      () =>
-        frontmatter.value.toc ||
-        (themeLocale.value.toc !== false && frontmatter.value.toc !== false)
-    );
-
-    /** Get scroll distance */
-    const getScrollTop = (): number =>
-      window.pageYOffset ||
-      document.documentElement.scrollTop ||
-      document.body.scrollTop ||
-      0;
-
-    // close sidebar after navigation
-    let unregisterRouterHook: () => void;
+    // Close sidebar after navigation
     let lastDistance = 0;
 
     useEventListener(
       "scroll",
       useThrottleFn(
         () => {
-          const distance = getScrollTop();
+          const distance = window.scrollY;
 
-          // scroll down
-          if (lastDistance < distance && distance > 58) {
-            if (!isMobileSidebarOpen.value) hideNavbar.value = true;
-          }
-          // scroll up
-          else hideNavbar.value = false;
+          // At top or scroll up
+          if (distance <= 58 || distance < lastDistance)
+            hideNavbar.value = false;
+          // Scroll down > 200px and sidebar is not opened
+          else if (lastDistance + 200 < distance && !isMobileSidebarOpen.value)
+            hideNavbar.value = true;
 
           lastDistance = distance;
         },
         300,
-        true
-      )
+        true,
+      ),
     );
 
     watch(isMobile, (value) => {
@@ -157,107 +187,120 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      unregisterRouterHook = router.afterEach((): void => {
+      const isLocked = useScrollLock(document.body);
+
+      watch(isMobileSidebarOpen, (value) => {
+        isLocked.value = value;
+      });
+
+      const unregisterRouterHook = router.afterEach((): void => {
         toggleMobileSidebar(false);
       });
-    });
 
-    onBeforeUnmount(() => {
-      unregisterRouterHook();
+      onUnmounted(() => {
+        isLocked.value = false;
+        unregisterRouterHook();
+      });
     });
 
     return (): VNode =>
       h(
-        "div",
-        {
-          class: [
-            "theme-container",
-            // classes
+        hasGlobalComponent("GlobalEncrypt")
+          ? (resolveComponent("GlobalEncrypt") as ComponentOptions)
+          : RenderDefault,
+        () =>
+          h(
+            "div",
             {
-              "no-navbar": !enableNavbar.value,
-              "no-sidebar":
-                !enableSidebar.value &&
-                !(
-                  slots["sidebar"] ||
-                  slots["sidebarTop"] ||
-                  slots["sidebarBottom"]
-                ),
-              "has-toc": enableToc.value,
-              "hide-navbar": hideNavbar.value,
-              "sidebar-collapsed":
-                !isMobile.value && isDesktopSidebarCollapsed.value,
-              "sidebar-open": isMobile.value && isMobileSidebarOpen.value,
+              class: [
+                "theme-container",
+                // Classes
+                {
+                  // navbar
+                  "hide-navbar": hideNavbar.value,
+                  "no-navbar": !enableNavbar.value,
+
+                  // sidebar
+                  "sidebar-collapsed":
+                    !isMobile.value &&
+                    !isPC.value &&
+                    isDesktopSidebarCollapsed.value,
+                  "sidebar-open": isMobile.value && isMobileSidebarOpen.value,
+                  "no-sidebar":
+                    !enableSidebar.value &&
+                    !slots.sidebar &&
+                    !slots.sidebarTop &&
+                    !slots.sidebarBottom,
+
+                  // external-link-icon
+                  "external-link-icon": enableExternalLinkIcon.value,
+
+                  // pure
+                  pure: isPure.value,
+
+                  // toc
+                  "has-toc": enableToc.value,
+                },
+                props.containerClass ?? "",
+                frontmatter.value.containerClass ?? "",
+              ],
+              "vp-container": "",
+              onTouchStart,
+              onTouchEnd,
             },
-            frontmatter.value.containerClass || "",
-          ],
-          onTouchStart,
-          onTouchEnd,
-        },
-        h(
-          isComponentRegistered("GloablEncrypt")
-            ? (resolveComponent("GloablEncrypt") as ComponentOptions)
-            : RenderDefault,
-          () => [
-            // navbar
-            enableNavbar.value
-              ? h(
-                  resolveComponent("Navbar") as ComponentOptions,
-                  { onToggleSidebar: () => toggleMobileSidebar() },
-                  {
-                    leftStart: () => slots["navbarLeftStart"]?.(),
-                    leftEnd: () => slots["navbarLeftEnd"]?.(),
-                    centerStart: () => slots["navbarCenterStart"]?.(),
-                    centerEnd: () => slots["navbarCenterEnd"]?.(),
-                    rightStart: () => slots["navbarRightStart"]?.(),
-                    rightEnd: () => slots["navbarRightEnd"]?.(),
-                    screenTop: () => slots["navScreenTop"]?.(),
-                    screenBottom: () => slots["navScreenBottom"]?.(),
-                  }
-                )
-              : null,
-            // sidebar mask
-            h(Transition, { name: "fade" }, () =>
-              isMobileSidebarOpen.value
-                ? h("div", {
-                    class: "sidebar-mask",
-                    onClick: () => toggleMobileSidebar(false),
-                  })
-                : null
-            ),
-            // toggle sidebar button
-            h(Transition, { name: "fade" }, () =>
-              isMobile.value
-                ? null
-                : h(
-                    "div",
+            [
+              // Navbar
+              enableNavbar.value
+                ? h(
+                    Navbar,
+                    { onToggleSidebar: () => toggleMobileSidebar() },
                     {
-                      class: "toggle-sidebar-wrapper",
-                      onClick: () => toggleDesktopSidebar(),
+                      screenTop: slots.navScreenTop,
+                      screenBottom: slots.navScreenBottom,
                     },
-                    h("span", {
-                      class: [
-                        "arrow",
-                        isDesktopSidebarCollapsed.value ? "right" : "left",
-                      ],
-                    })
                   )
-            ),
-            // sidebar
-            h(
-              resolveComponent("Sidebar") as ComponentOptions,
-              {},
-              {
-                ...(slots["sidebar"]
-                  ? { default: (): VNode[] | undefined => slots["sidebar"]?.() }
-                  : {}),
-                top: () => slots["sidebarTop"]?.(),
-                bottom: () => slots["sidebarBottom"]?.(),
-              }
-            ),
-            slots["default"]?.(),
-            h(PageFooter),
-          ]
-        )
+                : null,
+              // Sidebar mask
+              h(Transition, { name: "fade" }, () =>
+                isMobileSidebarOpen.value
+                  ? h("div", {
+                      class: "vp-sidebar-mask",
+                      onClick: () => toggleMobileSidebar(false),
+                    })
+                  : null,
+              ),
+              // Toggle sidebar button
+              h(Transition, { name: "fade" }, () =>
+                isMobile.value
+                  ? null
+                  : h(
+                      "div",
+                      {
+                        class: "toggle-sidebar-wrapper",
+                        onClick: () => toggleDesktopSidebar(),
+                      },
+                      h("span", {
+                        class: [
+                          "arrow",
+                          isDesktopSidebarCollapsed.value ? "end" : "start",
+                        ],
+                      }),
+                    ),
+              ),
+              // Sidebar
+              h(
+                Sidebar,
+                {},
+                {
+                  default: slots.sidebar,
+                  top: slots.sidebarTop,
+                  bottom: slots.sidebarBottom,
+                },
+              ),
+              slots.default(),
+              h(PageFooter),
+            ],
+          ),
       );
   },
 });

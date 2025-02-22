@@ -1,6 +1,6 @@
 ---
 title: 主题外观选项
-icon: config
+icon: palette
 order: 4
 category:
   - 配置
@@ -19,21 +19,14 @@ tag:
 
 :::
 
-## iconAssets <Badge text="仅限 Root" type="warning" />
-
-- 类型: `string`
-- 必填: 否
-- 详情: [界面 → 图标](../../guide/interface/icon.md)
-
-字体图标资源链接，支持 `'iconfont'` 和 `'fontawesome'` 关键字。
-
 ## darkmode <Badge text="默认启用" /> <Badge text="仅限 Root" type="warning" />
 
 - 类型: `"switch" | "toggle" | "auto" | "enable" | "disable"`
 - 默认值: `"switch"`
-- 详情: [界面 → 深色模式](../../guide/interface/darkmode.md)
+- 详情:
+  - [界面 → 深色模式](../../guide/interface/darkmode.md)
 
-深色模式支持选项:
+深色模式选项，支持:
 
 - `"switch"`: 在深色模式，浅色模式和自动之间切换
 - `"toggle"`: 在深色模式和浅色模式之间切换
@@ -47,49 +40,28 @@ tag:
 
 :::
 
-## themeColor <Badge text="仅限 Root" type="warning" />
+## externalLinkIcon <Badge text="默认启用" />
 
-- 类型: `Record<string, string> | false`
-- 默认值: `false`
-- 详情: [界面 → 主题色](../../guide/interface/theme-color.md)
+- 类型: `boolean`
+- 默认值: `true`
 
-主题色选项配置。
+控制是否在外部链接上显示图标。
 
 ## fullscreen
 
 - 类型: `boolean`
 - 默认值: `false`
-- 详情: [界面 → 全屏按钮](../../guide/interface/others.md#全屏按钮)
+- 详情:
+  - [界面 → 全屏按钮](../../guide/interface/others.md#全屏按钮)
 
 是否显示全屏按钮。
-
-## backToTop <Badge text="仅限 Root" type="warning" />
-
-- 类型: `boolean | number`
-- 默认值: `true`
-
-是否显示返回顶部按钮。
-
-如果设置为数字，则该数字为触发临界值 (默认临界值为 300px)。
-
-## mobileBreakPoint <Badge text="仅限 Root" type="warning" />
-
-- 类型: `number`
-- 默认值: `719`
-
-切换桌面布局和移动布局的窗口宽度，单位像素。
-
-::: warning
-
-你需要将此选项和 `.vuepress/config.scss` 中的 `$tablet` 保持一致。
-
-:::
 
 ## pure <Badge text="仅限 Root" type="warning" />
 
 - 类型: `boolean`
 - 默认值: `false`
-- 详情: [界面 → 纯净模式](../../guide/interface/pure.md)
+- 详情:
+  - [界面 → 纯净模式](../../guide/interface/others.md#纯净模式)
 
 是否开启纯净模式。
 
@@ -101,10 +73,20 @@ tag:
 
 :::
 
-## iconPrefix <Badge text="仅限 Root" type="warning" />
+## focus <Badge text="仅限 Root" type="warning" />
 
-- 类型: `string`
-- 默认值: 尝试从 iconAssets 推断
-- 详情: [界面 → 图标](../../guide/interface/icon.md)
+- 类型: `number | boolean`
+- 默认值: `pure` 的值
+- 详情:
+  - [界面 → 专注模式](../../guide/interface/others.md#专注模式)
 
-通常情况下，它可以识别 iconAssets 并自动设置，如果识别失败，你可以手动设置图标的 FontClass 前缀。
+是否启用专注模式，默认在启用纯净模式时启用。数字值是触发专注模式的延迟时间。
+
+## print <Badge text="仅限 Root" type="warning" />
+
+- 类型: `boolean`
+- 默认值: `true`
+- 详情:
+  - [界面 → 打印按钮](../../guide/interface/others.md#打印按钮)
+
+是否在桌面模式下显示打印按钮。

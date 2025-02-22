@@ -1,8 +1,8 @@
 ---
 title: 自然 Emoji
-icon: emoji
+icon: tree
 category:
-  - 教程知识
+  - 教程
   - Markdown
 tag:
   - Markdown

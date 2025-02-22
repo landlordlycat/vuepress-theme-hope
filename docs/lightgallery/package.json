@@ -1,15 +1,16 @@
 {
   "name": "lightgallery-docs",
-  "version": "2.0.0-beta.108",
   "private": true,
   "description": "Docs for vuepress-plugin-lightgallery",
   "license": "MIT",
   "author": {
     "name": "Mr.Hope",
     "email": "mister-hope@outlook.com",
-    "url": "https://mrhope.site"
+    "url": "https://mister-hope.com"
   },
+  "type": "module",
   "scripts": {
+    "docs:serve": "http-server -a localhost dist -o",
     "docs:vite-build": "vuepress-vite build src",
     "docs:vite-clean-dev": "vuepress-vite dev src --clean-cache",
     "docs:vite-dev": "vuepress-vite dev src",
@@ -18,12 +19,13 @@
     "docs:webpack-dev": "vuepress-webpack dev src"
   },
   "dependencies": {
-    "@vuepress/client": "2.0.0-beta.51",
+    "@vuepress/bundler-vite": "catalog:vuepress",
+    "@vuepress/bundler-webpack": "catalog:vuepress",
     "docs-shared": "workspace:*",
-    "sass-loader": "13.0.2",
-    "vue": "3.2.40",
-    "vuepress-plugin-lightgallery": "workspace:*",
-    "vuepress-vite": "2.0.0-beta.51",
-    "vuepress-webpack": "2.0.0-beta.51"
+    "sass-embedded": "catalog:",
+    "sass-loader": "catalog:",
+    "vue": "catalog:",
+    "vuepress": "catalog:vuepress",
+    "vuepress-plugin-lightgallery": "workspace:*"
   }
 }

@@ -1,37 +1,27 @@
-import { createRequire } from "node:module";
-import { fs, pwa, theme } from "docs-shared";
+import { theme } from "docs-shared";
+import { AVAILABLE_SERVICES } from "vuepress-plugin-components";
+import pkg from "vuepress-plugin-components/package.json" with { type: "json" };
 
-const { version } = fs.readJsonSync(
-  createRequire(import.meta.url).resolve(
-    "vuepress-plugin-components/package.json"
-  )
-);
-
+// The theme wrapper is located in <root>/docs-shared/src/theme-wrapper.ts
 export default theme("components", {
-  addThis: "ra-5f829c59e6c6bc9a",
-
   locales: {
     "/": {
       navbar: [
         "/",
-        "/guide",
+        "/guide/",
         "/config",
         "/demo",
         {
-          text: version,
-          icon: "note",
-          children: [
-            {
-              text: "V1 Docs",
-              link: "https://vuepress-theme-hope.github.io/v1/components/",
-            },
-          ],
+          text: pkg.version,
+          icon: "bookmark",
+          link: "",
         },
       ],
 
       sidebar: [
         "/",
         {
+          icon: "puzzle-piece",
           text: "Components",
           prefix: "/guide/",
           children: "structure",
@@ -43,24 +33,20 @@ export default theme("components", {
     "/zh/": {
       navbar: [
         "/zh/",
-        "/zh/guide",
+        "/zh/guide/",
         "/zh/config",
         "/zh/demo",
         {
-          text: version,
-          icon: "note",
-          children: [
-            {
-              text: "V1 文档",
-              link: "https://vuepress-theme-hope.github.io/v1/components/zh/",
-            },
-          ],
+          text: pkg.version,
+          icon: "bookmark",
+          link: "",
         },
       ],
 
       sidebar: [
         "/zh/",
         {
+          icon: "puzzle-piece",
           text: "组件",
           prefix: "/zh/guide/",
           children: "structure",
@@ -70,24 +56,43 @@ export default theme("components", {
     },
   },
 
+  markdown: {
+    codeTabs: true,
+    imgMark: true,
+    include: true,
+    demo: true,
+  },
+
   plugins: {
-    components: [
-      "Badge",
-      "BiliBili",
-      "CodePen",
-      "PDF",
-      "StackBlitz",
-      "YouTube",
-    ],
+    components: {
+      components: [
+        "ArtPlayer",
+        // @ts-expect-error: This component is deprecated
+        "AudioPlayer",
+        "Badge",
+        "BiliBili",
+        "CodePen",
+        "PDF",
+        // @ts-expect-error: This component is deprecated
+        "Replit",
+        "Share",
+        "SiteInfo",
+        "StackBlitz",
+        "VPBanner",
+        "VPCard",
+        "VidStack",
+        // @ts-expect-error: This component is deprecated
+        "VideoPlayer",
+        "XiGua",
+        // @ts-expect-error: This component is deprecated
+        "YouTube",
+      ],
 
-    mdEnhance: {
-      codetabs: true,
+      componentOptions: {
+        share: {
+          services: AVAILABLE_SERVICES,
+        },
+      },
     },
-
-    pwa: pwa({
-      name: "vuepress-plugin-components",
-      shortName: "VuePress2 Components Lib",
-      guide: "/guide/",
-    }),
   },
 });

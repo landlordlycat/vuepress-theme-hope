@@ -1,1 +1,1 @@
-export * from "./darkmode.js";
+export * from "./useDarkMode.js";

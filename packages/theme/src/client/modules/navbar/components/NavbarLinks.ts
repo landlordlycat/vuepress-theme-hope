@@ -1,10 +1,9 @@
+import type { VNode } from "vue";
 import { defineComponent, h } from "vue";
 
-import AutoLink from "@theme-hope/components/AutoLink.js";
-import DropdownLink from "@theme-hope/modules/navbar/components/DropdownLink.js";
-import { useNavbarConfig } from "@theme-hope/modules/navbar/composables/index.js";
-
-import type { VNode } from "vue";
+import AutoLink from "@theme-hope/components/AutoLink";
+import NavbarDropdown from "@theme-hope/modules/navbar/components/NavbarDropdown";
+import { useNavbarItems } from "@theme-hope/modules/navbar/composables/index";
 
 import "../styles/navbar-links.scss";
 
@@ -12,21 +11,23 @@ export default defineComponent({
   name: "NavbarLinks",
 
   setup() {
-    const navbarConfig = useNavbarConfig();
+    const navbarConfig = useNavbarItems();
 
     return (): VNode | null =>
       navbarConfig.value.length
-        ? h("nav", { class: "nav-links" }, [
-            ...navbarConfig.value.map((config) =>
+        ? h(
+            "nav",
+            { class: "vp-nav-links" },
+            navbarConfig.value.map((config) =>
               h(
                 "div",
-                { class: "nav-item hide-in-mobile" },
+                { class: "vp-nav-item hide-in-mobile" },
                 "children" in config
-                  ? h(DropdownLink, { config })
-                  : h(AutoLink, { config })
-              )
+                  ? h(NavbarDropdown, { config })
+                  : h(AutoLink, { config, iconSizing: "height" }),
+              ),
             ),
-          ])
+          )
         : null;
   },
 });

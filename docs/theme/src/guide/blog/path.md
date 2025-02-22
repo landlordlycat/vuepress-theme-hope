@@ -11,7 +11,7 @@ tag:
 
 You can control the path of each page in the blog through `plugins.blog` in theme options.
 
-The default paths provided by the blog are as follows, if they conflict with your existing paths, and you don’t want to adjust your own paths, you can modify them.
+The default paths provided by the blog are as follows, if they conflict with your existing paths, and you don't want to adjust your own paths, you can modify them.
 
 | Options        | Description                   | Default Path       |
 | -------------- | ----------------------------- | ------------------ |
@@ -20,7 +20,5 @@ The default paths provided by the blog are as follows, if they conflict with you
 | `categoryItem` | A list of specific categories | `/category/:name/` |
 | `tag`          | Tag map page                  | `/tag/`            |
 | `tagItem`      | list of specific tags         | `/tag/:name/`      |
-| `encrypted`    | List of encrypted articles    | `/encrypted/`      |
-| `slide`        | List of slides                | `/slides/`         |
 | `star`         | List of starred articles      | `/star/`           |
 | `timeline`     | Timeline list                 | `/timeline/`       |

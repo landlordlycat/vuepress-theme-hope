@@ -1,6 +1,6 @@
-import type { HopeThemeLocaleData } from "../../shared/index.js";
+import type { ThemeLocaleData } from "../../shared/index.js";
 
-export const zhTWLocale: HopeThemeLocaleData = {
+export const zhTWLocale: ThemeLocaleData = {
   lang: "zh-TW",
 
   navbarLocales: {
@@ -23,6 +23,7 @@ export const zhTWLocale: HopeThemeLocaleData = {
     lastUpdated: "上次編輯於",
     contributors: "貢獻者",
     editLink: "編輯此頁",
+    print: "打印",
   },
 
   blogLocales: {
@@ -34,9 +35,8 @@ export const zhTWLocale: HopeThemeLocaleData = {
     timelineTitle: "昨日不在",
     all: "全部",
     intro: "個人介紹",
-    star: "收藏",
-    slides: "幻燈片",
-    encrypt: "加密",
+    star: "星標",
+    empty: "$text 為空",
   },
 
   paginationLocales: {
@@ -61,7 +61,8 @@ export const zhTWLocale: HopeThemeLocaleData = {
   },
 
   routeLocales: {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+    skipToContent: "跳至主要內容",
+    notFoundTitle: "頁面不存在",
     notFoundMsg: [
       "這裡什麼也沒有",
       "我們是怎麼來到這兒的？",
@@ -70,6 +71,5 @@ export const zhTWLocale: HopeThemeLocaleData = {
     ],
     back: "返回上一頁",
     home: "帶我回家",
-    openInNewWindow: "Open in new window",
   },
 };

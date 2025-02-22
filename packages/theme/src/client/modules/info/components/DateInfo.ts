@@ -1,11 +1,10 @@
-import { usePageLang } from "@vuepress/client";
-import { defineComponent, h } from "vue";
-
-import { CalendarIcon } from "@theme-hope/modules/info/components/icons.js";
-import { useMetaLocale } from "@theme-hope/modules/info/composables/index.js";
-
 import type { PropType, VNode } from "vue";
-import type { DateInfo } from "vuepress-shared";
+import { defineComponent, h } from "vue";
+import { usePageLang } from "vuepress/client";
+
+import { usePure } from "@theme-hope/composables/index";
+import { CalendarIcon } from "@theme-hope/modules/info/components/icons";
+import { useMetaLocale } from "@theme-hope/modules/info/composables/index";
 
 export default defineComponent({
   name: "DateInfo",
@@ -13,45 +12,49 @@ export default defineComponent({
   inheritAttrs: false,
 
   props: {
-    date: {
-      type: Object as PropType<DateInfo | null>,
-      default: null,
-    },
+    /**
+     * Date information
+     *
+     * 日期信息
+     */
+    date: Object as PropType<Date | null>,
 
-    localizedDate: {
-      type: String,
-      default: "",
-    },
-
-    pure: Boolean,
+    /**
+     * Localized date text
+     *
+     * 本地化的日期文字
+     */
+    localizedDate: String,
   },
 
   setup(props) {
     const lang = usePageLang();
     const metaLocale = useMetaLocale();
+    const isPure = usePure();
 
     return (): VNode | null =>
       props.date
         ? h(
             "span",
             {
-              class: "date-info",
-              "aria-label": `${metaLocale.value.date}${props.pure ? "" : "📅"}`,
-              ...(props.pure ? {} : { "data-balloon-pos": "down" }),
+              class: "page-date-info",
+              "aria-label": `${metaLocale.value.date}${isPure.value ? "" : "📅"}`,
+              ...(isPure.value ? {} : { "data-balloon-pos": "up" }),
             },
             [
               h(CalendarIcon),
               h(
                 "span",
-                props.localizedDate ||
-                  props.date.value?.toLocaleDateString(lang.value)
+                { "data-allow-mismatch": "text" },
+                props.localizedDate ??
+                  props.date.toLocaleDateString(lang.value),
               ),
               h("meta", {
                 property: "datePublished",
                 // ISO Format Date string
-                content: props.date?.value?.toISOString() || "",
+                content: props.date.toISOString() || "",
               }),
-            ]
+            ],
           )
         : null;
   },

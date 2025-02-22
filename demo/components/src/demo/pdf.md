@@ -2,7 +2,7 @@
 
 PDF viewer component.
 
-You can use this component to embe a PDF viewer.
+You can use this component to embed a PDF viewer.
 
 <!-- more -->
 
@@ -10,24 +10,12 @@ You can use this component to embe a PDF viewer.
 
 Default PDF viewer:
 
-<PDF url="/sample.pdf" />
+<PDF url="//theme-hope-assets.vuejs.press/files/sample.pdf" />
 
-```md
-<PDF url="/sample.pdf" />
-```
+PDF viewer starting with page 2 and without toolbar:
 
-PDF viewer without toolbar:
+<PDF url="//theme-hope-assets.vuejs.press/files/sample.pdf" page="2" no-toolbar />
 
-<PDF url="/sample.pdf" :toolbar="false" />
+Force PDF viewer to use PDFJS:
 
-```md
-<PDF url="/sample.pdf" :toolbar="false" />
-```
-
-PDF viewer with initial page 2:
-
-<PDF url="/sample.pdf" :page="2" />
-
-```md
-<PDF url="/sample.pdf" :page="2" />
-```
+<PDF url="//theme-hope-assets.vuejs.press/files/sample.pdf" viewer />

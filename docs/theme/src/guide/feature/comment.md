@@ -1,6 +1,6 @@
 ---
 title: Comment Service
-icon: comment
+icon: comment-dots
 category:
   - Feature
 tag:
@@ -8,11 +8,11 @@ tag:
   - Feature
 ---
 
-`vuepress-theme-hope` implements the comment feature with built-in [`vuepress-plugin-comment2`][comment2].
+`vuepress-theme-hope` implements the comment feature with built-in [`@vuepress/plugin-comment`][comment].
 
 ::: info
 
-`vuepress-theme-hope` passes `plugins.comment` in theme options as plugin options to `vuepress-plugin-comment2`.
+`vuepress-theme-hope` passes `plugins.comment` in theme options as plugin options to `@vuepress/plugin-comment`.
 
 :::
 
@@ -20,42 +20,17 @@ tag:
 
 ## Enable <Badge text="Support page config" />
 
-::: code-tabs#language
-
-@tab TS
-
-```ts {9,12}
-// .vuepress/config.ts
-import { defineUserConfig } from "vuepress";
-import { hopeTheme } from "vuepress-theme-hope";
-
-export default defineUserConfig({
-  theme: hopeTheme({
-    plugins: {
-      comment: {
-        provider: "waline",
-
-        // waline 模式下
-        serverURL: "...", // your serverURL
-      },
-    },
-  }),
-});
-```
-
-@tab JS
-
-```js {8,11}
-// .vuepress/config.js
+```js {8,11} title=".vuepress/config.js"
 import { hopeTheme } from "vuepress-theme-hope";
 
 export default {
   theme: hopeTheme({
     plugins: {
       comment: {
-        provider: "waline",
+        // choose a comment provider
+        provider: "Waline",
 
-        // waline 模式下
+        // provider options
         serverURL: "...", // your serverURL
       },
     },
@@ -63,19 +38,17 @@ export default {
 };
 ```
 
-:::
-
 Comment feature is enabled globally by default, controlled by `plugins.comment.comment` options.
 
 ::: tip
 
-For the complete config item of the plugin ,please see [plugin documentation][comment2].
+For the complete config item of the plugin, please see [plugin documentation][comment].
 
 :::
 
 ## Comment Provider
 
-Currently you can choose from Giscus, Waline and Twikoo.
+Currently, you can choose from Giscus, Waline, Twikoo and Artalk.
 
 ::: tip Comment service selection
 
@@ -99,9 +72,31 @@ After completing the above steps, please go to the [Giscus page](https://giscus.
 
 Please pass `data-repo`, `data-repo-id`, `data-category` and `data-category-id` as plugin options as `repo`, `repoId`, `category` `categoryId`.
 
-For other options, see [Giscus Config][comment2-giscus-config].
+For other options, see [Giscus Config][giscus-config].
 
 ## Waline
+
+::: code-tabs#shell
+
+@tab pnpm
+
+```bash
+pnpm add -D @waline/client
+```
+
+@tab yarn
+
+```bash
+yarn add -D @waline/client
+```
+
+@tab npm
+
+```bash
+npm i -D @waline/client
+```
+
+:::
 
 ### Get APP_ID and APP_Key
 
@@ -113,40 +108,16 @@ After that, create a vercel app using the below button.
 
 Then input your new GitHub repo name and set `LEAN_ID`, `LEAN_KEY` and `LEAN_MASTER_KEY` environment variables in the "Environment Variables" column. `APP ID` is the value of `LEAN_ID`, and `APP Key` to `LEAN_KEY`, `Master Key` to `LEAN_MASTER_KEY`.
 
-Click `Deploy` button to deploy. It will show you deploy successfully after a minitues time. Then config the vercel link in your theme options:
+Click `Deploy` button to deploy. It will show you deploy successfully after some time. Then config the vercel link in your theme options:
 
-::: code-tabs#language
-
-@tab TS
-
-```ts
-// .vuepress/config.ts
-import { defineUserConfig } from "vuepress";
-import { hopeTheme } from "vuepress-theme-hope";
-
-export default defineUserConfig({
-  theme: hopeTheme({
-    plugins: {
-      comment: {
-        provider: "waline",
-        serverURL: "YOUR_SERVER_URL", // your server url
-      },
-    },
-  }),
-});
-```
-
-@tab JS
-
-```js
-// .vuepress/config.js
+```js {7,8} title=".vuepress/config.js"
 import { hopeTheme } from "vuepress-theme-hope";
 
 export default {
   theme: hopeTheme({
     plugins: {
       comment: {
-        provider: "waline",
+        provider: "Waline",
         serverURL: "YOUR_SERVER_URL", // your server url
       },
     },
@@ -154,17 +125,37 @@ export default {
 };
 ```
 
-:::
-
 ::: tip
 
-Config will be listed on [Plugin Config][comment2-waline-config].
+Config will be listed on [Waline Config][waline-config].
 
 For more details, please see [Waline Docs](https://waline.js.org/en/)。
 
 :::
 
 ## Twikoo
+
+::: code-tabs#shell
+
+@tab pnpm
+
+```bash
+pnpm add -D twikoo
+```
+
+@tab yarn
+
+```bash
+yarn add -D twikoo
+```
+
+@tab npm
+
+```bash
+npm i -D twikoo
+```
+
+:::
 
 ### Vercel Deployment
 
@@ -180,6 +171,69 @@ For more details, please see [Waline Docs](https://waline.js.org/en/)。
 1. Go to Overview, click the link under Domains, if the environment configuration is correct, you can see the prompt "Twikoo cloud function is running normally"
 1. Vercel Domains (with `https://` prefix, for example `https://xxx.vercel.app`) is your environment ID
 
-[comment2]: https://vuepress-theme-hope.github.io/v2/comment/
-[comment2-giscus-config]: https://vuepress-theme-hope.github.io/v2/comment/config/giscus.html
-[comment2-waline-config]: https://vuepress-theme-hope.github.io/v2/comment/config/waline.html
+```js {7,8} title=".vuepress/config.js"
+import { hopeTheme } from "vuepress-theme-hope";
+
+export default {
+  theme: hopeTheme({
+    plugins: {
+      comment: {
+        provider: "Twikoo",
+        envId: "YOUR_SERVER_URL", // your server url
+      },
+    },
+  }),
+};
+```
+
+::: note
+
+Click the "little gear" icon in the comment window to set the administrator password
+
+:::
+
+## Artalk
+
+::: code-tabs#shell
+
+@tab pnpm
+
+```bash
+pnpm add -D artalk
+```
+
+@tab yarn
+
+```bash
+yarn add -D artalk
+```
+
+@tab npm
+
+```bash
+npm i -D artalk
+```
+
+:::
+
+### Deploy Artalk Server
+
+See the [Artalk documentation](https://artalk.js.org/guide/deploy.html) for deploying artalk server.
+
+### Artalk Configuration
+
+Please set `provider: "Artalk"` and pass your server link to `server` in the plugin options.
+
+For other configuration items, see [Artalk Configuration](https://artalk.js.org/guide/frontend/config.html).
+
+::: note
+
+The plugin retains the `el` option and inserts Artalk itself on the page. At the same time, the plugin will automatically set the `pageTitle`, `pageKey` and `site` options for you according to the VuePress information.
+
+Before VuePress2 provides client configuration, the two function options `imgUploader` and `avatarURLBuilder` are not supported.
+
+:::
+
+[comment]: https://ecosystem.vuejs.press/plugins/blog/comment/
+[giscus-config]: https://ecosystem.vuejs.press/plugins/blog/comment/giscus/config.html
+[waline-config]: https://ecosystem.vuejs.press/plugins/blog/comment/waline/config.html

@@ -1,10 +1,11 @@
-import { usePageFrontmatter } from "@vuepress/client";
+import type { VNode } from "vue";
 import { computed, defineComponent, h, nextTick, ref } from "vue";
+import { usePageFrontmatter } from "vuepress/client";
+
+import PageTitle from "@theme-hope/components/PageTitle";
+import { useThemeLocaleData } from "@theme-hope/composables/index";
 
 import { LockIcon } from "./icons.js";
-import { useThemeLocaleData } from "@theme-hope/composables/index.js";
-
-import type { VNode } from "vue";
 
 import "../styles/password-modal.scss";
 
@@ -12,7 +13,24 @@ export default defineComponent({
   name: "PasswordModal",
 
   props: {
+    /**
+     * Password hint
+     */
+    hint: String,
+
+    /**
+     * Whether is fullscreen
+     *
+     * 是否是全屏
+     */
     full: Boolean,
+
+    /**
+     * Whether to show title
+     *
+     * 是否显示标题
+     */
+    showTitle: Boolean,
   },
 
   emits: ["verify"],
@@ -29,7 +47,7 @@ export default defineComponent({
     let hintHandler: number | null = null;
 
     const verify = (): void => {
-      // clear previous handler
+      // Clear previous handler
       if (hintHandler) clearTimeout(hintHandler);
       hasTried.value = false;
 
@@ -49,41 +67,60 @@ export default defineComponent({
         "div",
         {
           class: [
-            "password-layer",
-            { expand: props.full || frontmatter.value["home"] },
+            "vp-decrypt-layer",
+            { expand: props.full || frontmatter.value.home },
           ],
         },
-        h("div", { class: "password-modal" }, [
-          h(
-            "div",
-            { class: ["hint", { tried: hasTried.value }] },
-            hasTried.value
-              ? locale.value.errorHint
-              : h(LockIcon, { "aria-label": locale.value.iconLabel })
-          ),
-          h("div", { class: "password" }, [
-            h("input", {
-              type: "password",
-              value: password.value,
-              placeholder: locale.value.placeholder,
-              onInput: ({ target }: InputEvent) => {
-                password.value = (<HTMLInputElement>target).value;
+        [
+          props.showTitle ? h(PageTitle) : null,
+          h("div", { class: "vp-decrypt-modal" }, [
+            h(
+              "div",
+              { class: ["vp-decrypt-hint", { tried: hasTried.value }] },
+              hasTried.value
+                ? locale.value.errorHint
+                : h(LockIcon, { "aria-label": locale.value.iconLabel }),
+            ),
+            props.hint
+              ? h("div", { class: "vp-decrypt-hint" }, props.hint)
+              : null,
+            h("div", { class: "vp-decrypt-input" }, [
+              h("input", {
+                type: "password",
+                value: password.value,
+                placeholder: locale.value.placeholder,
+                onInput: ({ target }: InputEvent) => {
+                  password.value = (target as HTMLInputElement).value;
+                },
+                onKeydown: ({ key }: KeyboardEvent) => {
+                  if (key === "Enter") verify();
+                },
+              }),
+            ]),
+            h("div", { class: "vp-remember-password" }, [
+              h("input", {
+                id: "remember-password",
+                type: "checkbox",
+                value: remember.value,
+                onChange: () => {
+                  remember.value = !remember.value;
+                },
+              }),
+              h("label", { for: "remember-password" }, locale.value.remember),
+            ]),
+            h(
+              "button",
+              {
+                type: "button",
+                class: "vp-decrypt-submit",
+                onClick: () => {
+                  verify();
+                },
               },
-              onKeydown: ({ key }: KeyboardEvent) => {
-                if (key === "Enter") verify();
-              },
-            }),
+              "OK",
+            ),
           ]),
-          h("div", { class: "remember-password" }, [
-            h("input", {
-              type: "checkbox",
-              value: remember.value,
-              onChange: () => (remember.value = !remember.value),
-            }),
-            h("span", locale.value.remember),
-          ]),
-          h("button", { class: "submit", onClick: () => verify() }, "OK"),
-        ])
+        ],
       );
   },
 });

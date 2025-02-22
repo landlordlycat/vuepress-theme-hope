@@ -1,6 +1,6 @@
-import type { HopeThemeLocaleData } from "../../shared/index.js";
+import type { ThemeLocaleData } from "../../shared/index.js";
 
-export const skLocale: HopeThemeLocaleData = {
+export const skLocale: ThemeLocaleData = {
   lang: "sk-SK",
 
   navbarLocales: {
@@ -23,6 +23,7 @@ export const skLocale: HopeThemeLocaleData = {
     lastUpdated: "Posledná aktualizácia",
     contributors: "Prispievatelia",
     editLink: "Uprav túto stránku",
+    print: "Tlač",
   },
 
   blogLocales: {
@@ -35,8 +36,7 @@ export const skLocale: HopeThemeLocaleData = {
     all: "Všetko",
     intro: "Osobné intro",
     star: "Hviezda",
-    slides: "Prezentácie",
-    encrypt: "Zašifrované",
+    empty: "$text je prázdny",
   },
 
   paginationLocales: {
@@ -61,7 +61,8 @@ export const skLocale: HopeThemeLocaleData = {
   },
 
   routeLocales: {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+    skipToContent: "Preskočiť na hlavný obsah",
+    notFoundTitle: "Stránka nenájdená",
     notFoundMsg: [
       "Nič tu nieje.",
       "Ako si sa sem dostal?",
@@ -70,6 +71,5 @@ export const skLocale: HopeThemeLocaleData = {
     ],
     back: "Choď späť",
     home: "Poď na domovskú stránku",
-    openInNewWindow: "Otvoriť v novom okne",
   },
 };

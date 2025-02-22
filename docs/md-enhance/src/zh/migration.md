@@ -1,27 +1,17 @@
 ---
-title: 迁移至 V2
-icon: change
+title: 最新版本迁移
+icon: code-compare
 ---
 
-## 传统模式
+## 传统模式 <Badge text="当前默认" />
 
-您可以在调用 `mdEnhancePlugin` 时传递第二个参数 `true` 以启用传统模式，插件将尝试以 V1 行为运行。
+你可以在调用 `mdEnhancePlugin` 时传递第二个参数 `true` 以启用传统模式，插件将尝试以 V1 行为运行。
 
 ## 新功能
 
-- Markdown 链接检查
-
-  该插件现在检查你的 Markdown 链接，并在检测到损坏的链接时警告你。
-
-  你可以通过 `linkCheck` 选项控制此行为
-
-- 图像标记支持
-
-  通过 `imageMark` 选项使用 `#light` 和 `#dark` 后缀标记图像以在日间模式或夜间模式下显示它们。
-
 - `v-pre` 支持
 
-  VuePress 2 从 `@vuepress/core` 中删除了以下容器支持，因此添加了此选项
+  VuePress 2 删除了以下容器支持，因此添加了 `vPre` 选项
 
   ```md
   ::: v-pre
@@ -31,12 +21,14 @@ icon: change
   :::
   ```
 
+- 新增 component 代码块以快速添加组件
+
 - Chart.js 支持
 
   新增 `chart` 选项提供 [chart.js](https://www.chartjs.org/docs/latest/) 支持
 
   ````md
-  ::: chart 标题
+  ::: chartjs 标题
 
   ```json
   {
@@ -46,10 +38,10 @@ icon: change
 
   :::
 
-  ::: chart 标题
+  ::: chartjs 标题
 
   ```js
-  module.exports = {
+  const config = {
     // chart.js 配置
   };
   ```
@@ -75,7 +67,7 @@ icon: change
   ::: echarts 标题
 
   ```js
-  module.exports = {
+  const option = {
     // echarts 配置
   };
   ```
@@ -85,23 +77,37 @@ icon: change
 
 - 包含文件支持
 
-  新增 `include` 选项使用 `@include()` 将其他文件内容导入到 Markdown 中。
+  新增 `include` 选项使用 `<!-- @include: -->` 将其他文件内容导入到 Markdown 中。
 
-  使用 `@include(filename)` 导入文件。
+  使用 `<!-- @include: filename -->` 导入文件。
 
   如果要部分导入文件，你可以指定导入的行数
 
-  - `@include(filename{start-end})`
-  - `@include(filename{start-})`
-  - `@include(filename{-end})`
+  - `<!-- @include: filename{start-end} -->`
+  - `<!-- @include: filename{start-} -->`
+  - `<!-- @include: filename{-end} -->`
 
-- 选项卡支持
+  同时你也可以导入文件区域:
 
-  新增 `tabs` 选项通过 `tabs` 容器创建选项卡。
+  - `<!-- @include: filename#region -->`
+
+- MarkMap 支持
+
+  新增 `markmap` 选项通过 `markmap` 容器创建 [Markmap](https://markmap.js.org/)。
+
+- Playground
+
+  通过官方预设和自定义选项嵌入交互演示
+
+- Kotlin Playground
+
+  通过 `kotlin-playground` 提供 Kotlin 交互演示
+
+- Vue Playground
+
+  通过 `@vue/repl` 提供 Vue 交互演示
 
 ## 变更
-
-- 重命名 `codegroup` 为 `codetabs`
 
 - 现在所有选项均默认不开启
 
@@ -151,52 +157,6 @@ icon: change
   :::
   ```
 
-- 代码组语法变更
-
-  旧语法:
-
-  ````md
-  :::: code-group
-
-  ::: code-group-item pnpm
-
-  ```bash
-  pnpm create vuepress-theme-hope@next [dir]
-  ```
-
-  :::
-
-  ::: code-group-item npm:active
-
-  ```bash
-  npm init vuepress-theme-hope@next [dir]
-  ```
-
-  :::
-
-  ::::
-  ````
-
-  新语法:
-
-  ````md
-  ::: code-tabs
-
-  @tab pnpm
-
-  ```bash
-  pnpm create vuepress-theme-hope@next [dir]
-  ```
-
-  @tab:active npm
-
-  ```bash
-  npm init vuepress-theme-hope@next [dir]
-  ```
-
-  :::
-  ````
-
 ## 移除的选项
 
 - `enableAll` 被移除
@@ -210,3 +170,53 @@ icon: change
 - `imageFix` 被移除
 
   Mr.Hope 已经做了一个 PR 来修复 Markdown 中损坏的图片链接
+
+- `alert` 被移除
+
+  请用 `@vuepress/plugin-markdown-hint` 代替
+
+- `container`, `hint` 被移除
+
+  请用 `@vuepress/plugin-markdown-hint` 代替
+
+- `imageLazyload`, `lazyload` `imgLazyload` 被移除
+
+  请用 `@vuepress/plugin-markdown-image` 代替
+
+- `imageTitle`, `figure` 被移除
+
+  请用 `@vuepress/plugin-markdown-image` 代替
+
+- `imageMark`, `imgMark` 被移除
+
+  请用 `@vuepress/plugin-markdown-image` 代替
+
+- `imgSize`, `imageSize` 被移除
+
+  请用 `@vuepress/plugin-markdown-image` 代替
+
+- `tex`, `katex`, `mathjax` 被移除
+
+  请用 `@vuepress/plugin-markdown-math` 代替
+
+- `codegroup`, `codetabs` 被移除
+
+  请用 `@vuepress/plugin-markdown-tab` 代替
+
+- `tabs` 被移除
+
+  请用 `@vuepress/plugin-markdown-tab` 代替
+
+- `presentation` `revealJs` `revealjs` 被移除
+
+  请用 `@vuepress/plugin-revealjs` 代替
+
+## 预发布版本中的选项调整
+
+- `mdImport` 被重命名为 `include`
+
+- `vpre` 选项被重命名为 `vPre`
+
+- `card` 由 `components` 替代
+
+- `mermaid` `vuePlayground` 等选项不再接受相关库的配置

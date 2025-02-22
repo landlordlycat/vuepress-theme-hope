@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 // Slovak [sk]
-import type { default as dayjs } from "dayjs";
+import type dayjs from "dayjs";
+
 import type { Locale } from "./locale.js";
 
 const plural = (n: number): boolean => n > 1 && n < 5 && ~~(n / 10) !== 1;
@@ -9,61 +9,56 @@ const translate = (
   number: number,
   withoutSuffix: boolean,
   key: string,
-  isFuture: boolean
+  isFuture: boolean,
 ): string | void => {
   const result = `${number} `;
 
   switch (key) {
-    case "s": // a few seconds / in a few seconds / a few seconds ago
+    case "s": // A few seconds / in a few seconds / a few seconds ago
       return withoutSuffix || isFuture ? "pár sekúnd" : "pár sekundami";
 
-    case "m": // a minute / in a minute / a minute ago
+    case "m": // A minute / in a minute / a minute ago
       return withoutSuffix ? "minúta" : isFuture ? "minútu" : "minútou";
 
     case "mm": // 9 minutes / in 9 minutes / 9 minutes ago
-      if (withoutSuffix || isFuture) {
+      if (withoutSuffix || isFuture)
         return result + (plural(number) ? "minúty" : "minút");
-      }
 
       return `${result}minútami`;
 
-    case "h": // an hour / in an hour / an hour ago
+    case "h": // An hour / in an hour / an hour ago
       return withoutSuffix ? "hodina" : isFuture ? "hodinu" : "hodinou";
 
     case "hh": // 9 hours / in 9 hours / 9 hours ago
-      if (withoutSuffix || isFuture) {
+      if (withoutSuffix || isFuture)
         return result + (plural(number) ? "hodiny" : "hodín");
-      }
 
       return `${result}hodinami`;
 
-    case "d": // a day / in a day / a day ago
+    case "d": // A day / in a day / a day ago
       return withoutSuffix || isFuture ? "deň" : "dňom";
 
     case "dd": // 9 days / in 9 days / 9 days ago
-      if (withoutSuffix || isFuture) {
+      if (withoutSuffix || isFuture)
         return result + (plural(number) ? "dni" : "dní");
-      }
 
       return `${result}dňami`;
 
-    case "M": // a month / in a month / a month ago
+    case "M": // A month / in a month / a month ago
       return withoutSuffix || isFuture ? "mesiac" : "mesiacom";
 
     case "MM": // 9 months / in 9 months / 9 months ago
-      if (withoutSuffix || isFuture) {
+      if (withoutSuffix || isFuture)
         return result + (plural(number) ? "mesiace" : "mesiacov");
-      }
 
       return `${result}mesiacmi`;
 
-    case "y": // a year / in a year / a year ago
+    case "y": // A year / in a year / a year ago
       return withoutSuffix || isFuture ? "rok" : "rokom";
 
     case "yy": // 9 years / in 9 years / 9 years ago
-      if (withoutSuffix || isFuture) {
+      if (withoutSuffix || isFuture)
         return result + (plural(number) ? "roky" : "rokov");
-      }
 
       return `${result}rokmi`;
   }
@@ -76,7 +71,7 @@ const locale: Partial<Locale> = {
   weekdaysMin: "ne_po_ut_st_št_pi_so".split("_"),
   months:
     "január_február_marec_apríl_máj_jún_júl_august_september_október_november_december".split(
-      "_"
+      "_",
     ),
   monthsShort: "jan_feb_mar_apr_máj_jún_júl_aug_sep_okt_nov_dec".split("_"),
   weekStart: 1,
@@ -94,31 +89,31 @@ const locale: Partial<Locale> = {
   relativeTime: {
     future: "za %s", // Should be `o %s` (change when moment/moment#5408 is fixed)
     past: "pred %s",
-    // @ts-ignore
+    // @ts-expect-error: dayjs locale is not correctly typed
     s: translate,
-    // @ts-ignore
+    // @ts-expect-error: dayjs locale is not correctly typed
     m: translate,
-    // @ts-ignore
+    // @ts-expect-error: dayjs locale is not correctly typed
     mm: translate,
-    // @ts-ignore
+    // @ts-expect-error: dayjs locale is not correctly typed
     h: translate,
-    // @ts-ignore
+    // @ts-expect-error: dayjs locale is not correctly typed
     hh: translate,
-    // @ts-ignore
+    // @ts-expect-error: dayjs locale is not correctly typed
     d: translate,
-    // @ts-ignore
+    // @ts-expect-error: dayjs locale is not correctly typed
     dd: translate,
-    // @ts-ignore
+    // @ts-expect-error: dayjs locale is not correctly typed
     M: translate,
-    // @ts-ignore
+    // @ts-expect-error: dayjs locale is not correctly typed
     MM: translate,
-    // @ts-ignore
+    // @ts-expect-error: dayjs locale is not correctly typed
     y: translate,
-    // @ts-ignore
+    // @ts-expect-error: dayjs locale is not correctly typed
     yy: translate,
   },
 };
 
-export const loadSkLocale = (extendeddayjs: typeof dayjs): void => {
-  extendeddayjs.locale("sk", locale);
+export const loadSkLocale = (extendedDayjs: typeof dayjs): void => {
+  extendedDayjs.locale("sk", locale);
 };

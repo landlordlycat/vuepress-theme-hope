@@ -1,6 +1,6 @@
 ---
 title: Blogger Info
-icon: blog
+icon: circle-info
 order: 2
 category:
   - Blog
@@ -22,13 +22,7 @@ You can config blogger avatar and name displayed through `blog.avatar` and `blog
 
 ::: note
 
-If you don’t set those options, they automatically fall back to the site logo (`logo` in theme options) and site name.
-
-:::
-
-::: tip
-
-If you want the avatar to be clipped with round shape, set `blog.roundAvatar: true`.
+If you don't set those options, they automatically fall back to the site logo (`logo` in theme options) and site name.
 
 :::
 
@@ -43,107 +37,144 @@ You can also config your social media links with `blog.medias` option.
 - If the social media icon is available below, you can set `MediaName: MediaLink` directly.
 - Otherwise, you should pass in a tuple `MediaName: [MediaLink , MediaSvgIconString or MediaSvgIconPath]`,
 
-  The second element in the tuple must be a valid SVG string or a full path of a existing SVG file.
+  The second element in the tuple must be a valid SVG string or a full path of an existing SVG file.
 
-::: tip Available social media:
+:::: tip Available social media:
 
-- `"Baidu"`
+::: tabs
+
+@tab Social
+
+- `"CoolApk"`
+- `"Discord"`
+- `"Douban"`
+- `"Facebook"`
+- `"Instagram"`
+- `"Kook"`
+- `"Line"`
+- `"Messenger"`
+- `"QQ"`
+- `"Qzone"`
+- `"Reddit"`
+- `"Skype"`
+- `"SnapChat"`
+- `"Soul"`
+- `"Telegram"`
+- `"Tieba"`
+- `"Tumblr"`
+- `"Twitter"`
+- `"VK"`
+- `"Wechat"`
+- `"Weibo"`
+- `"Whatsapp"`
+- `"YY"`
+
+@tab Work
+
 - `"Bitbucket"`
 - `"Dingding"`
-- `"Discord"`
 - `"Dribbble"`
 - `"Email"`
 - `"Evernote"`
-- `"Facebook"`
-- `"Flipboard"`
 - `"Gitee"`
 - `"GitHub"`
 - `"Gitlab"`
 - `"Gmail"`
-- `"Instagram"`
-- `"Line"`
+- `"KDocs"`
+- `"Lark"`
 - `"Linkedin"`
-- `"Pinterest"`
 - `"Pocket"`
-- `"QQ"`
-- `"Qzone"`
-- `"Reddit"`
+- `"QQDocs"`
+- `"WechatWork"`
+
+@tab Integrate
+
+- `"AFDian"`
+- `"Baidu"`
+- `"Bangumi"`
+- `"DuiTang"`
+- `"Flipboard"`
+- `"HuaBan"`
+- `"Pinterest"`
+- `"Pixiv"`
 - `"Rss"`
-- `"Steam"`
-- `"Twitter"`
-- `"Wechat"`
-- `"Weibo"`
-- `"Whatsapp"`
-- `"Youtube"`
+- `"WechatMP"`
+- `"XiaoHongShu"`
 - `"Zhihu"`
+
+@tab Music
+
+- `"163Music"`
+- `"5Sing"`
+- `"Kugou"`
+- `"Kuwo"`
+- `"QQMusic"`
+- `"SoundCloud"`
+- `"XiMaLaYa"`
+
+@tab Video
+
+- `"AcFun"`
+- `"BiliBili"`
+- `"Douyin"`
+- `"Douyu"`
+- `"HuoShan"`
+- `"HuYa"`
+- `"iQiYi"`
+- `"KuaiShou"`
+- `"Nico"`
+- `"QQVideo"`
+- `"Twitch"`
+- `"WechatCh"`
+- `"Weishi"`
+- `"Youku"`
+- `"Youtube"`
+
+@tab Other
+
+- `"115"`
+- `"360Yun"`
+- `"AliDrive"`
+- `"AliPay"`
+- `"BaiduDisk"`
+- `"BattleNET"`
+- `"IdleFish"`
+- `"Paypal"`
+- `"Steam"`
+- `"WechatPay"`
 
 :::
 
-:::: details Example
+::::
 
-::: code-tabs#language
+::: details Example
 
-@tab TS
-
-```ts
-// .vuepress/config.ts
-import { path } from "@vuepress/utils";
-import { defineUserConfig } from "vuepress";
+```ts twoslash title=".vuepress/config.ts"
+import { getDirname, path } from "vuepress/utils";
 import { hopeTheme } from "vuepress-theme-hope";
 
-export default defineUserConfig({
-  thene: hopeTheme({
-    blog: {
-      media: {
-        // GitHub Icon is available
-        GitHub: "https://github.com/Mister-Hope",
-        // A custom Media called "MediaX" (just an example)
-        MediaX: [
-          // link
-          "https://mediax.com/UserX/",
-          // icon string
-          "<svg ....</svg>",
-        ],
-        // A custom Media called "MediaY" (just an example)
-        MediaY: [
-          // link
-          "https://mediay.com/UserY/",
-          // icon path
-          path.resolve(__dirname, "icons/mediay.svg"),
-        ],
-      },
-    },
-  }),
-});
-```
-
-@tab JS
-
-```js
-// .vuepress/config.js
-import { path } from "@vuepress/utils";
-import { hopeTheme } from "vuepress-theme-hope";
+const __dirname = getDirname(import.meta.url);
 
 export default {
   theme: hopeTheme({
     blog: {
-      media: {
+      medias: {
         // GitHub Icon is available
         GitHub: "https://github.com/Mister-Hope",
         // A custom Media called "MediaX" (just an example)
-        MediaX: [
-          // link
-          "https://mediax.com/UserX/",
+        MediaX: {
           // icon string
-          "<svg ....</svg>",
-        ],
-        // A custom Media called "MediaY" (just an example)
-        MediaY: [
+          icon: "<svg ....</svg>",
           // link
-          "https://mediay.com/UserY/",
+          link: "https://mediax.com/UserX/",
+        },
+        // A custom Media called "MediaY" (just an example)
+        MediaY: {
           // icon path
-          path.resolve(__dirname, "icons/mediay.svg"),
-        ],
+          icon: "https://mediay.com/logo.svg",
+          // link
+          link: "https://mediay.com/UserY/",
+        },
       },
     },
   }),
@@ -151,5 +182,3 @@ export default {
 ```
 
 :::
-
-::::

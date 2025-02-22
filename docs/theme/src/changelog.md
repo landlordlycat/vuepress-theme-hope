@@ -1,10 +1,10 @@
 ---
 title: Changelog
-icon: time
+icon: clock
 ---
 
-This file contains all notable changes to `vuepress-theme-hope` and its plugins.
+<!-- @include: ../../../packages/theme/CHANGELOG.md#recent-change -->
 
-<!-- more -->
+## More
 
-@include(../../../CHANGELOG.md{5-})
+See [Github Repo Changelog](https://github.com/vuepress-theme-hope/vuepress-theme-hope/blob/main/CHANGELOG.md).

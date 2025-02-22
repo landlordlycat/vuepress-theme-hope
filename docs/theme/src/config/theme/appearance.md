@@ -1,6 +1,6 @@
 ---
 title: Theme Appearance Options
-icon: config
+icon: palette
 order: 5
 category:
   - Config
@@ -9,7 +9,7 @@ tag:
   - Appearance
 ---
 
-The following options control the appearance of the theme. You don’t need to pay attention to them in most cases, they are only provided for a small amount of users with needs.
+The following options control the appearance of the theme. You don't need to pay attention to them in most cases, they are only provided for a small amount of users with needs.
 
 <!-- more -->
 
@@ -19,78 +19,49 @@ These options are only valid when setting directly under the theme options, sett
 
 :::
 
-## iconAssets <Badge text="Root only" type="warning" />
-
-- Type: `string`
-- Required: No
-- Details: [Interface → Icon](../../guide/interface/icon.md)
-
-Link of font icon asset, `'iconfont'` and `'fontawesome'` keywords are supported.
-
 ## darkmode <Badge text="Enabled by default" /> <Badge text="Root only" type="warning" />
 
 - Type: `"switch" | "toggle" | "auto" | "enable" | "disable"`
 - Default: `"switch"`
-- Details: [Interface → Darkmode](../../guide/interface/darkmode.md)
+- Details:
+  - [Interface → Dark mode](../../guide/interface/darkmode.md)
 
 Dark mode support options:
 
 - `"switch"`: switch between dark, light and auto
 - `"toggle"`: toggle between lightmode and darkmode
-- `"auto"`: Automatically decide whether to apply dark mode based on user device’s color-scheme or current time
+- `"auto"`: Automatically decide whether to apply dark mode based on user device's color-scheme or current time
 - `"enable"`: only dark mode
 - `"disable"`: disable dark mode
 
 ::: note
 
-If you don’t need this feature, set `darkmode: "disable"` to disable it.
+If you don't need this feature, set `darkmode: "disable"` to disable it.
 
 :::
 
-## themeColor <Badge text="Root only" type="warning" />
+## externalLinkIcon <Badge text="enabled by default" />
 
-- Type: `Record<string, string> | false`
-- Default: `false`
-- Details: [Interface → ThemeColor](../../guide/interface/theme-color.md)
+- Type: `boolean`
+- Default: `true`
 
-Theme color configuration.
+Controls whether an icon is displayed on external links.
 
 ## fullscreen <Badge text="Root only" type="warning" />
 
 - Type: `boolean`
 - Default: `false`
-- Details: [Interface → FullScreen](../../guide/interface/others.md#fullscreen-button)
+- Details:
+  - [Interface → FullScreen](../../guide/interface/others.md#fullscreen-button)
 
 Whether show the "full screen" button.
-
-## backToTop <Badge text="Root only" type="warning" />
-
-- Type: `boolean | number`
-- Default: `true`
-- Details: [Interface → Back to top button](../../guide/interface/others.md#back-to-top-button)
-
-Whether show back to top button.
-
-The default trigger distance is 300px, which can be changed when you fill in the number. Filling in `false` disables the back to top button.
-
-## mobileBreakPoint <Badge text="Root only" type="warning" />
-
-- Type: `number`
-- Default: `719`
-
-Window width switching mobile view and desktop view in pixels
-
-::: warning
-
-You should keep this option same value with `$tablet` in `.vuepress/config.scss`
-
-:::
 
 ## pure <Badge text="Root only" type="warning" />
 
 - Type: `boolean`
 - Default: `false`
-- Details: [Interface → Pure mode](../../guide/interface/pure.md)
+- Details:
+  - [Interface → Pure mode](../../guide/interface/others.md#pure-mode)
 
 Whether enable pure mode.
 
@@ -102,10 +73,20 @@ Useful when you want to provide "A pure document site".
 
 :::
 
-## iconPrefix <Badge text="Root only" type="warning" />
+## focus <Badge text="Root only" type="warning" />
 
-- Type: `string`
-- Default: Inffered from iconAssets
-- Details: [Interface → Icon](../../guide/interface/icon.md)
+- Type: `number | boolean`
+- Default: value of `pure`
+- Details:
+  - [Interface → Focus mode](../../guide/interface/others.md#focus-mode)
 
-Prefix of icon FontClass， usually, it can be automatically set by the theme.
+Whether enable focus mode, default when pure mode is enabled. Number value will be the delay time to trigger focus mode.
+
+## print <Badge text="Root only" type="warning" />
+
+- Type: `boolean`
+- Default: `true`
+- Details:
+  - [Interface → Print button](../../guide/interface/others.md#print-button)
+
+Whether display print icon in desktop mode.

@@ -1,7 +1,7 @@
 ---
 title: Home Page
 icon: home
-order: 6
+order: 7
 category:
   - Layout
 tag:
@@ -9,170 +9,88 @@ tag:
   - Layout
 ---
 
-`vuepress-theme-hope` improves the default home page.
+`vuepress-theme-hope` provides a powerful home page.
 
-To use it, set `home: true` in page frontmatter. Any extra content after the `YAML front matter` will be parsed as normal Markdown and rendered after the features section.
-
-![Screenshot](./assets/home-light.png#light)
-![Screenshot](./assets/home-dark.png#dark)
+To use it, set `home: true` in page frontmatter. Any extra content after frontmatter will be parsed as normal Markdown and rendered after the features section.
 
 <!-- more -->
 
-## Frontmatter Options
+## Site Information
 
-### home
+You can use `heroText` to set the main title and `tagline` to set the subtitle.
 
-- Type: `boolean`
+If you have a logo, you can place it in the `public` folder and set it via `heroImage`, if you want to display another logo in night mode, you can use `heroImageDark`. For better A11y, we recommend that you set the description of Logo to `heroAlt`.
 
-Enable homepage style when setting to `true`
+You can set the background image through `bgImage` and `bgImageDark`, but you need to pay attention that you must fill in the full URL or absolute path. If you want the information to be displayed in full screen, you can set `heroFullScreen: true`.
 
-### title
+If you need to customize some styles, you can set the style of the logo and background image through `heroImageStyle` and `bgImageStyle`.
 
-- Type: `string`
-- Required: No
+## Home button
 
-Page title, will be used in breadcrumb, seo, etc.
+You can display some important links in the form of buttons on the home page.
 
-### heroText
+You can set them via `actions` which is an array where each element is an object with the following keys:
 
-- Type: `string | false`
-- Default: `"Hello"`
+- `text`: button text
+- `link`: button link
+- `type`: button type (only `"primary"` and `"default"` (default) are supported)
+- `icon` (optional): can be filled with full path or absolute path image link, or FontClass
 
-Hero Title
+## Project features (legacy)
 
-### tagline
+You can set and display item features through `features`, which is an array, each element is an object, containing the following keys:
 
-- Type: `string | false`
-- Default: `"Welcome to your VuePress site"`
+- `title`: title
+- `details`: details
+- `icon` (optional): can be filled with full path or absolute path image link, or FontClass
+- `link` (optional): link address
 
-Short description in hero
+## Project Highlights and features
 
-### heroImage
+You can set and display project features and highlights through `highlights`, which is an array, each element is an object, representing a highlight or feature section.
 
-- Type: `string`
-- Required: No
+Highlight section use `highlights` to set highlights and feature section use `features` to set features (you should only set one of them). Both of them are arrays, each element is an object, representing a highlight or feature item:
 
-Home hero (logo) image address, need to fill in the absolute path (pictures need to be placed in the `.vuepress/public` folder)
+- `title`: title, HTML string is supported
+- `details`: details, HTML string is supported
+- `icon` (optional): can be filled with full path or absolute path image link, or FontClass
+- `link` (optional): link address
 
-### heroImageDark
+You can also set the following optional keys:
 
-- Type: `string`
-- Required: No
+- `header`: section title, supports HTML string
+- `description`: section description, supports HTML string
+- `color`: Text color
+- `image`: Section image
+- `imageDark`: Section image used in dark mode
+- `bgImage`: Section background image
+- `bgImageDark`: Section background image used in dark mode
+- `bgImageStyle`: Section background image styles
 
-Darkmode Home hero (logo) image address, need to fill in the absolute path (pictures need to be placed in the `.vuepress/public` folder), will be the same as `heroImage` by default.
+Highlights also support the following properties:
 
-### heroAlt
+- `type`: `"order"`, `"un-order"`(default) or `"no-order"`
 
-- Type: `string`
-- Required: No
+::: info
 
-Home icon alt text
+For complete configuration items, see [Home Frontmatter Configuration](../../config/frontmatter/project-home.md).
 
-### actions
-
-- Type: `ActionConfig | ActionConfig[]`
-- Required: No
-
-`ActionConfig` structure:
-
-- `text`: Button text
-- `link`: Button link
-- `type`: Button type (Only support `"primary"` and `"default"` (default))
-
-### features
-
-- Type: `Feature[]`
-- Required: No
-
-Structure of `Feature`:
-
-- `title`: `string` title
-- `details` (optional): `string` details
-- `icon` (optional): `string` support absolute or full image links, or icon FontClass
-- `link` (optional): `string` link address
-
-Feature description
+:::
 
 ## Demo
 
-```md
----
-home: true
-icon: home
-title: Home
-heroImage: /logo.svg
-heroText: vuepress-theme-hope
-tagline: A vuepress theme with tons of features✨
-actions:
-  - text: Get Started 💡
-    link: /guide/
-    type: primary
+- [Project HomePage with features](../../demo/project-home.md)
 
-  - text: Config 🛠
-    link: /config/
+- [Project HomePage with highlights](../../README.md)
 
-features:
-  - title: Markdown Enhance
-    icon: markdown
-    details: Add align, sup/sub script, footnote, tasklist, tex, flowchart, diagram, mark and presentation support in Markdown
-    link: /guide/markdown/
+::: details Feature Homepage Code
 
-  - title: Pageviews and comments
-    icon: comment
-    details: Start pageview statistics and comment support with Waline
-    link: /guide/feature/comment/
+@[code](../../demo/project-home.md)
 
-  - title: Article information display
-    icon: info
-    details: Add author, writing date, reading time, word count and other information to your article
-    link: /guide/feature/page-info/
+:::
 
-  - title: Blog support
-    icon: blog
-    details: Add date, tags and category to your articles, then article, tag, category and timeline list will be auto generated
-    link: /guide/blog/intro/
+::: details Highlight Homepage Code
 
-  - title: Article Encryption
-    icon: lock
-    details: Encrypt you article based on path and folders, so that only the one you want could see them
-    link: /guide/feature/encrypt/
+@[code](../../README.md)
 
-  - title: Custom theme color
-    icon: palette
-    details: Supports custom theme colors and allows users to switch between preset theme colors
-    link: /guide/interface/theme-color/
-
-  - title: Dark Mode
-    icon: contrast
-    details: Switch between light and dark modes freely
-    link: /guide/interface/darkmode/
-
-  - title: SEO enhancement
-    icon: config
-    details: Optimize pages for search engines
-    link: /guide/feature/seo/
-
-  - title: Sitemap
-    icon: sitemap
-    details: Generate a Sitemap for your site
-    link: /guide/feature/sitemap/
-
-  - title: Feed support
-    icon: rss
-    details: Generate feed to allow users to subscribe it
-    link: /guide/feature/feed/
-
-  - title: PWA support
-    icon: mobile
-    details: Make your site more like an APP
-    link: /guide/feature/pwa/
-
-  - title: More new features
-    icon: more
-    details: Including icon support, path navigation, footer support, fullscreen button, blog homepage, etc.
-    link: /guide/feature/
-
-copyright: false
-footer: MIT Licensed | Copyright © 2019-present Mr.Hope
----
-```
+:::

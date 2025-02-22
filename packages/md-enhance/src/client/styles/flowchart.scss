@@ -1,22 +1,20 @@
-.flowchart-loading-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--grey14);
-
-  .loading-icon {
-    width: 4em;
-    height: 4em;
-    margin: 2.5em auto;
-    color: var(--c-brand);
-  }
+.flowchart-loading {
+  color: var(--vp-c-accent-bg);
 }
 
 .flowchart-wrapper {
   overflow-x: auto;
+
   padding: 0.6em 0.4em;
+
   text-align: center;
+  direction: ltr;
+
   transition: all 1s;
+
+  @media print {
+    page-break-inside: avoid;
+  }
 
   @media (max-width: hope-config.$tablet) {
     margin: 0 -1.5rem;

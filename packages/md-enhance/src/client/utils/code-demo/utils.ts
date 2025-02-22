@@ -1,3 +1,5 @@
+import { isDef, isPlainObject, keys } from "@vuepress/helper/client";
+
 import type { Code } from "./typings.js";
 import type { CodeDemoOptions } from "../../../shared/index.js";
 
@@ -52,20 +54,21 @@ export const preProcessorConfig: Record<
 
 export const h = (
   tag: string,
-  attrs: Record<string, string>,
-  children?: HTMLElement[]
+  attrs?: Record<string, string>,
+  children?: HTMLElement[],
 ): HTMLElement => {
   const node = document.createElement(tag);
 
-  attrs &&
-    Object.keys(attrs).forEach((key) => {
-      if (!key.indexOf("data")) {
+  if (isPlainObject(attrs))
+    keys(attrs).forEach((key) => {
+      if (key.indexOf("data")) {
+        // @ts-expect-error: Type is not accurate
+        node[key] = attrs[key];
+      } else {
         const k = key.replace("data", "");
 
         node.dataset[k] = attrs[key];
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-      } else node[key] = attrs[key];
+      }
     });
 
   if (children)
@@ -77,23 +80,19 @@ export const h = (
 };
 
 export const getConfig = (
-  config: Partial<CodeDemoOptions>
+  config: Partial<CodeDemoOptions>,
 ): CodeDemoOptions => ({
   ...options,
   ...config,
-  jsLib: Array.from(
-    new Set([...(options.jsLib || []), ...(config.jsLib || [])])
-  ),
-  cssLib: Array.from(
-    new Set([...(options.cssLib || []), ...(config.cssLib || [])])
-  ),
+  jsLib: Array.from(new Set([options.jsLib, config.jsLib ?? []].flat())),
+  cssLib: Array.from(new Set([options.cssLib, config.cssLib ?? []].flat())),
 });
 
 export const loadScript = (
   state: Record<string, Promise<void>>,
-  link: string
+  link: string,
 ): Promise<void> => {
-  if (state[link] !== undefined) return state[link];
+  if (isDef(state[link])) return state[link];
 
   const loadEvent = new Promise<void>((resolve) => {
     const script = document.createElement("script");
@@ -114,9 +113,9 @@ export const loadScript = (
 export const injectCSS = (shadowRoot: ShadowRoot, code: Code): void => {
   if (
     code.css &&
-    // style not injected
+    // Style not injected
     Array.from(shadowRoot.childNodes).every(
-      (element) => element.nodeName !== "STYLE"
+      (element) => element.nodeName !== "STYLE",
     )
   ) {
     const style = h("style", { innerHTML: code.css });
@@ -128,24 +127,24 @@ export const injectCSS = (shadowRoot: ShadowRoot, code: Code): void => {
 export const injectScript = (
   id: string,
   shadowRoot: ShadowRoot,
-  code: Code
+  code: Code,
 ): void => {
   const scriptText = code.getScript();
 
   if (
     scriptText &&
-    // style not injected
+    // Style not injected
     Array.from(shadowRoot.childNodes).every(
-      (element) => element.nodeName !== "SCRIPT"
+      (element) => element.nodeName !== "SCRIPT",
     )
   ) {
     const script = document.createElement("script");
 
     script.appendChild(
       document.createTextNode(
-        // here we are fixing `document` variable back to shadowDOM
-        `{const document=window.document.querySelector('#${id} .code-demo-container').shadowRoot;\n${scriptText}}`
-      )
+        // Here we are fixing `document` variable back to shadowDOM
+        `{const document=window.document.querySelector('#${id} .vp-code-demo-display').shadowRoot;\n${scriptText}}`,
+      ),
     );
     shadowRoot.appendChild(script);
   }

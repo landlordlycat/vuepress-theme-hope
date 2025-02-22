@@ -1,6 +1,6 @@
-import type { HopeThemeLocaleData } from "../../shared/index.js";
+import type { ThemeLocaleData } from "../../shared/index.js";
 
-export const ruLocale: HopeThemeLocaleData = {
+export const ruLocale: ThemeLocaleData = {
   lang: "ru-RU",
 
   navbarLocales: {
@@ -23,6 +23,7 @@ export const ruLocale: HopeThemeLocaleData = {
     lastUpdated: "Последнее обновление",
     contributors: "Контрибьюторы",
     editLink: "Редактировать эту страницу",
+    print: "Печать",
   },
 
   blogLocales: {
@@ -35,8 +36,7 @@ export const ruLocale: HopeThemeLocaleData = {
     all: "Все",
     intro: "Личное вступление",
     star: "Звезда",
-    slides: "Слайды",
-    encrypt: "Зашифровано",
+    empty: "$text пусто",
   },
 
   paginationLocales: {
@@ -61,7 +61,8 @@ export const ruLocale: HopeThemeLocaleData = {
   },
 
   routeLocales: {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+    skipToContent: "Перейти к основному содержанию",
+    notFoundTitle: "Страница не найдена",
     notFoundMsg: [
       "Здесь ничего нет.",
       "Как мы сюда попали?",
@@ -70,6 +71,5 @@ export const ruLocale: HopeThemeLocaleData = {
     ],
     back: "Вернуться назад",
     home: "Вернуться на главную",
-    openInNewWindow: "Открыть в новом окне",
   },
 };

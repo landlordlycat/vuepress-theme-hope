@@ -1,13 +1,20 @@
-import { defineComponent, h, onMounted, PropType } from "vue";
-
-import type { VNode } from "vue";
+import { entries, keys } from "@vuepress/helper/client";
+import type { PropType, VNode } from "vue";
+import { defineComponent, h, onMounted } from "vue";
 
 import "../styles/theme-color-picker.scss";
+
+const THEME_COLOR_KEY = "VUEPRESS_THEME_COLOR";
 
 export default defineComponent({
   name: "ThemeColorPicker",
 
   props: {
+    /**
+     * Theme color picker config
+     *
+     * 主题色选择器配置
+     */
     themeColor: {
       type: Object as PropType<Record<string, string>>,
       required: true,
@@ -17,48 +24,50 @@ export default defineComponent({
   setup(props) {
     const setThemeColor = (theme = ""): void => {
       const classes = document.documentElement.classList;
-      const themes = Object.keys(props.themeColor).map(
-        (color) => `theme-${color}`
-      );
+      const themes = keys(props.themeColor);
 
       if (!theme) {
-        localStorage.removeItem("theme");
+        localStorage.removeItem(THEME_COLOR_KEY);
         classes.remove(...themes);
 
         return;
       }
 
       classes.remove(
-        ...themes.filter((themeclass) => themeclass !== `theme-${theme}`)
+        ...themes.filter((themeColorClass) => themeColorClass !== theme),
       );
 
-      classes.add(`theme-${theme}`);
-      localStorage.setItem("theme", theme);
+      classes.add(theme);
+      localStorage.setItem(THEME_COLOR_KEY, theme);
     };
 
     onMounted(() => {
-      const theme = localStorage.getItem("theme");
+      const theme = localStorage.getItem(THEME_COLOR_KEY);
 
       if (theme) setThemeColor(theme);
     });
 
     return (): VNode =>
-      h("ul", { id: "themecolor-picker" }, [
+      h("ul", { class: "vp-theme-color-picker", id: "theme-color-picker" }, [
         h(
           "li",
           h("span", {
             class: "theme-color",
-            onClick: () => setThemeColor(),
-          })
+            onClick: () => {
+              setThemeColor();
+            },
+          }),
         ),
-        ...Object.entries(props.themeColor).map(([color, value]) =>
+        entries(props.themeColor).map(([color, value]) =>
           h(
             "li",
             h("span", {
               style: { background: value },
-              onClick: () => setThemeColor(color),
-            })
-          )
+              onClick: () => {
+                setThemeColor(color);
+              },
+            }),
+          ),
         ),
       ]);
   },

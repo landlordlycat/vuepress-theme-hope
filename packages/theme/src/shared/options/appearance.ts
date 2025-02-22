@@ -1,11 +1,11 @@
-export type HopeThemeDarkmodeStatus =
+export type DarkModeOptions =
   | "switch"
   | "auto"
   | "toggle"
   | "enable"
   | "disable";
 
-export interface HopeThemeOutlookLocaleData {
+export interface OutlookLocaleData {
   /**
    * Theme Color
    */
@@ -22,7 +22,7 @@ export interface HopeThemeOutlookLocaleData {
   fullscreen: string;
 }
 
-export interface HopeThemeAppearanceLocaleData {
+export interface AppearanceLocaleData {
   outlookLocales: {
     /**
      * Theme Color
@@ -47,7 +47,22 @@ export interface HopeThemeAppearanceLocaleData {
   };
 }
 
-export interface HopeThemeAppearanceRootOptions {
+export interface DeprecatedAppearanceOptions {
+  /**
+   * @deprecated Use `plugins.icon.assets` instead
+   */
+  iconAssets?: never;
+
+  /**
+   * @deprecated Use `plugins.icon.prefix` instead
+   */
+  iconPrefix?: never;
+}
+
+/**
+ * @kind root
+ */
+export interface AppearanceOptions extends DeprecatedAppearanceOptions {
   /**
    * Whether enable pure mode
    *
@@ -58,7 +73,21 @@ export interface HopeThemeAppearanceRootOptions {
   pure?: boolean;
 
   /**
-   * Dark mode support options:
+   * Whether enable focus mode
+   *
+   * @description Focus mode will be enabled by default when the `pure` mode is enabled
+   * Fill in a number to indicate the delay time
+   *
+   * 是否开启沉浸模式
+   *
+   * @description 当 `pure` 模式启用时，沉浸模式将被默认启用，填入数字表示延迟时间
+   *
+   * @default false
+   */
+  focus?: number | boolean;
+
+  /**
+   * Dark mode options
    *
    * - `"switch"`: switch between dark, light and auto (default)
    * - `"toggle"`: toggle between lightmode and darkmode
@@ -66,7 +95,7 @@ export interface HopeThemeAppearanceRootOptions {
    * - `"enable"`: only dark mode
    * - `"disable"`: disable dark mode
    *
-   * 深色模式支持选项:
+   * 深色模式选项
    *
    * - `"switch"`: 在深色模式，浅色模式和自动之间切换 (默认)
    * - `"toggle"`: 在深色模式和浅色模式之间切换
@@ -74,18 +103,36 @@ export interface HopeThemeAppearanceRootOptions {
    * - `"enable"`: 强制深色模式
    * - `"disable"`: 禁用深色模式
    *
-   * @default 'auto-switch'
+   * @default "auto-switch"
    */
-  darkmode?: HopeThemeDarkmodeStatus;
+  darkmode?: DarkModeOptions;
 
   /**
-   * Theme color configuration
+   * Whether show external link icon
    *
-   * 主题色选项配置
+   * 是否显示外部链接图标
+   *
+   * @default true
+   */
+  externalLinkIcon?: boolean;
+
+  /**
+   * Whether enable theme color picker
+   *
+   * 是否启用主题色选择器
    *
    * @default false
    */
-  themeColor?: Record<string, string> | false;
+  themeColor?: boolean;
+
+  /**
+   * Whether display print button in desktop mode
+   *
+   * 是否在桌面模式下显示打印按钮
+   *
+   * @default true
+   */
+  print?: boolean;
 
   /**
    * Full screen button
@@ -95,30 +142,6 @@ export interface HopeThemeAppearanceRootOptions {
    * @default false
    */
   fullscreen?: boolean;
-
-  /**
-   * Link of font icon asset
-   *
-   * 字体图标资源链接
-   *
-   * @description `'iconfont'` and `'fontawesome'` keywords are supported
-   */
-  iconAssets?: string;
-
-  /**
-   * Font Icon class prefix
-   *
-   * 字体图标 class 前缀
-   *
-   * @default ''
-   */
-  iconPrefix?: string;
 }
 
-export type HopeThemeAppearanceRootConfig = HopeThemeAppearanceRootOptions &
-  Required<
-    Pick<
-      HopeThemeAppearanceRootOptions,
-      "darkmode" | "fullscreen" | "pure" | "themeColor"
-    >
-  >;
+export type AppearanceConfig = AppearanceOptions;

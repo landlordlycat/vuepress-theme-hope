@@ -1,103 +1,186 @@
-import { withBase } from "@vuepress/client";
-import { isLinkHttp } from "@vuepress/shared";
-import { computed, defineComponent, h, onMounted, ref } from "vue";
-import {
-  checkIsMobile,
-  checkIsiPad,
-  checkIsiPhone,
-  checkIsSafari,
-} from "vuepress-shared/lib/client";
-
+import type { ExactLocaleConfig } from "@vuepress/helper/client";
+import { useLocaleConfig } from "@vuepress/helper/client";
+import { useScrollLock } from "@vueuse/core";
 import type { VNode } from "vue";
+import {
+  defineComponent,
+  h,
+  onMounted,
+  onUnmounted,
+  ref,
+  shallowRef,
+  watch,
+} from "vue";
+import {
+  CancelFullScreenIcon,
+  EnterFullScreenIcon,
+} from "vuepress-shared/client";
+
+import type { PDFLocaleData } from "../../shared/locales.js";
+import { useSize } from "../composables/index.js";
+import { getLink, viewPDF } from "../utils/index.js";
 
 import "../styles/pdf.scss";
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-declare const __VUEPRESS_SSR__: boolean;
+declare const PDF_LOCALES: ExactLocaleConfig<PDFLocaleData>;
 
 export default defineComponent({
   name: "PDF",
 
   props: {
-    url: { type: String, required: true },
-    height: { type: [String, Number], default: 480 },
+    /**
+     * PDF link, should be absolute url
+     *
+     * PDF 文件链接，应为完整链接
+     */
+    url: {
+      type: String,
+      required: true,
+    },
+
+    /**
+     * PDF title
+     *
+     * PDF 标题
+     */
+    title: String,
+
+    /**
+     * Component width
+     *
+     * 组件宽度
+     */
+    width: {
+      type: [String, Number],
+      default: "100%",
+    },
+
+    /**
+     * Component height
+     *
+     * 组件高度
+     */
+    height: [String, Number],
+
+    /**
+     * Component width / height ratio
+     *
+     * 组件长宽比
+     */
+    ratio: {
+      type: [String, Number],
+      default: 16 / 9,
+    },
+
+    /**
+     * PDF initial page number
+     *
+     * PDF 初始页码
+     *
+     * @description Chrome only
+     */
     page: {
-      type: Number,
+      type: [String, Number],
       default: 1,
     },
-    toolbar: {
-      type: Boolean,
-      default: true,
-    },
-    zoom: {
-      type: Number,
-      default: 100,
-    },
+
+    /**
+     * Whether show toolbar
+     *
+     * 是否显示工具栏
+     *
+     * @description Chrome only
+     */
+    noToolbar: Boolean,
+
+    /**
+     * Whether disable fullscreen button
+     *
+     * 是否禁用全屏按钮
+     */
+    noFullscreen: Boolean,
+
+    /**
+     * Initial zoom level (in percent)
+     *
+     * 初始缩放比率 (百分比)
+     */
+    zoom: [String, Number],
+
+    /**
+     * Whether use pdfjs viewer by force
+     *
+     * 是否强制使用 pdfjs 阅读器
+     */
+    viewer: Boolean,
   },
 
   setup(props) {
-    const isChrome = ref(true);
-    const isMobile = ref(false);
-
-    const hash = computed(
-      () =>
-        `#page=${props.page}&toolbar=${props.toolbar ? 1 : 0}&zoom=${
-          props.zoom
-        }`
-    );
-
-    const height = computed(() =>
-      typeof props.height === "string" ? props.height : `${props.height}px`
-    );
+    const { el, width, height, resize } = useSize<HTMLDivElement>(props);
+    const locales = useLocaleConfig(PDF_LOCALES);
+    const viewer = shallowRef<HTMLElement>();
+    const isFullscreen = ref(false);
 
     onMounted(() => {
-      const { userAgent } = navigator;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      viewPDF(getLink(props.url), viewer.value!, {
+        title: props.title,
+        hint: locales.value.hint,
+        options: {
+          page: props.page,
+          noToolbar: props.noToolbar,
+          ...(props.zoom && props.zoom.toString() !== "100"
+            ? { zoom: props.zoom }
+            : {}),
+        },
+        force: props.viewer,
+      });
+      resize();
 
-      // chrome mobile
-      if (checkIsMobile(userAgent)) isMobile.value = true;
-      else if (
-        checkIsSafari(userAgent) &&
-        (checkIsiPad(userAgent) || checkIsiPhone(userAgent))
-      ) {
-        isChrome.value = false;
+      const isLocked = useScrollLock(document.body);
 
-        if (checkIsiPad(userAgent) || checkIsiPhone(userAgent))
-          isMobile.value = true;
-      }
+      watch(isFullscreen, (value) => {
+        isLocked.value = value;
+      });
+
+      onUnmounted(() => {
+        isLocked.value = false;
+      });
     });
 
-    return (): VNode => {
-      const link = withBase(props.url);
-
-      const fullLink = `${
-        isLinkHttp(link) || __VUEPRESS_SSR__ ? "" : window?.location.host || ""
-      }${link}`;
-
-      return h("div", { class: "pdf-preview" }, [
-        h("iframe", {
-          class: "pdf-iframe",
-          src: isMobile.value
-            ? `https://drive.google.com/viewerng/viewer?embedded=true&url=${encodeURI(
-                fullLink
-              )}`
-            : `${withBase(props.url)}${isChrome.value ? hash.value : ""}`,
-          style: {
-            width: "100%",
-            height: height.value,
-            "border-radius": "8px",
-          },
-        }),
-        h(
-          "button",
-          {
-            class: "pdf-open-button",
-            onClick: () => {
-              window.open(fullLink);
-            },
-          },
-          "Open"
-        ),
-      ]);
-    };
+    return (): VNode =>
+      h(
+        "div",
+        {
+          class: ["pdf-viewer-wrapper", { fullscreen: isFullscreen.value }],
+          ref: el,
+          style: isFullscreen.value
+            ? {}
+            : {
+                width: width.value,
+                height: height.value,
+              },
+        },
+        [
+          h("div", { ref: viewer }),
+          props.noFullscreen
+            ? null
+            : h(
+                "button",
+                {
+                  class: "pdf-fullscreen-button",
+                  onClick: () => {
+                    isFullscreen.value = !isFullscreen.value;
+                  },
+                },
+                h(
+                  isFullscreen.value
+                    ? CancelFullScreenIcon
+                    : EnterFullScreenIcon,
+                  { class: "pdf-fullscreen-icon" },
+                ),
+              ),
+        ],
+      );
   },
 });

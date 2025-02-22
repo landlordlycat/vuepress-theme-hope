@@ -1,14 +1,15 @@
-import { defineComponent, h } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { generateIndexfromHash } from "vuepress-shared/lib/client";
-
-import { CategoryIcon } from "@theme-hope/modules/info/components/icons.js";
-import { useMetaLocale } from "@theme-hope/modules/info/composables/index.js";
-
 import type { PropType, VNode } from "vue";
-import type { PageCategory } from "@theme-hope/modules/info/utils/index.js";
+import { defineComponent, h } from "vue";
+import { generateIndexFromHash } from "vuepress-shared/client";
 
-import "../styles/category.scss";
+import { useNavigate, usePure } from "@theme-hope/composables/index";
+import { CategoryIcon } from "@theme-hope/modules/info/components/icons";
+import { useMetaLocale } from "@theme-hope/modules/info/composables/index";
+import type { PageCategory } from "@theme-hope/modules/info/utils/index";
+
+import cssVariables from "../../../styles/variables.module.scss";
+
+import "../styles/category-info.scss";
 
 export default defineComponent({
   name: "CategoryInfo",
@@ -16,67 +17,61 @@ export default defineComponent({
   inheritAttrs: false,
 
   props: {
+    /**
+     * Category information
+     *
+     * 分类信息
+     */
     category: {
       type: Array as PropType<PageCategory[]>,
       required: true,
     },
-
-    pure: Boolean,
   },
 
   setup(props) {
-    const router = useRouter();
-    const route = useRoute();
     const metaLocale = useMetaLocale();
-
-    const navigate = (path = ""): void => {
-      if (path && route.path !== path) void router.push(path);
-    };
+    const navigate = useNavigate();
+    const isPure = usePure();
 
     return (): VNode | null =>
       props.category.length
         ? h(
             "span",
             {
-              class: "category-info",
+              class: "page-category-info",
               "aria-label": `${metaLocale.value.category}${
-                props.pure ? "" : "🌈"
+                isPure.value ? "" : "🌈"
               }`,
-              ...(props.pure ? {} : { "data-balloon-pos": "down" }),
+              ...(isPure.value ? {} : { "data-balloon-pos": "up" }),
             },
             [
               h(CategoryIcon),
-              h(
-                "ul",
-                { class: "categories-wrapper" },
-                props.category.map(({ name, path }) =>
-                  h(
-                    "li",
-                    h(
-                      "span",
+
+              props.category.map(({ name, path }) =>
+                h(
+                  "span",
+                  {
+                    class: [
+                      "page-category-item",
                       {
-                        class: [
-                          "category",
-                          {
-                            // TODO: magic number 9 is tricky here
-                            [`category${generateIndexfromHash(name, 9)}`]:
-                              !props.pure,
-                            clickable: path,
-                          },
-                        ],
-                        role: path ? "navigation" : "",
-                        onClick: () => navigate(path),
+                        [`color${generateIndexFromHash(name, Number(cssVariables.colorNumber))}`]:
+                          !isPure.value,
+                        clickable: path,
                       },
-                      name
-                    )
-                  )
-                )
+                    ],
+                    role: path ? "navigation" : "",
+                    onClick: () => {
+                      if (path) navigate(path);
+                    },
+                  },
+                  name,
+                ),
               ),
               h("meta", {
                 property: "articleSection",
                 content: props.category.map(({ name }) => name).join(","),
               }),
-            ]
+            ],
           )
         : null;
   },

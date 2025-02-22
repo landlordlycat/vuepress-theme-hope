@@ -1,5 +1,6 @@
-import { pwa, theme } from "docs-shared";
+import { theme } from "docs-shared";
 
+// The theme wrapper is located in <root>/docs-shared/src/theme-wrapper.ts
 export default theme("lightgallery", {
   locales: {
     "/": {
@@ -15,16 +16,12 @@ export default theme("lightgallery", {
     },
   },
 
+  markdown: {
+    codeTabs: true,
+    imgMark: true,
+  },
+
   plugins: {
-    mdEnhance: {
-      codetabs: true,
-    },
-
     photoSwipe: false,
-
-    pwa: pwa({
-      name: "vuepress-plugin-lightgallery",
-      shortName: "VuePress2 lightgallery plugin",
-    }),
   },
 });

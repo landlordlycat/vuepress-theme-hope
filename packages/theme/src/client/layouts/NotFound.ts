@@ -1,55 +1,62 @@
-import { defineComponent, h, resolveComponent } from "vue";
-import { useLink } from "vue-router";
-import { useRouteLocale } from "@vuepress/client";
+import type { SlotsType, VNode } from "vue";
+import { defineComponent, h } from "vue";
+import { useRouteLocale, useRouter } from "vuepress/client";
 
-import SkipLink from "@theme-hope/components/SkipLink.js";
-import { NotFoundIcon } from "@theme-hope/components/icons/index.js";
-
-import { useThemeLocaleData } from "@theme-hope/composables/index.js";
-
-import type { VNode } from "vue";
+import CommonWrapper from "@theme-hope/components/CommonWrapper";
+import NotFoundHint from "@theme-hope/components/NotFoundHint";
+import SkipLink from "@theme-hope/components/SkipLink";
+import { useThemeLocaleData } from "@theme-hope/composables/index";
 
 import "../styles/not-found.scss";
 
 export default defineComponent({
   name: "NotFound",
 
-  setup() {
+  slots: Object as SlotsType<{
+    default?: () => VNode[] | VNode | null;
+  }>,
+
+  setup(_props, { slots }) {
+    const router = useRouter();
     const routeLocale = useRouteLocale();
     const themeLocale = useThemeLocaleData();
 
-    const getMsg = (): string => {
-      const messages = themeLocale.value.routeLocales["notFoundMsg"];
-
-      return messages[Math.floor(Math.random() * messages.length)];
-    };
-
-    const { navigate } = useLink({
-      to: themeLocale.value.home ?? routeLocale.value,
-    });
-
     return (): VNode[] => [
       h(SkipLink),
-      h(resolveComponent("CommonWrapper"), { sidebar: false }, () =>
-        h("main", { class: "page not-found", id: "main-content" }, [
-          h(NotFoundIcon),
-          h("blockquote", getMsg()),
-          h(
-            "button",
-            {
-              class: "action-button",
-              onClick: () => {
-                window.history.go(-1);
-              },
-            },
-            themeLocale.value.routeLocales.back
-          ),
-          h(
-            "button",
-            { class: "action-button", onClick: () => navigate() },
-            themeLocale.value.routeLocales.home
-          ),
-        ])
+      h(CommonWrapper, { noSidebar: true }, () =>
+        h(
+          "main",
+          { id: "main-content", class: "vp-page not-found" },
+          slots.default?.() ?? [
+            h(NotFoundHint),
+            h("div", { class: "actions" }, [
+              h(
+                "button",
+                {
+                  type: "button",
+                  class: "action-button",
+                  onClick: () => {
+                    window.history.go(-1);
+                  },
+                },
+                themeLocale.value.routeLocales.back,
+              ),
+              h(
+                "button",
+                {
+                  type: "button",
+                  class: "action-button",
+                  onClick: () => {
+                    void router.push(
+                      themeLocale.value.home ?? routeLocale.value,
+                    );
+                  },
+                },
+                themeLocale.value.routeLocales.home,
+              ),
+            ]),
+          ],
+        ),
       ),
     ];
   },

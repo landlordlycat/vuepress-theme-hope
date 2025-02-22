@@ -1,6 +1,6 @@
 ---
 title: 信息 Frontmatter 配置
-icon: config
+icon: circle-info
 order: 1
 category:
   - 配置
@@ -20,8 +20,8 @@ tag:
 
 ## shortTitle
 
-- Type: `string`
-- Required: No
+- 类型: `string`
+- 必填: 否
 
 当前页面的短标题，会在导航栏、侧边栏和路径导航中作为首选。
 
@@ -36,19 +36,41 @@ tag:
 
 - 类型: `string`
 - 必填: 否
+- 详情:
+  - [界面 → 图标支持](../../guide/interface/icon.md)
 
-当前页面图标的 FontClass (建议填写)。
+当前页面图标的 FontClass 或文件路径 (建议填写)。
 
 ## author
 
 - 类型: `Author | boolean`
+
+  ```ts
+  type AuthorName = string;
+
+  interface AuthorInfo {
+    /**
+     * 作者姓名
+     */
+    name: string;
+
+    /**
+     * 作者网站
+     */
+    url?: string;
+
+    /**
+     * 作者 Email
+     */
+    email?: string;
+  }
+
+  type Author = AuthorName | AuthorName[] | AuthorInfo | AuthorInfo[];
+  ```
+
 - 必填: 否
-
-```ts
-type AuthorInfo = { name: string; url?: string };
-
-type Author = string | string[] | AuthorInfo | AuthorInfo[];
-```
+- 详情:
+  - [功能 → 页面信息](../../guide/feature/page-info.md#作者)
 
 作者，如果不填，则会回退到默认作者。
 
@@ -61,7 +83,9 @@ type Author = string | string[] | AuthorInfo | AuthorInfo[];
 ## isOriginal
 
 - 类型: `boolean`
-- 默认: `false`
+- 默认值: `false`
+- 详情:
+  - [功能 → 页面信息](../../guide/feature/page-info.md#参数)
 
 当前文章是否为原创。
 
@@ -69,14 +93,17 @@ type Author = string | string[] | AuthorInfo | AuthorInfo[];
 
 - 类型: `DateString`
 - 必填: 否
-- 格式: `YYYY-MM-DD` 或 `YYYY/MM/DD hh:mm:ss`
+- 详情:
+  - [功能 → 页面信息](../../guide/feature/page-info.md#写作日期)
 
-写作时间。
+写作时间，格式: `YYYY-MM-DD` 或 `YYYY-MM-DD hh:mm:ss`
 
 ## category
 
 - 类型: `string | string[]`
 - 必填: 否
+- 详情:
+  - [功能 → 页面信息](../../guide/feature/page-info.md#分类与标签)
 
 分类。
 
@@ -84,13 +111,68 @@ type Author = string | string[] | AuthorInfo | AuthorInfo[];
 
 - 类型: `string | string[]`
 - 必填: 否
+- 详情:
+  - [功能 → 页面信息](../../guide/feature/page-info.md#分类与标签)
 
 标签。
+
+## license
+
+- 类型: `string`
+- 默认值: 主题选项中的值
+- 详情:
+  - [布局 → 页脚](../../guide/layout/footer.md#版权信息)
+
+页面的协议名称。
+
+## copyright
+
+- 类型: `string | false`
+- 默认值: 主题选项中的值
+- 详情:
+  - [布局 → 页脚](../../guide/layout/footer.md#版权信息)
+
+页面的版权信息，会在页脚中显示。
+
+## pageview
+
+- 类型: `boolean`
+- 默认值: 主题选项中的值
+- 详情:
+  - [功能 → 评论](../../guide/feature/comment.md#waline)
+
+是否显示浏览量。
+
+::: tip
+
+显示浏览量功能需要你拥有有效的 Waline 评论服务配置。
+
+:::
+
+## article
+
+- 类型: `boolean`
+- 默认值: `true`
+- 详情:
+  - [博客 → 文章](../../guide/blog/article.md#文章)
+
+是否将该文章添加至文章列表中。
+
+## timeline
+
+- 类型: `boolean`
+- 默认值: `true`
+- 详情:
+  - [博客 → 时间线](../../guide/blog/timeline.md#排除文章)
+
+是否将该文章添加至时间线中。
 
 ## sticky
 
 - 类型: `boolean | number`
 - 默认值: `false`
+- 详情:
+  - [博客 → 文章](../../guide/blog/article.md#文章)
 
 是否在列表中置顶。当填入数字时，数字越大，排名越靠前。
 
@@ -98,33 +180,25 @@ type Author = string | string[] | AuthorInfo | AuthorInfo[];
 
 - 类型: `boolean | number`
 - 默认值: `false`
+- 详情:
+  - [博客 → 文章](../../guide/blog/article.md#星标文章)
 
-是否收藏在博客主题的文章列表中。当填入数字时，数字越大，排名越靠前。
+是否标为星标文章。当填入数字时，数字越大，排名越靠前。
 
-## article
-
-- 类型: `boolean`
-- 默认: `true`
-
-是否将该文章添加至文章列表中。
-
-## timeline
-
-- 类型: `boolean`
-- 默认: `true`
-
-是否将该文章添加至时间线中。
-
-## image
+## cover
 
 - 类型: `string`
 - 必填: 否
+- 详情:
+  - [常见问题 → 配置中的链接](../../faq/common-question.md#配置中的链接)
 
-设置预览图 (分享图)，请填入绝对路径。
+页面的预览图。
 
 ## banner
 
 - 类型: `string`
 - 必填: 否
+- 详情:
+  - [常见问题 → 配置中的链接](../../faq/common-question.md#配置中的链接)
 
-设置横幅图片 (宽屏分享图)，请填入绝对路径。
+页面的宽屏分享图。

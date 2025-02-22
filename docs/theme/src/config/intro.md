@@ -1,6 +1,6 @@
 ---
 title: Config Intro
-icon: config
+icon: gears
 order: 1
 category:
   - Config
@@ -20,18 +20,13 @@ For the file structure of VuePress, see [VuePress Basics → File Structure](../
 
 In VuePress, there are three config concepts:
 
-- Site Config: this is the object you export directly in the config file
-- Theme Config: options passed to `hopeTheme` function
+- Site Config: this is the object you export directly in [config file](../cookbook/vuepress/config.md#config-file)
+- Theme Config: first option passed to `hopeTheme` function
 - Page Config: provided by Frontmatter at the top of the page based on YAML syntax
 
 ## Theme Usage
 
-::: code-tabs#language
-
-@tab TS
-
-```ts
-// .vuepress/config.ts
+```ts twoslash title=".vuepress/config.ts"
 import { defineUserConfig } from "vuepress";
 import { hopeTheme } from "vuepress-theme-hope";
 
@@ -39,29 +34,14 @@ export default defineUserConfig({
   // siteConfig here
   // ...
 
-  theme: hopeTheme({
-    // themeConfig here
-    // ...
-  }),
+  theme: hopeTheme(
+    {
+      // themeConfig here
+      // ...
+    },
+    {
+      // theme behavior options here (optional)
+    },
+  ),
 });
 ```
-
-@tab JS
-
-```js
-// .vuepress/config.js
-import { defineUserConfig } from "vuepress";
-import { hopeTheme } from "vuepress-theme-hope";
-
-export default defineUserConfig({
-  // siteConfig here
-  // ...
-
-  theme: hopeTheme({
-    // themeConfig here
-    // ...
-  }),
-});
-```
-
-:::

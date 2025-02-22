@@ -1,6 +1,6 @@
 {
   "name": "create-vuepress-theme-hope",
-  "version": "2.0.0-beta.108",
+  "version": "2.0.0-rc.71",
   "description": "Create vuepress-theme-hope demo project helper",
   "keywords": [
     "create",
@@ -9,7 +9,7 @@
     "vuepress-theme",
     "vuepress-theme-hope"
   ],
-  "homepage": "https://vuepress-theme-hope.github.io/v2/",
+  "homepage": "https://theme-hope.vuejs.press/",
   "bugs": {
     "url": "https://github.com/vuepress-theme-hope/vuepress-theme-hope/issues"
   },
@@ -22,12 +22,14 @@
   "author": {
     "name": "Mr.Hope",
     "email": "mister-hope@outlook.com",
-    "url": "https://mrhope.site"
+    "url": "https://mister-hope.com"
   },
   "type": "module",
   "exports": {
     "./package.json": "./package.json"
   },
+  "main": "./lib/node/index.js",
+  "types": "./lib/node/index.d.ts",
   "bin": {
     "create-vuepress-theme-hope": "./lib/index.js"
   },
@@ -36,18 +38,24 @@
     "template"
   ],
   "scripts": {
-    "build": "rollup -c",
-    "clean": "rimraf ./lib ./*.tsbuildinfo",
+    "build": "rollup -c rollup.config.ts --configPlugin esbuild",
+    "clean": "rimraf --glob ./lib ./*.tsbuildinfo",
     "dev": "pnpm dev:ts",
     "dev:ts": "tsc -b tsconfig.build.json --watch"
   },
   "dependencies": {
-    "cac": "6.7.14",
-    "execa": "6.1.0",
-    "inquirer": "9.1.2"
+    "@inquirer/prompts": "^7.3.2",
+    "commander": "^13.1.0",
+    "execa": "^9.5.2"
   },
   "devDependencies": {
-    "@types/inquirer": "9.0.2",
-    "rimraf": "3.0.2"
+    "vuepress": "catalog:vuepress",
+    "vuepress-theme-hope": "workspace:*"
+  },
+  "engines": {
+    "node": ">=18.19.0",
+    "npm": ">=8",
+    "pnpm": ">=7",
+    "yarn": ">=2"
   }
 }

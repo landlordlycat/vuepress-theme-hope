@@ -1,25 +1,25 @@
 ---
-title: Plugin Options
-icon: config
+title: Config
+icon: gears
 ---
 
-## selector
+## Plugin Options
+
+### selector
 
 - Type: `string`
-- Default: `".theme-default-content :not(a) > img"`
+- Default: `"[vp-content] :not(a) > img:not([no-view])"`
 
 Image selector
 
-## plugins
+### plugins
 
 - Type: `string[]`
 - Default: `["pager", "share", "zoom"]`
 
 Light Gallery Plugins to enable
 
-::: note
-
-Optional values:
+::: info Available plugins
 
 - `"autoplay"`
 - `"fullscreen"`
@@ -31,17 +31,21 @@ Optional values:
 
 :::
 
-## delay
+### delay
 
 - Type: `number`
-- Default: `500`
+- Default: `800`
 
 The delay of lightgallery fetching page images, in ms.
 
 If the theme you are using has a switching animation, we recommend you setting this option to `Switch animation duration + 200`.
 
-## options
+## Client Config
 
-- Type: `LightGallerySettings`
+### defineLightGalleryConfig
+
+```ts
+const defineLightGalleryConfig: (options: LightGallerySettings) => void;
+```
 
 Additional options which will pass to [`lightgallery`](https://www.lightgalleryjs.com/docs/settings/).

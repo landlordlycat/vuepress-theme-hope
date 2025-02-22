@@ -1,84 +1,124 @@
-import type { ReadingTime } from "vuepress-plugin-reading-time2";
+import type { ReadingTime } from "@vuepress/plugin-reading-time";
 import type { Author } from "vuepress-shared";
 
-export interface ArticleInfo extends Record<string, unknown> {
-  /**
-   * Type
-   */
-  type: "article" | "page" | "slide";
+export const enum PageInfo {
+  title = "t",
+  shortTitle = "s",
+  icon = "i",
+  index = "I",
+  order = "O",
+  breadcrumbExclude = "b",
+}
 
-  /**
-   * Whether is encrypted
-   */
-  isEncrypted?: boolean;
+export const enum ArticleInfo {
+  type = "y",
+  author = "a",
+  date = "d",
+  localizedDate = "l",
+  category = "c",
+  tag = "g",
+  isEncrypted = "n",
+  isOriginal = "o",
+  readingTime = "r",
+  excerpt = "e",
+  sticky = "u",
+  cover = "v",
+}
 
-  /**
-   * Whether is original
-   */
-  isOriginal?: boolean;
+export const enum PageType {
+  article = "a",
+  home = "h",
+  slide = "s",
+  page = "p",
+}
 
+export interface PageInfoData extends Record<string, unknown> {
   /**
    * Article title
    */
-  title: string;
+  [PageInfo.title]: string;
 
   /**
    * Article short title
    */
-  shortTitle: string;
+  [PageInfo.shortTitle]: string;
 
   /**
    * Page icon
    */
-  icon?: string;
+  [PageInfo.icon]?: string;
+
+  /**
+   * Whether this page should be indexed
+   *
+   * used in other functions, e.g.: sidebar and catalog
+   */
+  [PageInfo.index]?: boolean;
+
+  /**
+   * The order of this page in same directory
+   */
+  [PageInfo.order]?: number;
+}
+
+export interface ArticleInfoData extends PageInfoData {
+  /**
+   * Type
+   */
+  [ArticleInfo.type]: PageType;
 
   /**
    * Article author
    */
-  author?: Author | false;
+  [ArticleInfo.author]?: Author | false;
 
   /**
-   * writing date info
+   * Writing date info
    */
-  date?: Date;
+  [ArticleInfo.date]?: number;
 
   /**
-   * writing date info in currect language
+   * Writing date info in current language
    */
-  localizedDate?: string;
+  [ArticleInfo.localizedDate]?: string;
 
   /**
-   * article category
+   * Article category
    */
-  category?: string[];
+  [ArticleInfo.category]?: string[];
 
   /**
    * Article tag
    */
-  tag?: string[];
+  [ArticleInfo.tag]?: string[];
 
   /**
    * Reading time info
    */
-  readingTime?: ReadingTime;
+  [ArticleInfo.readingTime]?: ReadingTime;
 
   /**
-   * article excerpt
+   * Article excerpt
    */
-  excerpt: string;
+  [ArticleInfo.excerpt]: string;
+
+  /**
+   * Whether is encrypted
+   */
+  [ArticleInfo.isEncrypted]?: true;
+
+  /**
+   * Whether is original
+   */
+  [ArticleInfo.isOriginal]?: true;
 
   /**
    * Sticky info
    */
-  sticky?: number | boolean;
-
-  /**
-   * Start info
-   */
-  star?: number | boolean;
+  [ArticleInfo.sticky]?: number | boolean;
 
   /**
    * Cover image
    */
-  cover?: string;
+  [ArticleInfo.cover]?: string;
 }

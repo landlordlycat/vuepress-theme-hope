@@ -1,30 +1,33 @@
-import { defineComponent, resolveComponent, h } from "vue";
-
-import { usePure } from "@theme-hope/composables/index.js";
-
-import AuthorInfo from "@theme-hope/modules/info/components/AuthorInfo.js";
-import CategoryInfo from "@theme-hope/modules/info/components/CategoryInfo.js";
-import DateInfo from "@theme-hope/modules/info/components/DateInfo.js";
-import PageViewInfo from "@theme-hope/modules/info/components/PageViewInfo.js";
-import ReadingTimeInfo from "@theme-hope/modules/info/components/ReadingTimeInfo.js";
-import TagInfo from "@theme-hope/modules/info/components/TagInfo.js";
-import OriginalInfo from "@theme-hope/modules/info/components/OriginalMark.js";
-import WordInfo from "@theme-hope/modules/info/components/WordInfo.js";
-
-import type { PropType, VNode } from "vue";
-import type { ReadingTime } from "vuepress-plugin-reading-time2";
+import noopComponent from "@vuepress/helper/noopComponent";
+import { isSupported } from "@vuepress/plugin-comment/pageview";
 import type {
-  AuthorInfo as AuthorInfoType,
-  DateInfo as DateInfoType,
-} from "vuepress-shared";
+  ReadingTime,
+  ReadingTimeLocale,
+} from "@vuepress/plugin-reading-time/client";
+import type { PropType, VNode } from "vue";
+import { defineComponent, h, resolveComponent } from "vue";
+import type { AuthorInfo as AuthorInfoType } from "vuepress-shared/client";
+
+import { usePure } from "@theme-hope/composables/index";
+import AuthorInfo from "@theme-hope/modules/info/components/AuthorInfo";
+import CategoryInfo from "@theme-hope/modules/info/components/CategoryInfo";
+import DateInfo from "@theme-hope/modules/info/components/DateInfo";
+import OriginalInfo from "@theme-hope/modules/info/components/OriginalInfo";
+import PageViewInfo from "@theme-hope/modules/info/components/PageViewInfo";
+import ReadingTimeInfo from "@theme-hope/modules/info/components/ReadingTimeInfo";
+import TagInfo from "@theme-hope/modules/info/components/TagInfo";
+import WordInfo from "@theme-hope/modules/info/components/WordInfo";
 import type {
   PageCategory,
   PageTag,
-} from "@theme-hope/modules/info/utils/index.js";
-import type { PageInfo } from "../../../../shared/index.js";
+} from "@theme-hope/modules/info/utils/index";
+
+import type { PageInfoType } from "../../../../shared/index.js";
 
 import "balloon-css/balloon.css";
 import "../styles/page-info.scss";
+
+declare const __VP_READING_TIME__: boolean;
 
 export interface PageInfoProps {
   /**
@@ -53,14 +56,14 @@ export interface PageInfoProps {
    *
    * 写作日期
    */
-  date?: DateInfoType | null;
+  date?: Date | null;
 
   /**
    * Writing Date
    *
    * 写作日期
    */
-  localizedDate?: string;
+  localizedDate?: string | null;
 
   /**
    * Whether the article is original
@@ -86,6 +89,13 @@ export interface PageInfoProps {
    * 阅读时间
    */
   readingTime?: ReadingTime | null;
+
+  /**
+   * ReadingTime Locales
+   *
+   * 阅读时间多语言
+   */
+  readingTimeLocale?: ReadingTimeLocale | null;
 }
 
 export default defineComponent({
@@ -96,33 +106,47 @@ export default defineComponent({
     CategoryInfo,
     DateInfo,
     OriginalInfo,
-    PageViewInfo,
-    ReadingTimeInfo,
+    PageViewInfo: isSupported ? PageViewInfo : noopComponent,
+    ReadingTimeInfo: __VP_READING_TIME__ ? ReadingTimeInfo : noopComponent,
     TagInfo,
-    WordInfo,
+    WordInfo: __VP_READING_TIME__ ? WordInfo : noopComponent,
   },
 
   props: {
+    /**
+     * Article information to display
+     *
+     * 待展示的文章信息
+     */
     items: {
-      type: [Array, Boolean] as PropType<PageInfo[] | false>,
-      default: (): PageInfo[] => [
+      type: [Array, Boolean] as PropType<
+        PageInfoType[] | false | undefined | null
+      >,
+
+      default: (): PageInfoType[] => [
         "Author",
         "Original",
         "Date",
+        "PageView",
+        "ReadingTime",
         "Category",
         "Tag",
-        "ReadingTime",
       ],
     },
 
-    config: {
+    /**
+     * Article information
+     *
+     * 文章信息配置
+     */
+    info: {
       type: Object as PropType<PageInfoProps>,
       required: true,
     },
   },
 
   setup(props) {
-    const pure = usePure();
+    const isPure = usePure();
 
     return (): VNode | null =>
       props.items
@@ -131,10 +155,10 @@ export default defineComponent({
             { class: "page-info" },
             props.items.map((item) =>
               h(resolveComponent(`${item}Info`), {
-                ...props.config,
-                pure: pure.value,
-              })
-            )
+                ...props.info,
+                isPure: isPure.value,
+              }),
+            ),
           )
         : null;
   },

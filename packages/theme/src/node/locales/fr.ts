@@ -1,6 +1,6 @@
-import type { HopeThemeLocaleData } from "../../shared/index.js";
+import type { ThemeLocaleData } from "../../shared/index.js";
 
-export const frLocale: HopeThemeLocaleData = {
+export const frLocale: ThemeLocaleData = {
   lang: "fr-FR",
 
   navbarLocales: {
@@ -23,6 +23,7 @@ export const frLocale: HopeThemeLocaleData = {
     lastUpdated: "Dernière mise à jour",
     contributors: "Contributeurs",
     editLink: "Modifier cette page",
+    print: "Imprimer",
   },
 
   blogLocales: {
@@ -35,8 +36,7 @@ export const frLocale: HopeThemeLocaleData = {
     all: "Tout",
     intro: "Introduction personnelle",
     star: "Étoile",
-    slides: "Slides",
-    encrypt: "Chiffré",
+    empty: "Pas de $text",
   },
 
   paginationLocales: {
@@ -61,7 +61,8 @@ export const frLocale: HopeThemeLocaleData = {
   },
 
   routeLocales: {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+    skipToContent: "Aller au contenu principal",
+    notFoundTitle: "Page non trouvée",
     notFoundMsg: [
       "Il n'y a rien ici.",
       "Comment êtes vous arrivés ici ?",
@@ -70,6 +71,5 @@ export const frLocale: HopeThemeLocaleData = {
     ],
     back: "Revenir",
     home: "Retour à la maison",
-    openInNewWindow: "Ouvrir une nouvelle fenêtre",
   },
 };

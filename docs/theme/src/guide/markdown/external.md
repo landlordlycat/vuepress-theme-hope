@@ -2,7 +2,7 @@
 title: External import
 icon: link
 order: -1
-cateogry:
+category:
   - Markdown
 tag:
   - Markdown
@@ -14,14 +14,13 @@ To using new syntax inside Markdown to enhance content, you can also use `<ifram
 
 ## shields.io
 
-You can use [shields.io](https://shields.io/) to generate lots of dynamic badges, such as the project’s Stars, npm version number, downloads, etc.
+You can use [shields.io](https://shields.io/) to generate lots of dynamic badges, such as the project's Stars, npm version number, downloads, etc.
 
 Input:
 
 ```md
 ![Version](https://img.shields.io/npm/v/vuepress-theme-hope.svg?style=flat-square&logo=npm)
 ![Downloads](https://img.shields.io/npm/dm/vuepress-theme-hope.svg?style=flat-square&logo=npm)
-![Size](https://img.shields.io/bundlephobia/min/vuepress-theme-hope?style=flat-square&logo=npm)
 ![Dependencies](https://img.shields.io/librariesio/release/npm/vuepress-theme-hope?style=flat-square)
 ```
 
@@ -29,7 +28,6 @@ Output:
 
 ![Version](https://img.shields.io/npm/v/vuepress-theme-hope.svg?style=flat-square&logo=npm)
 ![Downloads](https://img.shields.io/npm/dm/vuepress-theme-hope.svg?style=flat-square&logo=npm)
-![Size](https://img.shields.io/bundlephobia/min/vuepress-theme-hope?style=flat-square&logo=npm)
 
 You can also use it to generate static badges. You can customize the text, style, color and size by modifying the parameters.
 
@@ -50,33 +48,3 @@ Output:
 For detailed parameters and usage, please see [Home](https://shields.io/).
 
 :::
-
-## Markmap
-
-Markmap is a tool for converting Markdown into mind maps. It supports more format and content than the built-in flowchart of the theme.
-
-1. Use [Markmap](https://markmap.js.org/) to generate mind map HTML file
-1. Place the HTML file under `.vuepress/public/`
-1. Insert into Markdown via `<iframe>`
-
-Input:
-
-```html
-<iframe
-  :src="$withBase('/markmap/demo.html')"
-  width="100%"
-  height="400"
-  frameborder="0"
-  scrolling="No"
-  leftmargin="0"
-  topmargin="0"
-/>
-```
-
-Output:
-
-<!-- markdownlint-disable -->
-
-<iframe :src="$withBase('/markmap/demo.html')" width="100%" height="400" frameborder="0" scrolling="No" leftmargin="0" topmargin="0" />
-
-<!-- markdownlint-restore -->

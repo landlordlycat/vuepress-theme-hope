@@ -1,2 +1,4 @@
-export { IconBase } from "./IconBase.js";
-export { RenderDefault } from "./RenderDefault.js";
+export * from "./IconBase.js";
+export * from "./RenderDefault.js";
+export * from "./fullscreenIcons.js";
+export * from "./repoIcons.js";

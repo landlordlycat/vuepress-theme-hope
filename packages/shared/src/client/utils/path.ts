@@ -1,8 +1,15 @@
-import type { RouteLocationNormalizedLoaded } from "vue-router";
+import { isDef } from "@vuepress/helper/client";
+import type { RouteLocationNormalizedLoaded } from "vuepress/client";
 
 const HASH_REGEXP = /#.*$/u;
 
-export const getHash = (path: string): string | void => {
+/**
+ * Get hash from path
+ *
+ * @param path link path
+ * @returns hash
+ */
+export const getHash = (path: string): string => {
   const match = HASH_REGEXP.exec(path);
 
   if (match) return match[0];
@@ -13,13 +20,22 @@ export const getHash = (path: string): string | void => {
 export const normalizePath = (path: string): string =>
   decodeURI(path)
     .replace(HASH_REGEXP, "")
-    .replace(/(index)?\.(md|html)$/, "");
+    .replace(/\/index\.html$/iu, "/")
+    .replace(/\/(README|index)\.md$/iu, "/")
+    .replace(/\.(?:html|md)$/iu, "");
 
+/**
+ * Whether the lick is active
+ *
+ * @param route Current route
+ * @param link link path
+ * @returns Whether the lick is active
+ */
 export const isActiveLink = (
   route: RouteLocationNormalizedLoaded,
-  link?: string
+  link?: string,
 ): boolean => {
-  if (link === undefined) return false;
+  if (!isDef(link)) return false;
 
   const currentPath = normalizePath(route.path);
   const targetPath = normalizePath(link);

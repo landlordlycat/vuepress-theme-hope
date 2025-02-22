@@ -1,12 +1,13 @@
-import { computed, defineComponent, h } from "vue";
-import { useLocaleConfig } from "vuepress-shared/lib/client";
-
-import { TimerIcon } from "@theme-hope/modules/info/components/icons.js";
-import { useMetaLocale } from "@theme-hope/modules/info/composables/index.js";
-import { readingTimeLocales } from "@theme-hope/modules/info/utils/index.js";
-
+import type {
+  ReadingTime,
+  ReadingTimeLocale,
+} from "@vuepress/plugin-reading-time/client";
 import type { PropType, VNode } from "vue";
-import type { ReadingTime } from "vuepress-plugin-reading-time2";
+import { computed, defineComponent, h } from "vue";
+
+import { usePure } from "@theme-hope/composables/index";
+import { TimerIcon } from "@theme-hope/modules/info/components/icons";
+import { useMetaLocale } from "@theme-hope/modules/info/composables/index";
 
 export default defineComponent({
   name: "ReadingTimeInfo",
@@ -14,53 +15,52 @@ export default defineComponent({
   inheritAttrs: false,
 
   props: {
-    readingTime: {
-      type: Object as PropType<ReadingTime | null>,
-      default: () => null,
-    },
+    /**
+     * Reading time information
+     *
+     * 阅读时间信息
+     */
+    readingTime: Object as PropType<ReadingTime | null>,
 
-    pure: Boolean,
+    /**
+     * Reading time locale
+     *
+     * 阅读时间语言环境
+     */
+    readingTimeLocale: Object as PropType<ReadingTimeLocale | null>,
   },
 
   setup(props) {
     const metaLocale = useMetaLocale();
-    const readingTimeLocale = useLocaleConfig(readingTimeLocales);
+    const isPure = usePure();
 
-    const readingTime = computed(() => {
+    const readingTimeMeta = computed(() => {
       if (!props.readingTime) return null;
 
       const { minutes } = props.readingTime;
 
-      return minutes < 1
-        ? { text: readingTimeLocale.value.less1Minute, time: "PT1M" }
-        : {
-            text: readingTimeLocale.value.time.replace(
-              "$time",
-              Math.round(minutes).toString()
-            ),
-            time: `PT${Math.round(minutes)}M`,
-          };
+      return minutes < 1 ? "PT1M" : `PT${Math.round(minutes)}M`;
     });
 
     return (): VNode | null =>
-      readingTime.value
+      props.readingTimeLocale?.time
         ? h(
             "span",
             {
-              class: "reading-time-info",
+              class: "page-reading-time-info",
               "aria-label": `${metaLocale.value.readingTime}${
-                props.pure ? "" : "⌛"
+                isPure.value ? "" : "⌛"
               }`,
-              ...(props.pure ? {} : { "data-balloon-pos": "down" }),
+              ...(isPure.value ? {} : { "data-balloon-pos": "up" }),
             },
             [
               h(TimerIcon),
-              h("span", readingTime.value.text),
+              h("span", props.readingTimeLocale.time),
               h("meta", {
                 property: "timeRequired",
-                content: readingTime.value.time,
+                content: readingTimeMeta.value,
               }),
-            ]
+            ],
           )
         : null;
   },

@@ -1,88 +1,154 @@
+import { LoadingIcon, decodeData, wait } from "@vuepress/helper/client";
 import { useDebounceFn, useEventListener } from "@vueuse/core";
-import { defineComponent, h, onMounted, onBeforeUnmount, ref } from "vue";
-import { atou } from "vuepress-shared/lib/client";
-import { LOADING_SVG } from "./icons.js";
-
-import type { EChartsType, EChartsOption } from "echarts";
+import type { EChartsOption, EChartsType } from "echarts";
 import type { PropType, VNode } from "vue";
+import {
+  defineComponent,
+  h,
+  onMounted,
+  onUnmounted,
+  ref,
+  shallowRef,
+} from "vue";
 
+import { useEChartsConfig } from "../helpers/index.js";
 import "../styles/echarts.scss";
 
 declare const MARKDOWN_ENHANCE_DELAY: number;
 
+interface EChartsConfig {
+  width?: number;
+  height?: number;
+  option: EChartsOption;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const AsyncFunction = (async (): Promise<void> => {}).constructor;
+
 const parseEChartsConfig = (
   config: string,
-  type: "js" | "json"
-): EChartsOption => {
+  type: "js" | "json",
+  myChart: EChartsType,
+): Promise<EChartsConfig> => {
   if (type === "js") {
-    const exports = {};
-    const module = { exports };
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+    const runner = AsyncFunction(
+      "myChart",
+      `\
+let width,height,option,__echarts_config__;
+{
+${config}
+__echarts_config__={width,height,option};
+}
+return __echarts_config__;
+`,
+    );
 
-    eval(config);
-
-    return <EChartsOption>module.exports;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    return runner(myChart) as Promise<EChartsConfig>;
   }
 
-  return <EChartsOption>JSON.parse(config);
+  return Promise.resolve({ option: JSON.parse(config) as EChartsOption });
 };
 
 export default defineComponent({
   name: "ECharts",
 
   props: {
-    config: { type: String, required: true },
-    id: { type: String, required: true },
-    title: { type: String, default: "" },
-    type: { type: String as PropType<"js" | "json">, default: "json" },
+    /**
+     * ECharts config
+     *
+     * 图表配置
+     */
+    config: {
+      type: String,
+      required: true,
+    },
+
+    /**
+     * Chart id
+     *
+     * 图表 id
+     */
+    id: {
+      type: String,
+      required: true,
+    },
+
+    /**
+     * Chart title
+     *
+     * 图表标题
+     */
+    title: String,
+
+    /**
+     * Chart config type
+     *
+     * 图表配置类型
+     */
+    type: {
+      type: String as PropType<"js" | "json">,
+      default: "json",
+    },
   },
 
   setup(props) {
-    const echartsWrapper = ref<HTMLElement>();
-    let chart: EChartsType;
+    const echartsConfig = useEChartsConfig();
 
     const loading = ref(true);
+    const echartsContainer = shallowRef<HTMLElement>();
+
+    let instance: EChartsType | null = null;
+
+    useEventListener(
+      "resize",
+      useDebounceFn(() => {
+        instance?.resize();
+      }, 100),
+    );
 
     onMounted(() => {
       void Promise.all([
         import(/* webpackChunkName: "echarts" */ "echarts"),
-        // delay
-        new Promise((resolve) => setTimeout(resolve, MARKDOWN_ENHANCE_DELAY)),
-      ]).then(([echarts]) => {
-        const options = parseEChartsConfig(atou(props.config), props.type);
+        // Delay
+        wait(MARKDOWN_ENHANCE_DELAY),
+      ]).then(async ([echarts]) => {
+        await echartsConfig.setup?.();
 
-        chart = echarts.init(echartsWrapper.value!);
-        chart.showLoading();
-        chart.setOption(options);
-        chart.hideLoading();
+        instance = echarts.init(echartsContainer.value);
+
+        const { option, ...size } = await parseEChartsConfig(
+          decodeData(props.config),
+          props.type,
+          instance,
+        );
+
+        instance.resize(size);
+        instance.setOption({ ...echartsConfig.option, ...option });
 
         loading.value = false;
       });
-
-      useEventListener(
-        "resize",
-        useDebounceFn(() => chart?.resize(), 100)
-      );
     });
 
-    onBeforeUnmount(() => {
-      chart?.dispose();
+    onUnmounted(() => {
+      instance?.dispose();
     });
 
     return (): (VNode | null)[] => [
       props.title
         ? h("div", { class: "echarts-title" }, decodeURIComponent(props.title))
         : null,
-      loading.value
-        ? h("div", {
-            class: "echarts-loading-wrapper",
-            innerHTML: LOADING_SVG,
-          })
-        : null,
-      h("div", {
-        ref: echartsWrapper,
-        class: "echarts-wrapper",
-        id: props.id,
-      }),
+      h("div", { class: "echarts-wrapper" }, [
+        h("div", {
+          ref: echartsContainer,
+          class: "echarts-container",
+          id: props.id,
+        }),
+        loading.value
+          ? h(LoadingIcon, { class: "echarts-loading", height: 360 })
+          : null,
+      ]),
     ];
   },
 });

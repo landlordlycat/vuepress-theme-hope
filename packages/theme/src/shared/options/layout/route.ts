@@ -1,4 +1,16 @@
-export interface HopeThemeRouteLocaleData {
+export interface RouteLocaleData {
+  /**
+   * Skip to main content
+   */
+  skipToContent: string;
+
+  /**
+   * 404 page title
+   *
+   * 404 页面的标题
+   */
+  notFoundTitle: string;
+
   /**
    * 404 page msgs
    *
@@ -17,11 +29,4 @@ export interface HopeThemeRouteLocaleData {
    * 返回上一页
    */
   back: string;
-
-  /**
-   * screen reader only message in `<ExternalLinkIcon>`
-   *
-   * 在 `<ExternalLinkIcon>` 中的屏幕阅读器消息
-   */
-  openInNewWindow: string;
 }

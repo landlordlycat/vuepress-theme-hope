@@ -1,79 +1,62 @@
 ---
 title: Troubleshooting
-icon: check
+order: 2
+icon: square-check
 category:
   - FAQ
 ---
 
-## Ensure using latest version
+## Ensure running under correct environment
 
-Please make sure you are using the latest `vuepress` and `vuepress-theme-hope` V2 version, because some bugs you encountered may have been fixed in new versions.
+`vuepress-theme-hope` only supports node version of `>=18.19.0`.
 
-You can update to the latest version by executing the following commands.
+If the output of `node -v` does not satisfy the requirement, you should [download and install the LTS version of Node.js](../get-started/env.md#nodejs).
 
-::: code-tabs#shell
+Also, you should use a package manager satisfying the following requirements (`pnpm@v9` recommended):
 
-@tab pnpm
+- pnpm: >= 7
 
-```bash
-pnpm add vuepress@next vuepress-theme-hope@next
-```
+  Check: `pnpm -v`
 
-@tab yarn
+- npm: >= 8
 
-```bash
-yarn add vuepress@next vuepress-theme-hope@next
-```
+  Check: `npm -v`
 
-@tab npm
+- yarn: >= 2
 
-```bash
-npm i vuepress@next vuepress-theme-hope@next
-```
+  Check: `yarn -v` (Also requires `nodeLinker: 'node-modules'` in `.yarnrc.yml`)
 
-:::
+To use the correct package manager, run `corepack enable` (might need to run as Administrator on Windows), and run one of the following commend:
 
-## Ensure Node version
+- npm: `corepack use npm@10`
+- yarn: `corepack use yarn@4`
+- pnpm: `corepack use pnpm@9`
 
-`vuepress-theme-hope` only supports LTS version of Node.js, that is, currently, only the latest v14, v16 versions are supported.
+## Ensure using the latest version and having correct deps tree
 
-You can check its version with `node -v`. If the first digit of the version number does not meet the requirements, please [download and install the LTS version of Node.js](../cookbook/tutorial/env.md#nodejs).
+Please make sure you are using the latest `vuepress`, VuePress plugins and `vuepress-theme-hope` V2 version, because some bugs you encountered may have been fixed in new versions. Also in some cases, you may generate incorrect dependency tree after upgrading some dependencies. To let VuePress work correctly, there should only be one version of `vue` and `vuepress` in the whole project. Multiple versions of a package can cause different parts of the application to use different package, resulting in errors like `useXXX() is called without provider`.
 
-## Ensure having correct deps tree
-
-In some cases, you may generate incorrect dependency tree after upgrading some dependencies, this is because both `vuepress` and `vue` consist of many packages named `@vuepress/xxx` and `@vue/xxx` constitute.
-
-For VuePress to work correctly, there should only be one version of `@vuepress/xxx` `@vue/xxx` `vue` and `vue-router` in the whole project. Multiple versions of a package can cause different parts of the application to use different instances of Vue and the corresponding package, resulting in errors like `useXXX() is called without provider`.
-
-Please run the following command to make sure your dependency tree is correct.
+You can execute the following command to make sure you are using the latest version and having correct deps tree.
 
 ::: code-tabs#shell
 
 @tab pnpm
 
 ```bash
-pnpm i && pnpm up
+pnpm dlx vp-update
 ```
 
 @tab yarn
 
 ```bash
-yarn && yarn upgrade
+yarn dlx vp-update
 ```
 
 @tab npm
 
 ```bash
-npm i && npm update
+npx vp-update
 ```
-
-:::
-
-::: tip npm version
-
-If you're using npm, make sure you're using npm v8. You can get the npm version number by running the `npm -v` command.
-
-If the major version number is less than 8 (i.e. the version number is not `8.x.x`), please run the `npm i -g npm` command to update npm to v8 and rerun the above command.
 
 :::
 

@@ -1,7 +1,7 @@
 ---
 title: Other Plugin Config
-icon: more
-order: 8
+icon: ellipsis
+order: -1
 category:
   - Config
 tag:
@@ -9,119 +9,127 @@ tag:
   - Theme Config
 ---
 
+## backToTop <Badge text="enabled by default" />
+
+Controls `@vuepress/plugin-back-to-top` which provides a back to top button.
+
+No extra config is required by default. Se it to `false` if you don't need it.
+
+Check [back-to-top plugin docs][back-to-top-config] for available plugin options.
+
+## catalog <Badge text="enabled by default" />
+
+Controls `@vuepress/plugin-catalog` which provides catalog pages generation.
+
+No extra config is required by default. Se it to `false` if you don't need it.
+
+Check [catalog plugin docs][catalog-config] for available plugin options.
+
 ## components
 
-Register components which can be used in Markdown files, available component names are:
+Controls `vuepress-plugin-components`, providing a set of components for Markdown.
 
-- `"Badge"`
-- `"Bilibili"`
-- `"CodePen"`
-- `"PDF"`
-- `"StackBlitz"`
-- `"VideoPlayer"`
-- `"YouTube"`
+Available component which can be used in markdown files are:
 
-You can set `plugin.components` with an array of components you want, by default it will be `["Badge"]`.
+- ArtPlayer: A video player powered by ArtPlayer
+- Badge: Colorful badge component
+- BiliBili: Embedded BiliBili video
+- CodePen: Embedded CodePen demo
+- PDF: Embedded PDF viewer
+- Share: Sharing current page with social medias
+- StackBlitz: Embedded StackBlitz demo
+- SiteInfo: Display sites
+- VPBanner: A banner component
+- VPCard: A card component
+- VidStack: Audio/Video player powered by VidStack
+- XiGua: Embedded XiGua video
+
+You can set `plugins.components.components` with an array of components you want, by default it will be `["Badge"]`.
+
+Also, you can set `plugins.components.rootComponents` to enable some root components, such as Notice.
+
+Check <ProjectLink name="components" path="/config.html">components plugin docs</ProjectLink> for available plugin options.
 
 ## copyCode <Badge text="enabled by default" />
 
-Controls `vuepress-plugin-copy-code2`, providing a code copy button.
+Controls `@vuepress/plugin-copy-code` which provides a code copy button on desktop.
 
-By default, no config is required. If you don’t need this feature, please set to `false`.
+No extra config is required by default. Se it to `false` if you don't need it.
 
-::: info
-
-For plugin options, please refer to [copy-code2 plugin options][copy-code-config].
-
-:::
+Check [copy-code plugin docs][copy-code-config] for available plugin options.
 
 ## git <Badge text="enabled in production" />
 
-Controls `@vuepress/plugin-git` to provide file information via Git commit history.
+Controls `@vuepress/plugin-git` which provides page meta via Git.
 
-By default, it is only enabled in build mode to improve development server performance. You can manually set a boolean to control the plugin state, or provide plugin options.
+The plugin is only enabled in build mode by default to improve devServer performance. You can manually set a boolean to control the plugin state, or provide plugin options.
 
-::: info
-
-See [git plugin options][git-config] for plugin options.
-
-:::
+Check [git plugin docs][git-config] for available plugin options.
 
 ## nprogress <Badge text="enabled by default" />
 
-Controls `@vuepress/plugin-nprogress` and provides a progress bar when switching pages through nprogress.
+Controls `@vuepress/plugin-nprogress` which provides a progress bar through `nprogress` when switching pages .
 
-By default, the theme will enable this plugin, you can set `false` to disable it.
-
-## prismjs <Badge text="enabled by default" />
-
-Controls `@vuepress/plugin-prismjs` to provide code block highlighting via PrismJS.
-
-By default, the theme will enable this plugin, you can set `false` to disable it and highlight code blocks yourself.
-
-::: info
-
-See [prismjs plugin options][prismjs-config] for plugin options.
-
-:::
+You can set `false` to disable it.
 
 ## photoSwipe <Badge text="enabled by default" />
 
-Controls `vuepress-plugin-photo-swipe`, providing picture browsing function.
+Controls `@vuepress/plugin-photo-swipe` which provides picture browsing feature.
 
-By default, no config is required. If you don’t need this feature, please set to `false`.
+No extra config is required by default. Se it to `false` if you don't need it.
 
-::: info
+Check [photo-swipe plugin docs][photo-swipe-config] for available plugin options.
 
-For plugin options, please refer to [photo-swipe plugin options][photo-swipe-config].
+## pwa
 
-:::
+Controls `@vuepress/plugin-pwa` which provides PWA support.
+
+You can set `true` to directly enable it, or provide plugin options.
+
+Check [pwa plugin docs][pwa-config] for available plugin options.
 
 ## readingTime <Badge text="enabled by default" />
 
-Controls `vuepress-plugin-reading-time2`, providing word count for a page and generate an estimated reading time.
+Controls `@vuepress/plugin-reading-time` which generates words count and estimated reading time for pages.
 
 ### readingTime.wordPerMinute
 
 - Type: `number`
 - Default: `300`
 
-Words read per minute.
+Reading speed (words per minute)
 
-::: info
-
-For more plugin options, see [reading-time2 plugin docs][reading-time].
-
-:::
+Check [reading-time plugin docs][reading-time-config] for available plugin options.
 
 ## seo <Badge text="enabled by default" />
 
-Controls `vuepress-plugin-seo2`, providing search engine enhancements.
+Controls `@vuepress/plugin-seo` which provides search engine enhancements.
 
-By default, no config is required. If you don’t need this feature, please set to `false`.
+No extra config is required by default. Se it to `false` if you don't need it.
 
-::: info
-
-For plugin config, see [seo2 plugin options][seo-config].
-
-:::
+Check [seo plugin docs][seo-config] for available plugin options.
 
 ## sitemap <Badge text="enabled by default" />
 
-Controls `vuepress-plugin-seo2`, providing automatically Sitemap generation.
+Controls `@vuepress/plugin-sitemap` which provides sitemap.
 
-By default, no config is required. If you don’t need this feature, please set to `false`.
+No extra config is required by default. Se it to `false` if you don't need it.
 
-::: info
+Check [sitemap plugin docs][sitemap-config] for available plugin options.
 
-For plugin config, please refer to [sitemap2 plugin options][sitemap-config].
+## watermark
 
-:::
+Controls `@vuepress/plugin-watermark` which provides watermark.
 
-[copy-code-config]: https://vuepress-theme-hope.github.io/v2/copy-code/config.html
-[git-config]: https://v2.vuepress.vuejs.org/reference/plugin/git.html
-[prismjs-config]: https://v2.vuepress.vuejs.org/reference/plugin/prismjs.html
-[photo-swipe-config]: https://vuepress-theme-hope.github.io/v2/photo-swipe/config.html
-[reading-time]: https://vuepress-theme-hope.github.io/v2/reading-time/
-[seo-config]: https://vuepress-theme-hope.github.io/v2/seo/config.html
-[sitemap-config]: https://vuepress-theme-hope.github.io/v2/sitemap/config.html
+Check [watermark plugin docs][watermark-config] for available plugin options.
+
+[back-to-top-config]: https://ecosystem.vuejs.press/plugins/back-to-top.html#options
+[catalog-config]: https://ecosystem.vuejs.press/plugins/features/catalog.html#options
+[copy-code-config]: https://ecosystem.vuejs.press/plugins/features/copy-code.html#options
+[git-config]: https://ecosystem.vuejs.press/plugins/development/git.html#options
+[photo-swipe-config]: https://ecosystem.vuejs.press/plugins/features/photo-swipe.html#options
+[pwa-config]: https://ecosystem.vuejs.press/plugins/pwa/pwa/config.html#options
+[reading-time-config]: https://ecosystem.vuejs.press/plugins/development/reading-time.html#options
+[seo-config]: https://ecosystem.vuejs.press/plugins/seo/seo/config.html
+[sitemap-config]: https://ecosystem.vuejs.press/plugins/seo/sitemap/config.html
+[watermark-config]: https://ecosystem.vuejs.press/plugins/features/watermark.html

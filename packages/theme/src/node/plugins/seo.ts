@@ -1,49 +1,34 @@
-import { seoPlugin } from "vuepress-plugin-seo2";
-import { getBlogOptions } from "./blog.js";
+import { isPlainObject, keys } from "@vuepress/helper";
+import type { SeoPluginOptions } from "@vuepress/plugin-seo";
+import { seoPlugin } from "@vuepress/plugin-seo";
+import type { Page, Plugin } from "vuepress/core";
 
-import type { Page, Plugin } from "@vuepress/core";
-import type {
-  HopeThemeConfig,
-  HopeThemePluginsOptions,
-} from "../../shared/index.js";
+import type { ThemeData } from "../../shared/index.js";
 
+/**
+ * @private
+ *
+ * Resolve options for @vuepress/plugin-seo
+ */
 export const getSEOPlugin = (
-  themeConfig: HopeThemeConfig,
-  { blog, seo }: HopeThemePluginsOptions,
+  themeData: ThemeData,
+  seo?: Omit<SeoPluginOptions, "hostname" | "author"> | boolean,
   hostname = "",
-  legacy = false
 ): Plugin | null => {
   if (seo === false) return null;
+  const seoOptions = isPlainObject(seo) ? seo : {};
 
-  // disable seo if `hostname` is not set and no options for seo plugin
-  if (!Object.keys(seo || {}).length && !hostname) return null;
+  // Disable seo if `hostname` is not set and no options for seo plugin
+  if (!keys(seoOptions).length && !hostname) return null;
 
-  const blogOptions = getBlogOptions(blog);
+  const author = themeData.author ?? themeData.locales["/"].author;
 
-  const isArticle = ({
-    filePathRelative,
-    frontmatter,
-    pathLocale,
-    path,
-  }: Page): boolean => {
-    if (!filePathRelative || frontmatter["home"]) return false;
-
-    const localePath = path.replace(new RegExp(`^${pathLocale}`), "/");
-
-    return Object.entries(blogOptions)
-      .filter<[string, string]>(
-        (item): item is [string, string] => typeof item[1] === "string"
-      )
-      .every(([, value]) => !localePath.startsWith(value));
-  };
-
-  return seoPlugin(
-    {
-      hostname,
-      ...(themeConfig.author ? { author: themeConfig.author } : {}),
-      isArticle,
-      ...(seo || {}),
-    },
-    legacy
-  );
+  return seoPlugin({
+    hostname,
+    author,
+    isArticle: ({ filePathRelative, frontmatter }: Page): boolean =>
+      (frontmatter.article as boolean | undefined) ??
+      (Boolean(filePathRelative) && !frontmatter.home),
+    ...seoOptions,
+  });
 };

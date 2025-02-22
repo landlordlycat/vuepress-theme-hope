@@ -1,25 +1,107 @@
+import type { BackToTopPluginOptions } from "@vuepress/plugin-back-to-top";
+import type { CatalogPluginOptions } from "@vuepress/plugin-catalog";
+import type { CommentPluginOptions } from "@vuepress/plugin-comment";
+import type { CopyCodePluginOptions } from "@vuepress/plugin-copy-code";
+import type { CopyrightPluginOptions } from "@vuepress/plugin-copyright";
+import type { DocSearchPluginOptions } from "@vuepress/plugin-docsearch";
+import type { FeedPluginOptions } from "@vuepress/plugin-feed";
 import type { GitPluginOptions } from "@vuepress/plugin-git";
-import type { CommentOptions } from "vuepress-plugin-comment2";
-import type { AvailableComponent } from "vuepress-plugin-components";
-import type { CopyCodeOptions } from "vuepress-plugin-copy-code2";
-import type { CopyrightOptions } from "vuepress-plugin-copyright2";
-import type { FeedOptions } from "vuepress-plugin-feed2";
-import type { MarkdownEnhanceOptions } from "vuepress-plugin-md-enhance";
-import type { PhotoSwipeOptions } from "vuepress-plugin-photo-swipe";
-import type { PWAOptions } from "vuepress-plugin-pwa2";
-import type { ReadingTimeOptions } from "vuepress-plugin-reading-time2";
-import type { SitemapOptions } from "vuepress-plugin-sitemap2";
-import type { SeoOptions } from "vuepress-plugin-seo2";
+import type { IconPluginOptions } from "@vuepress/plugin-icon";
+import type {
+  NoticeOptions,
+  NoticePluginOptions,
+} from "@vuepress/plugin-notice";
+import type { PhotoSwipePluginOptions } from "@vuepress/plugin-photo-swipe";
+import type { PwaPluginOptions } from "@vuepress/plugin-pwa";
+import type { ReadingTimePluginOptions } from "@vuepress/plugin-reading-time";
+import type { RedirectPluginOptions } from "@vuepress/plugin-redirect";
+import type { SearchPluginOptions } from "@vuepress/plugin-search";
+import type { SeoPluginOptions } from "@vuepress/plugin-seo";
+import type { SitemapPluginOptions } from "@vuepress/plugin-sitemap";
+import type { SlimSearchPluginOptions } from "@vuepress/plugin-slimsearch";
+import type { WatermarkPluginOptions } from "@vuepress/plugin-watermark";
+import type { ComponentPluginOptions } from "vuepress-plugin-components";
 
-import type { HopeThemeBlogPluginOptions } from "./blog.js";
+import type { BlogOptions } from "./blog.js";
 
-export interface HopeThemePluginsOptions {
+export interface DeprecatedPluginsOptions {
   /**
-   * Enable @vuepress/active-header-links or not
+   * @deprecated Use `markdown.linksCheck` instead
+   */
+  linksCheck?: never;
+
+  /**
+   * @deprecated Use `markdown.alert` and `markdown.hint` instead
+   */
+  markdownHint?: never;
+
+  /**
+   * @deprecated Use `markdown.figure` `markdown.imgLazyload` `markdown.imgMark` `markdown.imgSize` and `markdown.obsidianImgSize` instead
+   */
+  markdownImage?: never;
+
+  /**
+   * @deprecated Use `markdown.math` instead
+   */
+  markdownMath?: never;
+
+  /**
+   * @deprecated Use `markdown.codeTabs` and `markdown.tabs` instead
+   */
+  markdownTab?: never;
+
+  /**
+   * @deprecated Use `markdown.revealjs` instead
+   */
+  revealjs?: never;
+
+  /**
+   * @deprecated Use `markdown.highlighter` instead
+   */
+  prismjs?: never;
+
+  /**
+   * @deprecated Use `markdown.highlighter` instead
+   */
+  shiki?: never;
+
+  /**
+   * @deprecated Use `plugins.slimsearch` instead
+   */
+  searchPro?: never;
+
+  /**
+   * @deprecated Use `markdown` instead
+   */
+  mdEnhance?: never;
+}
+
+export interface PluginsOptions extends DeprecatedPluginsOptions {
+  /**
+   * Enable active-header-links plugin or not
    *
-   * 是否启用 @vuepress/active-header-links 插件
+   * @see https://ecosystem.vuejs.press/plugins/development/active-header-links.html
+   *
+   * 是否启用 active-header-links 插件
+   *
+   * @see https://ecosystem.vuejs.press/zh/plugins/development/active-header-links.html
+   *
+   * @default true
    */
   activeHeaderLinks?: boolean;
+
+  /**
+   * Back to top plugin options
+   *
+   * @see https://ecosystem.vuejs.press/plugins/features/back-to-top.html
+   *
+   * 返回顶部插件配置
+   *
+   * @see https://ecosystem.vuejs.press/zh/plugins/features/back-to-top.html
+   *
+   * @default true
+   */
+  backToTop?: BackToTopPluginOptions | boolean;
 
   /**
    * Blog plugin options
@@ -28,158 +110,237 @@ export interface HopeThemePluginsOptions {
    *
    * @default false
    */
-  blog?: HopeThemeBlogPluginOptions | boolean;
+  blog?: BlogOptions | boolean;
 
   /**
-   * Components enabled
+   * Catalog plugin options
    *
-   * @description FontIcon is used internally, so it will be registed anyway.
+   * @see https://ecosystem.vuejs.press/plugins/features/catalog.html
    *
-   * @see https://vuepress-theme-hope.github.io/v2/components/config.html
+   * 自动目录插件选项
    *
-   * 需要启用的插件
+   * @see https://ecosystem.vuejs.press/plugins/features/catalog.html
    *
-   * @description FontIcon 被内部使用，所以它无论如何都会被注册。
-   *
-   * @see https://vuepress-theme-hope.github.io/v2/zh/components/config.html
-   *
-   * @default ['Badge']
+   * @default true
    */
-  components?: Exclude<AvailableComponent, "FontIcon">[];
+  catalog?: CatalogPluginOptions | boolean;
+
+  /**
+   * Components plugin options
+   *
+   * @see https://plugin-components.vuejs.press/config.html
+   *
+   * 插件选项配置
+   *
+   * @see https://plugin-components.vuejs.press/zh/config.html
+   */
+  components?: ComponentPluginOptions;
 
   /**
    * Comment plugin options
    *
-   * @see http://vuepress-theme-hope.github.io/v2/comment/config/
+   * @see https://ecosystem.vuejs.press/plugins/blog/comment/
    *
    * 评论插件配置
    *
-   * @see http://vuepress-theme-hope.github.io/v2/comment/zh/config/
+   * @see https://ecosystem.vuejs.press/zh/plugins/blog/comment/
    */
-  comment?: CommentOptions | false;
+  comment?: CommentPluginOptions | false;
 
   /**
-   * code copy plugin options
+   * Copy code plugin options
    *
-   * @see http://vuepress-theme-hope.github.io/v2/copy-code/config/
+   * @see https://ecosystem.vuejs.press/plugins/features/copy-code.html
    *
    * 代码复制插件配置
    *
-   * @see http://vuepress-theme-hope.github.io/v2/copy-code/zh/config/
+   * @see https://ecosystem.vuejs.press/zh/plugins/features/copy-code.html
    */
-  copyCode?: CopyCodeOptions | false;
+  copyCode?: CopyCodePluginOptions | boolean;
 
   /**
-   * Copyright Plugin options
-   */
-  copyright?: CopyrightOptions | true;
-
-  /**
-   * Enable @vuepress/external-link-icon or not
+   * Copyright plugin options
    *
-   * 是否启用 @vuepress/external-link-icon 插件
+   * @see https://ecosystem.vuejs.press/plugins/features/copyright.html
+   *
+   * 版权信息插件配置
+   *
+   * @see https://ecosystem.vuejs.press/zh/plugins/features/copyright.html
+   *
+   * @default false
    */
-  externalLinkIcon?: boolean;
+  copyright?: CopyrightPluginOptions | boolean;
+
+  /**
+   * DocSearch plugin options
+   *
+   * @see https://ecosystem.vuejs.press/plugins/search/docsearch.html
+   *
+   * @vuepress/docsearch 选项
+   *
+   * @see https://ecosystem.vuejs.press/zh/plugins/search/docsearch.html
+   */
+  docsearch?: DocSearchPluginOptions;
 
   /**
    * Feed plugin options
    *
-   * @see http://vuepress-theme-hope.github.io/v2/feed/config/
+   * @see https://ecosystem.vuejs.press/plugins/blog/feed/config.html
    *
    * Feed 插件配置
    *
-   * @see http://vuepress-theme-hope.github.io/v2/feed/zh/config/
+   * @see https://ecosystem.vuejs.press/zh/plugins/blog/feed/config.html
    */
-  feed?: Omit<FeedOptions, "hostname"> | false;
+  feed?: Omit<FeedPluginOptions, "hostname"> | boolean;
 
   /**
    * Git plugin options
    *
-   * @see https://v2.vuepress.vuejs.org/reference/plugin/git.html#install
+   * @description By default this plugin is only enabled in production mode for performance reasons.
+   *
+   * @see https://ecosystem.vuejs.press/plugins/development/git.html
    *
    * Git 插件配置
    *
-   * @see https://v2.vuepress.vuejs.org/zh/reference/plugin/git.html#install
+   * @description 默认情况下，出于性能原因，此插件仅在生产模式下启用。
+   *
+   * @see https://ecosystem.vuejs.press/zh/plugins/development/git.html
    */
   git?: GitPluginOptions | boolean;
 
   /**
-   * md-enhance plugin options
+   * Icon plugin options
    *
-   * @see http://vuepress-theme-hope.github.io/v2/md-enhance/config/
-   *
-   * md-enhance 插件配置
-   *
-   * @see http://vuepress-theme-hope.github.io/v2/md-enhance/zh/config/
+   * 图标插件选项
    */
-  mdEnhance?: MarkdownEnhanceOptions | false;
+  icon?: Omit<IconPluginOptions, "component">;
 
   /**
-   * Enable @vuepress/nprogress or not
+   * Notice options
    *
-   * 是否启用 @vuepress/nprogress 插件
+   * 公告选项
+   *
+   * @default true
+   */
+  notice?: NoticeOptions[] | NoticePluginOptions;
+
+  /**
+   * Enable nprogress plugin or not
+   *
+   * 是否启用 nprogress 插件
+   *
+   * @default true
    */
   nprogress?: boolean;
 
   /**
-   * Photo Swipe plugin options
+   * photo-swipe plugin options
    *
-   * @see http://vuepress-theme-hope.github.io/v2/photo-swipe/config/
+   * @see https://ecosystem.vuejs.press/plugins/features/photo-swipe.html
    *
    * 图片预览插件配置
    *
-   * @see http://vuepress-theme-hope.github.io/v2/photo-swipe/zh/config/
-   */
-  photoSwipe?: PhotoSwipeOptions | false;
-
-  /**
-   * Enable @vuepress/prismjs or not
+   * @see https://ecosystem.vuejs.press/zh/plugins/features/photo-swipe.html
    *
-   * 是否启用 @vuepress/prismjs 插件
+   * @default true
    */
-  prismjs?: boolean;
+  photoSwipe?: PhotoSwipePluginOptions | boolean;
 
   /**
    * PWA plugin options
    *
-   * @see http://vuepress-theme-hope.github.io/v2/pwa/config/
+   * @see https://ecosystem.vuejs.press/plugins/pwa/pwa/config.html
    *
    * PWA 插件配置
    *
-   * @see http://vuepress-theme-hope.github.io/v2/pwa/zh/config/
+   * @see https://ecosystem.vuejs.press/zh/plugins/pwa/pwa/config.html
+   *
+   * @default false
    */
-  pwa?: PWAOptions | boolean;
+  pwa?: PwaPluginOptions | boolean;
 
   /**
-   * ReadingTime options
+   * Reading time plugin options
    *
-   * @see http://vuepress-theme-hope.github.io/v2/reading-time/
+   * @see https://ecosystem.vuejs.press/plugins/development/reading-time.html
    *
    * 阅读时间插件配置
    *
-   * @see http://vuepress-theme-hope.github.io/v2/reading-time/zh/
+   * @see https://ecosystem.vuejs.press/zh/plugins/development/reading-time.html
+   *
+   * @default true
    */
-  readingTime?: ReadingTimeOptions;
+  readingTime?: ReadingTimePluginOptions | boolean;
+
+  /**
+   * Redirect plugin options
+   *
+   * @see https://ecosystem.vuejs.press/plugins/tools/redirect.html
+   *
+   * 重定向插件配置
+   *
+   * @see https://ecosystem.vuejs.press/zh/plugins/tools/redirect.html
+   */
+  redirect?: RedirectPluginOptions | boolean;
+
+  /**
+   * Search plugin options
+   *
+   * @see https://ecosystem.vuejs.press/plugins/search/search.html
+   *
+   * @vuepress/search 插件配置
+   *
+   * @see https://ecosystem.vuejs.press/zh/plugins/search/search.html
+   */
+  search?: SearchPluginOptions | boolean;
+
+  /**
+   * Slimsearch plugin options
+   *
+   * @see https://ecosystem.vuejs.press/zh/plugins/search/slimsearch.html
+   *
+   * slimsearch 插件配置
+   *
+   * @see https://ecosystem.vuejs.press/zh/plugins/search/slimsearch.html
+   */
+  slimsearch?: SlimSearchPluginOptions | boolean;
 
   /**
    * SEO plugin options
    *
-   * @see http://vuepress-theme-hope.github.io/v2/seo/config/
+   * @see https://ecosystem.vuejs.press/plugins/seo/seo/config.html
    *
    * SEO 插件配置
    *
-   * @see http://vuepress-theme-hope.github.io/v2/seo/zh/config/
+   * @see https://ecosystem.vuejs.press/zh/plugins/seo/seo/config.html
+   *
+   * @default true
    */
-  seo?: Omit<SeoOptions, "hostname" | "author"> | false;
+  seo?: Omit<SeoPluginOptions, "hostname" | "author"> | boolean;
 
   /**
    * Sitemap plugin options
    *
-   * @see http://vuepress-theme-hope.github.io/v2/sitemap/config/
+   * @see https://ecosystem.vuejs.press/plugins/seo/sitemap/config.html
    *
    * Sitemap 插件配置
    *
-   * @see http://vuepress-theme-hope.github.io/v2/sitemap/zh/config/
+   * @see https://ecosystem.vuejs.press/zh/plugins/seo/sitemap/config.html
+   *
+   * @default true
    */
-  sitemap?: Omit<SitemapOptions, "hostname"> | false;
+  sitemap?: Omit<SitemapPluginOptions, "hostname"> | boolean;
+
+  /**
+   * Watermark plugin options
+   *
+   * @see https://ecosystem.vuejs.press/plugins/features/watermark.html
+   *
+   * 水印插件配置
+   *
+   * @see https://ecosystem.vuejs.press/zh/plugins/features/watermark.html
+   *
+   * @default false
+   */
+  watermark?: WatermarkPluginOptions | boolean;
 }

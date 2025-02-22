@@ -1,6 +1,6 @@
-import type { HopeThemeLocaleData } from "../../shared/index.js";
+import type { ThemeLocaleData } from "../../shared/index.js";
 
-export const viLocale: HopeThemeLocaleData = {
+export const viLocale: ThemeLocaleData = {
   lang: "vi-VN",
 
   navbarLocales: {
@@ -23,6 +23,7 @@ export const viLocale: HopeThemeLocaleData = {
     lastUpdated: "Cập nhật gần nhất lúc",
     contributors: "Người đóng góp",
     editLink: "Chỉnh sửa trang này",
+    print: "In",
   },
 
   blogLocales: {
@@ -35,8 +36,7 @@ export const viLocale: HopeThemeLocaleData = {
     all: "Tất cả",
     intro: "Giới thiệu cá nhân",
     star: "Ngôi sao",
-    slides: "Bài thuyết trình",
-    encrypt: "Mã hóa",
+    empty: "$text trống",
   },
 
   paginationLocales: {
@@ -61,7 +61,8 @@ export const viLocale: HopeThemeLocaleData = {
   },
 
   routeLocales: {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+    skipToContent: "Bỏ qua nội dung chính",
+    notFoundTitle: "Trang không tìm thấy",
     notFoundMsg: [
       "Ở đây chẳng có gì cả.",
       "Sao chúng ta lại đến đây?",
@@ -70,6 +71,5 @@ export const viLocale: HopeThemeLocaleData = {
     ],
     back: "Quay lại",
     home: "Trang chủ",
-    openInNewWindow: "Open in new window",
   },
 };

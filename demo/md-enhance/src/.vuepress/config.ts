@@ -1,8 +1,8 @@
-import { defineUserConfig } from "@vuepress/cli";
 import { defaultTheme } from "@vuepress/theme-default";
+import { defineUserConfig } from "vuepress";
 import { mdEnhancePlugin } from "vuepress-plugin-md-enhance";
 
-const base = <"/" | `/${string}/`>process.env.BASE || "/";
+const base = (process.env.BASE as "/" | `/${string}/` | undefined) ?? "/";
 
 export default defineUserConfig({
   base,
@@ -12,7 +12,7 @@ export default defineUserConfig({
   description: "Markdown Enhancement for VuePress",
 
   theme: defaultTheme({
-    logo: "/logo.svg",
+    logo: "https://theme-hope-assets.vuejs.press/logo.svg",
 
     repo: "vuepress-theme-hope/vuepress-theme-hope/tree/main/demo/md-enhance/",
 
@@ -23,82 +23,35 @@ export default defineUserConfig({
 
     sidebar: {
       "/demo/": [
-        "/demo/align",
-        "/demo/attrs",
-        "/demo/chart",
+        "/demo/chartjs",
         "/demo/echarts",
         "/demo/code-demo",
-        "/demo/code-tabs",
-        "/demo/container",
         "/demo/flowchart",
-        "/demo/footnote",
-        "/demo/image-mark",
-        "/demo/mark",
-        "/demo/include",
+        "/demo/kotlin-playground",
+        "/demo/markmap",
         "/demo/mermaid",
+        "/demo/plantuml",
         "/demo/playground",
-        "/demo/presentation",
-        "/demo/stylized",
-        "/demo/sup-sub",
-        "/demo/tabs",
-        "/demo/tasklist",
-        "/demo/tex",
+        "/demo/sandpack",
         "/demo/vue-playground",
       ],
-    },
-
-    themePlugins: {
-      container: {
-        tip: false,
-        warning: false,
-        danger: false,
-        details: false,
-      },
     },
   }),
 
   plugins: [
     mdEnhancePlugin({
-      align: true,
-      attrs: true,
-      chart: true,
-      codetabs: true,
-      container: true,
+      chartjs: true,
       demo: true,
       echarts: true,
       flowchart: true,
-      gfm: true,
-      imageSize: true,
-      include: true,
-      lazyLoad: true,
-      mark: true,
+      markmap: true,
       mermaid: true,
+      kotlinPlayground: true,
+      plantuml: true,
       playground: {
-        presets: ["ts", "vue"],
+        presets: ["ts", "vue", "unocss"],
       },
-      katex: {
-        mhchem: true,
-      },
-      presentation: {
-        plugins: ["highlight", "math", "search", "notes", "zoom"],
-      },
-      stylize: [
-        {
-          matcher: "Recommanded",
-          replacer: ({ tag }) => {
-            if (tag === "em")
-              return {
-                tag: "Badge",
-                attrs: { type: "tip" },
-                content: "Recommanded",
-              };
-          },
-        },
-      ],
-      sub: true,
-      sup: true,
-      tabs: true,
-      vpre: true,
+      sandpack: true,
       vuePlayground: true,
     }),
   ],

@@ -1,179 +1,80 @@
-import { computed, defineComponent, h, ref } from "vue";
+import { entries } from "@vuepress/helper/client";
+import type { FunctionalComponent, VNode } from "vue";
+import { defineComponent, h, ref } from "vue";
 
-import CategoryList from "@theme-hope/modules/blog/components/CategoryList.js";
-import DropTransition from "@theme-hope/components/transitions/DropTransition.js";
-import TagList from "@theme-hope/modules/blog/components/TagList.js";
-import TimelineList from "@theme-hope/modules/blog/components/TimelineList.js";
+import { DropTransition } from "@theme-hope/components/transitions/index";
+import ArticlesInfo from "@theme-hope/modules/blog/components/ArticlesInfo";
+import CategoriesInfo from "@theme-hope/modules/blog/components/CategoriesInfo";
+import TagsInfo from "@theme-hope/modules/blog/components/TagsInfo";
+import TimelineList from "@theme-hope/modules/blog/components/TimelineList";
 import {
   ArticleIcon,
   CategoryIcon,
   TagIcon,
   TimelineIcon,
-} from "@theme-hope/modules/blog/components/icons/index.js";
-
-import {
-  useNavigate,
-  useThemeLocaleData,
-} from "@theme-hope/composables/index.js";
-import {
-  useArticles,
-  useCategoryMap,
-  useStars,
-  useTagMap,
-} from "@theme-hope/modules/blog/composables/index.js";
-
-import type { FunctionalComponent, VNode } from "vue";
+} from "@theme-hope/modules/blog/components/icons";
+import { useBlogLocaleData } from "@theme-hope/modules/blog/composables/index";
 
 import "../styles/info-list.scss";
+
+type InfoType = "article" | "category" | "tag" | "timeline";
+
+const buttons: Record<InfoType, FunctionalComponent> = {
+  article: ArticleIcon,
+  category: CategoryIcon,
+  tag: TagIcon,
+  timeline: TimelineIcon,
+};
 
 export default defineComponent({
   name: "InfoList",
 
   setup() {
-    const themeLocale = useThemeLocaleData();
-    const articles = useArticles();
-    const categoryMap = useCategoryMap();
-    const categoryNumber = computed(
-      () => Object.keys(categoryMap.value.map).length
-    );
-    const stars = useStars();
-    const tagMap = useTagMap();
-    const tagNumber = computed(() => Object.keys(tagMap.value.map).length);
-    const navigate = useNavigate();
+    const blogLocale = useBlogLocaleData();
 
-    const active = ref("article");
-
-    const locale = computed(() => themeLocale.value.blogLocales);
-
-    const buttons: [
-      "article" | "category" | "tag" | "timeline",
-      FunctionalComponent
-    ][] = [
-      ["article", ArticleIcon],
-      ["category", CategoryIcon],
-      ["tag", TagIcon],
-      ["timeline", TimelineIcon],
-    ];
+    const activeType = ref<InfoType>("article");
 
     return (): VNode =>
-      h("div", { class: "blog-info-list" }, [
+      h("div", { class: "vp-blog-infos" }, [
         h(
           "div",
-          { class: "blog-type-wrapper" },
-          buttons.map(([key, icon]) =>
-            h(
-              "button",
-              {
-                class: "blog-type-button",
-                onClick: () => {
-                  active.value = key;
-                },
-              },
+          { class: "vp-blog-type-switcher" },
+          (entries(buttons) as [InfoType, FunctionalComponent][]).map(
+            ([key, Icon]) =>
               h(
-                "div",
+                "button",
                 {
-                  class: ["icon-wapper", { active: active.value === key }],
-                  "aria-label": locale.value[key],
-                  "data-balloon-pos": "up",
+                  type: "button",
+                  class: "vp-blog-type-button",
+                  onClick: () => {
+                    activeType.value = key;
+                  },
                 },
-                h(icon)
-              )
-            )
-          )
-        ),
-
-        // article
-        active.value === "article"
-          ? h(DropTransition, () => [
-              h("div", { class: "sticky-article-wrapper" }, [
                 h(
                   "div",
                   {
-                    class: "title",
-                    onClick: () => navigate(articles.value.path),
+                    class: [
+                      "vp-blog-type-icon-wrapper",
+                      { active: activeType.value === key },
+                    ],
+                    "aria-label": blogLocale.value[key],
+                    "data-balloon-pos": "up",
                   },
-                  [
-                    h(ArticleIcon),
-                    h("span", { class: "num" }, articles.value.items.length),
-                    locale.value.article,
-                  ]
+                  h(Icon),
                 ),
-                h("hr"),
-                h(
-                  "ul",
-                  { class: "sticky-article-list" },
-                  stars.value.items.map(({ info, path }, index) =>
-                    h(
-                      DropTransition,
-                      { appear: true, delay: 0.08 * (index + 1) },
-                      () =>
-                        h(
-                          "li",
-                          {
-                            class: "sticky-article",
-                            onClick: () => navigate(path),
-                          },
-                          info.title
-                        )
-                    )
-                  )
-                ),
-              ]),
-            ])
-          : null,
+              ),
+          ),
+        ),
 
-        // category
-        active.value === "category"
-          ? h(DropTransition, () => [
-              h("div", { class: "category-wrapper" }, [
-                categoryNumber.value
-                  ? h(
-                      "div",
-                      {
-                        class: "title",
-                        onClick: () => navigate(categoryMap.value.path),
-                      },
-                      [
-                        h(CategoryIcon),
-                        h("span", { class: "num" }, categoryNumber.value),
-                        locale.value.category,
-                      ]
-                    )
-                  : null,
-                h("hr"),
-                h(DropTransition, { delay: 0.04 }, () => h(CategoryList)),
-              ]),
-            ])
-          : null,
-
-        // tag
-        active.value === "tag"
-          ? h(DropTransition, () => [
-              h("div", { class: "tag-wrapper" }, [
-                tagNumber.value
-                  ? h(
-                      "div",
-                      {
-                        class: "title",
-                        onClick: () => navigate(tagMap.value.path),
-                      },
-                      [
-                        h(TagIcon),
-                        h("span", { class: "num" }, tagNumber.value),
-                        locale.value.tag,
-                      ]
-                    )
-                  : null,
-                h("hr"),
-                h(DropTransition, { delay: 0.04 }, () => h(TagList)),
-              ]),
-            ])
-          : null,
-
-        // timeline
-        active.value === "timeline"
-          ? h(DropTransition, () => h(TimelineList))
-          : null,
+        h(DropTransition, () =>
+          activeType.value === "article"
+            ? h(ArticlesInfo)
+            : activeType.value === "category"
+              ? h(CategoriesInfo)
+              : activeType.value === "tag"
+                ? h(TagsInfo)
+                : h(TimelineList),
+        ),
       ]);
   },
 });

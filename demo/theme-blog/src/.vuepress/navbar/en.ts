@@ -1,69 +1,62 @@
 import { navbar } from "vuepress-theme-hope";
-import { version } from "../version";
+
+import { version } from "../version.js";
 
 export const enNavbar = navbar([
   "/",
-  { text: "Demo", icon: "discover", link: "/demo/" },
+  "/demo/",
   {
     text: "Posts",
-    icon: "edit",
+    icon: "pen-to-square",
     prefix: "/posts/",
     children: [
       {
         text: "Apple",
-        icon: "edit",
+        icon: "pen-to-square",
         prefix: "apple/",
         children: [
-          { text: "Apple1", icon: "edit", link: "1" },
-          { text: "Apple2", icon: "edit", link: "2" },
+          { text: "Apple1", icon: "pen-to-square", link: "1" },
+          { text: "Apple2", icon: "pen-to-square", link: "2" },
           "3",
           "4",
         ],
       },
       {
         text: "Banana",
-        icon: "edit",
+        icon: "pen-to-square",
         prefix: "banana/",
         children: [
           {
             text: "Banana 1",
-            icon: "edit",
+            icon: "pen-to-square",
             link: "1",
           },
           {
             text: "Banana 2",
-            icon: "edit",
+            icon: "pen-to-square",
             link: "2",
           },
           "3",
           "4",
         ],
       },
-      { text: "Cherry", icon: "edit", link: "cherry" },
-      { text: "Dragonfruit", icon: "edit", link: "dragonfruit" },
+      { text: "Cherry", icon: "pen-to-square", link: "cherry" },
+      { text: "Dragon Fruit", icon: "pen-to-square", link: "dragonfruit" },
       "tomato",
       "strawberry",
     ],
   },
   {
     text: version,
-    icon: "note",
+    icon: "book",
     children: [
       {
         text: "V2 Docs",
-        link: "https://vuepress-theme-hope.github.io/v2/",
+        link: "https://theme-hope.vuejs.press/",
       },
       {
         text: "V2 Docs Demo",
-        link: "https://vuepress-theme-hope.github.io/docs-demo/",
-      },
-      {
-        text: "V1 Docs",
-        link: "https://vuepress-theme-hope.github.io/v1/",
-      },
-      {
-        text: "V1 Demo",
-        link: "https://vuepress-theme-hope.github.io/v1-demo/",
+        link: "https://theme-hope-docs-demo.vuejs.press/",
       },
     ],
   },

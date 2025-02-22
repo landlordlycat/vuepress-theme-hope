@@ -1,6 +1,6 @@
-import type { HopeThemeLocaleData } from "../../shared/index.js";
+import type { ThemeLocaleData } from "../../shared/index.js";
 
-export const enLocale: HopeThemeLocaleData = {
+export const enLocale: ThemeLocaleData = {
   lang: "en-US",
 
   navbarLocales: {
@@ -23,6 +23,7 @@ export const enLocale: HopeThemeLocaleData = {
     lastUpdated: "Last update",
     contributors: "Contributors",
     editLink: "Edit this page",
+    print: "Print",
   },
 
   blogLocales: {
@@ -35,8 +36,7 @@ export const enLocale: HopeThemeLocaleData = {
     all: "All",
     intro: "Personal Intro",
     star: "Star",
-    slides: "Slides",
-    encrypt: "Encrypted",
+    empty: "No $text",
   },
 
   paginationLocales: {
@@ -61,7 +61,8 @@ export const enLocale: HopeThemeLocaleData = {
   },
 
   routeLocales: {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+    skipToContent: "Skip to main content",
+    notFoundTitle: "Page not found",
     notFoundMsg: [
       "There’s nothing here.",
       "How did we get here?",
@@ -70,6 +71,5 @@ export const enLocale: HopeThemeLocaleData = {
     ],
     back: "Go back",
     home: "Take me home",
-    openInNewWindow: "Open in new window",
   },
 };

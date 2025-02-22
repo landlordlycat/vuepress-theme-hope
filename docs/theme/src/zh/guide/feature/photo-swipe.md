@@ -1,6 +1,6 @@
 ---
 title: 图片预览
-icon: preview
+icon: image
 category:
   - 功能
 tag:
@@ -8,15 +8,9 @@ tag:
   - 图片浏览
 ---
 
-通过内置 [vuepress-plugin-photo-swipe][photo-swipe], vuepress-theme-hope 会使页面正文内的图片在点击时进入浏览模式浏览。
+通过内置 [@vuepress/plugin-photo-swipe][photo-swipe], 点击页面正文内的图片会进入浏览模式。
 
 如果你不需要此功能，请在主题选项中设置 `plugins.photoSwipe: false`。
-
-::: info
-
-`vuepress-theme-hope` 将主题选项中的 `plugins.photoSwipe` 选项作为插件选项提供给 `vuepress-plugin-photo-swipe`。
-
-:::
 
 <!-- more -->
 
@@ -40,16 +34,18 @@ tag:
 
 ## 自定义配置
 
-`plugin.photoSwipe` 会作为插件选项传入 [`vuepress-plugin-photo-swipe][photo-swipe]。 你可以查看 [插件文档][photo-swipe] 来来进行高级配置。
+`vuepress-theme-hope` 将主题选项中的 `plugins.photoSwipe` 选项作为插件选项提供给 `@vuepress/plugin-photo-swipe`。
+
+你可以查看 [photo-swipe 插件文档][photo-swipe] 来来进行高级配置。
 
 ## 演示
 
 <!-- markdownlint-disable -->
 
 <div class="image-preview">
-  <img src="/assets/image/1.jpg" />
-  <img src="/assets/image/2.jpg" />
-  <img src="/assets/image/3.jpg" />
+  <img src="//theme-hope-assets.vuejs.press/files/img/1.jpg" />
+  <img src="//theme-hope-assets.vuejs.press/files/img/2.jpg" />
+  <img src="//theme-hope-assets.vuejs.press/files/img/3.jpg" />
 </div>
 
 <style>
@@ -59,16 +55,12 @@ tag:
     align-items: center;
     flex-wrap: wrap;
   }
+
   .image-preview > img {
      box-sizing: border-box;
+     width: 33.3% !important;
      padding: 9px;
      border-radius: 16px;
-   }
-
-  @media (max-width: 1440px){
-    .image-preview > img {
-      width: 33.3% !important;
-    }
   }
 
   @media (max-width: 719px){
@@ -82,9 +74,8 @@ tag:
       width: 100% !important;
     }
   }
-
 </style>
 
 <!-- markdownlint-restore -->
 
-[photo-swipe]: https://vuepress-theme-hope.github.io/v2/photo-swipe/
+[photo-swipe]: https://ecosystem.vuejs.press/zh/plugins/features/photo-swipe.html

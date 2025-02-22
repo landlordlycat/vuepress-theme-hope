@@ -1,48 +1,41 @@
 import { navbar } from "vuepress-theme-hope";
-import { version } from "../version";
+
+import { version } from "../version.js";
 
 export const zhNavbar = navbar([
   "/zh/",
-  { text: "案例", icon: "discover", link: "/zh/demo/" },
+  "/zh/portfolio",
+  "/zh/demo/",
   {
     text: "指南",
-    icon: "creative",
+    icon: "lightbulb",
     prefix: "/zh/guide/",
     children: [
       {
         text: "Bar",
-        icon: "creative",
+        icon: "lightbulb",
         prefix: "bar/",
-        children: ["baz", { text: "...", icon: "more", link: "" }],
+        children: ["baz", { text: "...", icon: "ellipsis", link: "" }],
       },
       {
         text: "Foo",
-        icon: "config",
+        icon: "lightbulb",
         prefix: "foo/",
-        children: ["ray", { text: "...", icon: "more", link: "" }],
+        children: ["ray", { text: "...", icon: "ellipsis", link: "" }],
       },
     ],
   },
   {
     text: version,
-    icon: "note",
+    icon: "book",
     children: [
       {
         text: "V2 文档",
-        link: "https://vuepress-theme-hope.github.io/v2/zh/",
+        link: "https://theme-hope.vuejs.press/zh/",
       },
       {
         text: "V2 博客演示",
-        link: "https://vuepress-theme-hope.github.io/blog-demo/zh/",
-      },
-      {
-        text: "V1 文档",
-        link: "https://vuepress-theme-hope.github.io/v1/zh/",
-      },
-
-      {
-        text: "V1 演示",
-        link: "https://vuepress-theme-hope.github.io/v1-demo/zh/",
+        link: "https://theme-hope-blog-demo.vuejs.press/zh/",
       },
     ],
   },

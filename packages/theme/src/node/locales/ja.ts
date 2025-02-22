@@ -1,6 +1,6 @@
-import type { HopeThemeLocaleData } from "../../shared/index.js";
+import type { ThemeLocaleData } from "../../shared/index.js";
 
-export const jaLocale: HopeThemeLocaleData = {
+export const jaLocale: ThemeLocaleData = {
   lang: "ja-JP",
 
   navbarLocales: {
@@ -23,6 +23,7 @@ export const jaLocale: HopeThemeLocaleData = {
     lastUpdated: "最終更新日",
     contributors: "投稿者",
     editLink: "このページを編集",
+    print: "印刷",
   },
 
   blogLocales: {
@@ -35,8 +36,7 @@ export const jaLocale: HopeThemeLocaleData = {
     all: "すべて",
     intro: "自己紹介",
     star: "コレクション",
-    slides: "スライド",
-    encrypt: "暗号化",
+    empty: "$text は空です",
   },
 
   paginationLocales: {
@@ -61,7 +61,8 @@ export const jaLocale: HopeThemeLocaleData = {
   },
 
   routeLocales: {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+    skipToContent: "メインコンテンツへスキップ",
+    notFoundTitle: "ページが見つかりません",
     notFoundMsg: [
       "ここには何もありません。",
       "どうやってここにたどり着いたのか?",
@@ -70,6 +71,5 @@ export const jaLocale: HopeThemeLocaleData = {
     ],
     back: "前のページへ戻る",
     home: "メインページに戻る",
-    openInNewWindow: "新しいウィンドウで開く",
   },
 };

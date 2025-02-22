@@ -1,25 +1,32 @@
+import { isArray, isPlainObject, isString } from "@vuepress/helper/shared";
+
 import type { Author, AuthorInfo } from "../types/index.js";
+
+const isAuthorInfo = (author: unknown): author is AuthorInfo =>
+  isPlainObject(author) && isString(author.name);
 
 export const getAuthor = (
   author: Author | false | undefined,
-  canDisable = false
+  canDisable = false,
 ): AuthorInfo[] => {
   if (author) {
-    if (Array.isArray(author)) {
-      return author.map((item) =>
-        typeof item === "string" ? { name: item } : item
-      );
-    }
+    if (isArray(author))
+      return author
+        .map((item) =>
+          isString(item) ? { name: item } : isAuthorInfo(item) ? item : null,
+        )
+        .filter((item): item is AuthorInfo => item !== null);
 
-    if (typeof author === "string") return [{ name: author }];
+    if (isString(author)) return [{ name: author }];
 
-    if (typeof author === "object" && author.name) return [author];
+    if (isAuthorInfo(author)) return [author];
 
+    // eslint-disable-next-line no-console
     console.error(
-      `Expect 'author' to be \`AuthorInfo[] | AuthorInfo | string[] | string ${
+      `Expect "author" to be \`AuthorInfo[] | AuthorInfo | string[] | string ${
         canDisable ? "" : "| false"
       } | undefined\`, but got`,
-      author
+      author,
     );
 
     return [];
@@ -28,32 +35,27 @@ export const getAuthor = (
   return [];
 };
 
-export const getCategory = (
-  category: string[] | string | undefined
+export const getStringArray = (
+  value: string[] | string | undefined,
+  optionName: string,
 ): string[] => {
-  if (category) {
-    if (Array.isArray(category)) return category;
-    if (typeof category === "string") return [category];
+  if (value) {
+    if (isArray(value) && value.every(isString)) return value;
+    if (isString(value)) return [value];
 
+    // eslint-disable-next-line no-console
     console.error(
-      `Expect 'category' to be \`string[] | string | undefined\`, but got`,
-      category
+      `Expect ${optionName} to be \`string[] | string | undefined\`, but got`,
+      value,
     );
   }
 
   return [];
 };
 
-export const getTag = (tag: string[] | string | undefined): string[] => {
-  if (tag) {
-    if (Array.isArray(tag)) return tag;
-    if (typeof tag === "string") return [tag];
+export const getCategory = (
+  category: string[] | string | undefined,
+): string[] => getStringArray(category, "category");
 
-    console.error(
-      `Expect 'tag' to be \`string[] | string | undefined\`, but got`,
-      tag
-    );
-  }
-
-  return [];
-};
+export const getTag = (tag: string[] | string | undefined): string[] =>
+  getStringArray(tag, "tag");

@@ -1,9 +1,9 @@
 ---
 title: Frontmatter 配置
-icon: config
+icon: gears
 index: false
 dir:
-  order: 5
+  order: 6
 category:
   - 配置
 tag:
@@ -13,8 +13,4 @@ tag:
 
 ## 目录
 
-- [信息 Frontmatter 配置](info.md)
-
-- [布局 Frontmatter 配置](layout.md)
-
-- [插件 Frontmatter 配置](plugins.md)
+<Catalog />

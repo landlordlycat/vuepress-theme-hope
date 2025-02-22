@@ -1,10 +1,9 @@
+import type { VNode } from "vue";
 import { defineComponent, h } from "vue";
 
-import { I18nIcon } from "@theme-hope/modules/navbar/components/icons/index.js";
-import DropdownLink from "@theme-hope/modules/navbar/components/DropdownLink.js";
-import { useNavbarLanguageDropdown } from "@theme-hope/modules/navbar/composables/index.js";
-
-import type { VNode } from "vue";
+import NavbarDropdown from "@theme-hope/modules/navbar/components/NavbarDropdown";
+import { I18nIcon } from "@theme-hope/modules/navbar/components/icons/index";
+import { useNavbarLanguageDropdown } from "@theme-hope/modules/navbar/composables/index";
 
 export default defineComponent({
   name: "LanguageDropdown",
@@ -16,10 +15,10 @@ export default defineComponent({
       dropdown.value
         ? h(
             "div",
-            { class: "nav-item" },
+            { class: "vp-nav-item" },
             h(
-              DropdownLink,
-              { class: "i18n-dropdown", config: dropdown.value },
+              NavbarDropdown,
+              { config: dropdown.value },
               {
                 title: () =>
                   h(I18nIcon, {
@@ -30,8 +29,8 @@ export default defineComponent({
                       verticalAlign: "middle",
                     },
                   }),
-              }
-            )
+              },
+            ),
           )
         : null;
   },

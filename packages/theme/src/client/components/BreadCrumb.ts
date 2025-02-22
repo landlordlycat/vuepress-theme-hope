@@ -1,14 +1,29 @@
-import { usePageFrontmatter, useRouteLocale } from "@vuepress/client";
-import { computed, defineComponent, h, onMounted, watch, ref } from "vue";
-import { RouterLink, useRoute, useRouter } from "vue-router";
-import { resolveRouteWithRedirect } from "vuepress-shared/lib/client";
-
-import Icon from "@theme-hope/components/Icon.js";
-import { useThemeLocaleData } from "@theme-hope/composables/index.js";
-import { getAncestorLinks } from "@theme-hope/utils/index.js";
-
 import type { VNode } from "vue";
-import type { HopeThemeNormalPageFrontmatter } from "../../shared/index.js";
+import {
+  computed,
+  defineComponent,
+  h,
+  onMounted,
+  resolveComponent,
+  shallowRef,
+  watch,
+} from "vue";
+import {
+  RouteLink,
+  resolveRoute,
+  usePageData,
+  usePageFrontmatter,
+  useRouteLocale,
+} from "vuepress/client";
+
+import { useThemeLocaleData } from "@theme-hope/composables/index";
+import { getAncestorLinks } from "@theme-hope/utils/index";
+
+import type {
+  PageInfoData,
+  ThemeNormalPageFrontmatter,
+} from "../../shared/index.js";
+import { PageInfo } from "../../shared/index.js";
 
 import "../styles/breadcrumb.scss";
 
@@ -22,49 +37,43 @@ export default defineComponent({
   name: "BreadCrumb",
 
   setup() {
-    const router = useRouter();
-    const route = useRoute();
+    const page = usePageData();
     const routeLocale = useRouteLocale();
-    const frontmatter = usePageFrontmatter<HopeThemeNormalPageFrontmatter>();
+    const frontmatter = usePageFrontmatter<ThemeNormalPageFrontmatter>();
     const themeLocale = useThemeLocaleData();
 
-    const config = ref<BreadCrumbConfig[]>([]);
+    const config = shallowRef<BreadCrumbConfig[]>([]);
 
-    const enable = computed<boolean>(() => {
-      return (
-        (frontmatter.value.breadcrumb ||
-          (frontmatter.value.breadcrumb !== false &&
-            themeLocale.value.breadcrumb !== false)) &&
-        config.value.length > 1
-      );
-    });
-
-    const iconEnable = computed(
+    const enable = computed(
       () =>
-        frontmatter.value.breadcrumbIcon ||
-        (frontmatter.value.breadcrumbIcon !== false &&
-          themeLocale.value.breadcrumbIcon !== false)
+        (frontmatter.value.breadcrumb ??
+          themeLocale.value.breadcrumb ??
+          true) &&
+        config.value.length > 1,
+    );
+
+    const enableIcon = computed(
+      () =>
+        frontmatter.value.breadcrumbIcon ??
+        themeLocale.value.breadcrumbIcon ??
+        true,
     );
 
     const getBreadCrumbConfig = (): void => {
-      const routes = router.getRoutes();
+      const breadcrumbConfig = getAncestorLinks(
+        page.value.path,
+        routeLocale.value,
+      )
+        .map<BreadCrumbConfig | null>(({ link, name }) => {
+          const { path, meta, notFound } = resolveRoute<PageInfoData>(link);
 
-      const breadcrumbConfig = getAncestorLinks(route, routeLocale.value)
-        .map<BreadCrumbConfig | null>((link) => {
-          const route = routes.find((route) => route.path === link);
+          if (notFound || meta[PageInfo.breadcrumbExclude]) return null;
 
-          if (route) {
-            const { meta, path } = resolveRouteWithRedirect(router, route.path);
-
-            if (meta.shortTitle || meta.title)
-              return {
-                title: meta.shortTitle || meta.title,
-                icon: meta.icon,
-                path,
-              };
-          }
-
-          return null;
+          return {
+            title: meta[PageInfo.shortTitle] || meta[PageInfo.title] || name,
+            icon: meta[PageInfo.icon],
+            path,
+          };
         })
         .filter((item): item is BreadCrumbConfig => item !== null);
 
@@ -72,14 +81,13 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      void getBreadCrumbConfig();
-      watch(() => route.path, getBreadCrumbConfig);
+      watch(() => page.value.path, getBreadCrumbConfig, { immediate: true });
     });
 
     return (): VNode =>
       h(
         "nav",
-        { class: ["breadcrumb", { disable: !enable.value }] },
+        { class: ["vp-breadcrumb", { disable: !enable.value }] },
         enable.value
           ? h(
               "ol",
@@ -97,30 +105,32 @@ export default defineComponent({
                   },
                   [
                     h(
-                      RouterLink,
+                      RouteLink,
                       {
                         to: item.path,
                         property: "item",
                         typeof: "WebPage",
                       },
                       () => [
-                        // icon
-                        iconEnable.value ? h(Icon, { icon: item.icon }) : null,
-                        // text
+                        // Icon
+                        enableIcon.value
+                          ? h(resolveComponent("VPIcon"), { icon: item.icon })
+                          : null,
+                        // Text
                         h(
                           "span",
                           { property: "name" },
-                          item.title || "Unknown"
+                          item.title || "Unknown",
                         ),
-                      ]
+                      ],
                     ),
-                    // meta
+                    // Meta
                     h("meta", { property: "position", content: index + 1 }),
-                  ]
-                )
-              )
+                  ],
+                ),
+              ),
             )
-          : []
+          : [],
       );
   },
 });

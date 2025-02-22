@@ -1,15 +1,13 @@
-import { hash } from "@vuepress/utils";
+import { entries } from "@vuepress/helper";
+import type { PluginWithOptions } from "markdown-it";
+import type { RuleBlock } from "markdown-it/lib/parser_block.mjs";
+import { hash } from "vuepress/utils";
+
+import type { PlaygroundData, PlaygroundOptions } from "../../typings/index.js";
 import { escapeHtml } from "../utils.js";
 
-import type { PluginWithOptions } from "markdown-it";
-import type { RuleBlock } from "markdown-it/lib/parser_block.js";
-import type {
-  PlaygroundData,
-  PlaygroundOptions,
-} from "../../../shared/index.js";
-
 const AT_MARKER = `@`;
-const VALID_MARKERS = ["file", "import", "setting"];
+const VALID_MARKERS = ["file", "import", "setting"] as const;
 
 const getPlaygroundRule =
   (name: string): RuleBlock =>
@@ -17,8 +15,10 @@ const getPlaygroundRule =
     let start = state.bMarks[startLine] + state.tShift[startLine];
     let max = state.eMarks[startLine];
 
-    // Check out the first character quickly,
-    // this should filter out most of non-containers
+    /*
+     * Check out the first character quickly,
+     * this should filter out most of non-containers
+     */
     if (state.src[start] !== ":") return false;
 
     let pos = start + 1;
@@ -51,8 +51,10 @@ const getPlaygroundRule =
 
     // Search for the end of the block
     while (
-      // unclosed block should be autoclosed by end of document.
-      // also block seems to be autoclosed by end of parent
+      /*
+       * Unclosed block should be auto closed by end of document.
+       * also block seems to be auto closed by end of parent
+       */
       nextLine < endLine
     ) {
       nextLine += 1;
@@ -60,29 +62,31 @@ const getPlaygroundRule =
       max = state.eMarks[nextLine];
 
       if (start < max && state.sCount[nextLine] < state.blkIndent)
-        // non-empty line with negative indent should stop the list:
-        // - ```
-        //  test
+        /*
+         * Non-empty line with negative indent should stop the list:
+         * - ```
+         *  test
+         */
         break;
 
       if (
-        // match start
+        // Match start
 
         state.src[start] === ":" &&
-        // closing fence should be indented less than 4 spaces
+        // Closing fence should be indented less than 4 spaces
         state.sCount[nextLine] - state.blkIndent < 4
       ) {
-        // check rest of marker
+        // Check rest of marker
         for (pos = start + 1; pos <= max; pos++)
           if (state.src[pos] !== ":") break;
 
-        // closing code fence must be at least as long as the opening one
+        // Closing code fence must be at least as long as the opening one
         if (pos - start >= markerCount) {
-          // make sure tail has spaces only
+          // Make sure tail has spaces only
           pos = state.skipSpaces(pos);
 
           if (pos >= max) {
-            // found!
+            // Found!
             autoClosed = true;
             break;
           }
@@ -93,11 +97,10 @@ const getPlaygroundRule =
     const oldParent = state.parentType;
     const oldLineMax = state.lineMax;
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    state.parentType = `${name}`;
+    // @ts-expect-error: name is an unknown type to markdown-it
+    state.parentType = name;
 
-    // this will prevent lazy continuations from ever going past our end marker
+    // This will prevent lazy continuations from ever going past our end marker
     state.lineMax = nextLine - (autoClosed ? 1 : 0);
 
     const openToken = state.push(`${name}_open`, "template", 1);
@@ -110,7 +113,7 @@ const getPlaygroundRule =
     state.md.block.tokenize(
       state,
       startLine + 1,
-      nextLine - (autoClosed ? 1 : 0)
+      nextLine - (autoClosed ? 1 : 0),
     );
 
     const closeToken = state.push(`${name}_close`, "template", -1);
@@ -156,8 +159,10 @@ const atMarkerRule =
 
     // Search for the end of the block
     while (
-      // unclosed block should be autoclosed by end of document.
-      // also block seems to be autoclosed by end of parent
+      /*
+       * Unclosed block should be auto closed by end of document.
+       * also block seems to be auto closed by end of parent
+       */
       nextLine < endLine
     ) {
       nextLine += 1;
@@ -165,15 +170,17 @@ const atMarkerRule =
       max = state.eMarks[nextLine];
 
       if (start < max && state.sCount[nextLine] < state.blkIndent)
-        // non-empty line with negative indent should stop the list:
-        // - ```
-        //  test
+        /*
+         * Non-empty line with negative indent should stop the list:
+         * - ```
+         *  test
+         */
         break;
 
       if (
-        // match start
+        // Match start
         state.src[start] === AT_MARKER &&
-        // marker should not be indented with respect of opening fence
+        // Marker should not be indented with respect of opening fence
         state.sCount[nextLine] <= state.sCount[startLine]
       ) {
         let openMakerMatched = true;
@@ -185,7 +192,7 @@ const atMarkerRule =
           }
 
         if (openMakerMatched) {
-          // found!
+          // Found!
           autoClosed = true;
           nextLine -= 1;
           break;
@@ -196,11 +203,10 @@ const atMarkerRule =
     const oldParent = state.parentType;
     const oldLineMax = state.lineMax;
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    state.parentType = `${markerName}`;
+    // @ts-expect-error: unknown type for markdown-it
+    state.parentType = markerName;
 
-    // this will prevent lazy continuations from ever going past our end marker
+    // This will prevent lazy continuations from ever going past our end marker
     state.lineMax = nextLine;
 
     const openToken = state.push(`${markerName}_open`, "template", 1);
@@ -209,7 +215,6 @@ const atMarkerRule =
     openToken.markup = markup;
     openToken.info = info.trim();
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     openToken.map = [startLine, nextLine];
 
     state.md.block.tokenize(state, startLine + 1, nextLine);
@@ -226,38 +231,42 @@ const atMarkerRule =
     return true;
   };
 
+const defaultPropsGetter = (
+  playgroundData: PlaygroundData,
+): Record<string, string> => ({
+  key: playgroundData.key,
+  title: playgroundData.title ?? "",
+  files: encodeURIComponent(JSON.stringify(playgroundData.files)),
+  settings: encodeURIComponent(JSON.stringify(playgroundData.settings)),
+});
+
 export const playground: PluginWithOptions<PlaygroundOptions> = (
   md,
-  { name = "playground", component = "Playground", propsGetter } = {
+  {
+    name = "playground",
+    component = "Playground",
+    propsGetter = defaultPropsGetter,
+  } = {
     name: "playground",
     component: "Playground",
-    propsGetter: (playgroundData: PlaygroundData): Record<string, string> => ({
-      key: playgroundData.key,
-      title: playgroundData.title || "",
-      files: encodeURIComponent(JSON.stringify(playgroundData.files)),
-      settings: encodeURIComponent(
-        JSON.stringify(playgroundData.settings || {})
-      ),
-    }),
-  }
+    propsGetter: defaultPropsGetter,
+  },
 ) => {
-  md.block.ruler.before("fence", `${name}`, getPlaygroundRule(name), {
+  md.block.ruler.before("fence", name, getPlaygroundRule(name), {
     alt: ["paragraph", "reference", "blockquote", "list"],
   });
 
   VALID_MARKERS.forEach((marker) => {
-    // WARNING:  Here we use an internal variable to make sure tab rule is not registered
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    // eslint-disable-next-line
-    if (!md.block.ruler.__rules__.find(({ name }) => name === "marker"))
-      md.block.ruler.before("fence", "tab", atMarkerRule(marker), {
+    // Note: Here we use an internal variable to make sure tab rule is not registered
+    // @ts-expect-error: __rules__ is a private property
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    if (!md.block.ruler.__rules__.find(({ name }) => name === `at-${marker}`))
+      md.block.ruler.before("fence", `at-${marker}`, atMarkerRule(marker), {
         alt: ["paragraph", "reference", "blockquote", "list"],
       });
   });
 
   md.renderer.rules[`${name}_open`] = (tokens, index): string => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { info } = tokens[index];
 
     const playgroundData: PlaygroundData = {
@@ -281,13 +290,11 @@ export const playground: PluginWithOptions<PlaygroundOptions> = (
           // File rule must contain a valid file name
           if (!info) continue;
           currentKey = info;
-        } else if (type === "import_open")
+        } else if (type === "import_open") {
           playgroundData.importMap = currentKey = info || "import-map.json";
-
-        if (type === "setting_open") foundSettings = true;
-        if (type === "setting_close") foundSettings = false;
-
-        if (
+        } else if (type === "setting_open") {
+          foundSettings = true;
+        } else if (
           type === "file_close" ||
           type === "import_close" ||
           type === "setting_close" ||
@@ -295,25 +302,26 @@ export const playground: PluginWithOptions<PlaygroundOptions> = (
         ) {
           tokens[i].type = `${name}_empty`;
           tokens[i].hidden = true;
+          if (type === "setting_close") foundSettings = false;
           continue;
         }
 
-        // parse settings
+        // Parse settings
         if (foundSettings) {
+          // Handle json blocks
           if (type === "fence" && info === "json")
-            playgroundData.settings = <Record<string, unknown>>(
-              JSON.parse(content.trim())
-            );
-
-          continue;
+            playgroundData.settings = JSON.parse(content.trim()) as Record<
+              string,
+              unknown
+            >;
         }
-
-        // add code block content
-        if (type === "fence" && currentKey)
+        // Add code block content
+        else if (type === "fence" && currentKey) {
           playgroundData.files[currentKey] = {
             ext: info,
-            content: content,
+            content,
           };
+        }
 
         tokens[i].type = `${name}_empty`;
         tokens[i].hidden = true;
@@ -322,7 +330,7 @@ export const playground: PluginWithOptions<PlaygroundOptions> = (
 
     const props = propsGetter(playgroundData);
 
-    return `<${component} ${Object.entries(props)
+    return `<${component} ${entries(props)
       .map(([attr, value]) => `${attr}="${escapeHtml(value)}"`)
       .join(" ")}>\n`;
   };

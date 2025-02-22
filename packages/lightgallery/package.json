@@ -1,6 +1,6 @@
 {
   "name": "vuepress-plugin-lightgallery",
-  "version": "2.0.0-beta.108",
+  "version": "2.0.0-rc.71",
   "description": "Light Gallery plugin for VuePress",
   "keywords": [
     "vuepress",
@@ -11,7 +11,7 @@
     "preview",
     "zoom"
   ],
-  "homepage": "https://vuepress-theme-hope.github.io/v2/lightgallery/",
+  "homepage": "https://plugin-lightgallery.vuejs.press/",
   "bugs": {
     "url": "https://github.com/vuepress-theme-hope/vuepress-theme-hope/issues"
   },
@@ -24,50 +24,55 @@
   "author": {
     "name": "Mr.Hope",
     "email": "mister-hope@outlook.com",
-    "url": "https://mrhope.site"
+    "url": "https://mister-hope.com"
   },
   "type": "module",
   "exports": {
     ".": "./lib/node/index.js",
-    "./lib/client/*": "./lib/client/*",
+    "./client": "./lib/client/index.js",
     "./package.json": "./package.json"
   },
-  "main": "lib/node/index.js",
-  "types": "lib/node/index.d.ts",
+  "main": "./lib/node/index.js",
+  "types": "./lib/node/index.d.ts",
   "files": [
-    "lib",
-    "src"
+    "lib"
   ],
   "scripts": {
-    "build": "rollup -c",
-    "clean": "rimraf ./lib ./*.tsbuildinfo",
-    "copy": "cpx \"src/client/**/*.{vue,scss}\" lib/client",
+    "build": "rollup -c rollup.config.ts --configPlugin esbuild",
+    "clean": "rimraf --glob ./lib ./*.tsbuildinfo",
+    "copy": "cpx \"src/client/**/*.scss\" lib/client",
     "dev": "concurrently \"pnpm dev:copy\" \"pnpm dev:ts\"",
     "dev:copy": "pnpm copy -w",
     "dev:ts": "tsc -b tsconfig.build.json --watch"
   },
   "dependencies": {
-    "@vuepress/client": "2.0.0-beta.51",
-    "@vuepress/utils": "2.0.0-beta.51",
-    "lightgallery": "^2.6.1",
-    "vue": "^3.2.40",
-    "vue-router": "^4.1.5",
-    "vuepress-plugin-sass-palette": "workspace:*",
+    "@vuepress/helper": "catalog:vuepress",
+    "@vuepress/plugin-sass-palette": "catalog:vuepress",
+    "lightgallery": "^2.8.2",
+    "vue": "catalog:range",
     "vuepress-shared": "workspace:*"
   },
-  "devDependencies": {
-    "@vuepress/core": "2.0.0-beta.51",
-    "rimraf": "3.0.2"
-  },
   "peerDependencies": {
-    "sass-loader": "^13.0.0"
+    "sass": "catalog:range",
+    "sass-embedded": "catalog:range",
+    "sass-loader": "catalog:range",
+    "vuepress": "catalog:vuepress"
   },
   "peerDependenciesMeta": {
+    "sass": {
+      "optional": true
+    },
+    "sass-embedded": {
+      "optional": true
+    },
     "sass-loader": {
       "optional": true
     }
   },
-  "publishConfig": {
-    "access": "public"
+  "engines": {
+    "node": ">=18.19.0",
+    "npm": ">=8",
+    "pnpm": ">=7",
+    "yarn": ">=2"
   }
 }

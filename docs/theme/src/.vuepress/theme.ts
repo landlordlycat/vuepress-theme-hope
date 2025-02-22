@@ -1,113 +1,159 @@
-import { hopeTheme } from "vuepress-theme-hope";
-import {
-  enNavbarConfig,
-  zhNavbarConfig,
-  ruNavbarConfig,
-} from "./navbar/index.js";
-import {
-  enSidebarConfig,
-  zhSidebarConfig,
-  ruSidebarConfig,
-} from "./sidebar/index.js";
+import { theme } from "docs-shared";
+import { getDirname, path } from "vuepress/utils";
+import { AVAILABLE_SERVICES } from "vuepress-plugin-components";
+import { getRecentUpdatedArticles } from "vuepress-theme-hope/presets/getRecentUpdatedArticles.js";
+import { getSlides } from "vuepress-theme-hope/presets/getSlides.js";
 
-const hostname =
-  process.env.HOSTNAME || "https://vuepress-theme-hope-v2.netlify.app";
+import { enNavbarConfig, zhNavbarConfig } from "./navbar/index.js";
+import { enSidebarConfig, zhSidebarConfig } from "./sidebar/index.js";
 
-export default hopeTheme({
-  hostname,
+const __dirname = getDirname(import.meta.url);
 
-  author: {
-    name: "Mr.Hope",
-    url: "https://mrhope.site",
-  },
-
-  iconAssets: "iconfont",
-
-  repo: "vuepress-theme-hope/vuepress-theme-hope",
-
-  docsDir: "docs/theme/src",
-
-  logo: "/logo.svg",
-
-  footer: "MIT Licensed | Copyright © 2019-present Mr.Hope",
-  copyright: false,
-  displayFooter: true,
-
-  pageInfo: ["Category", "Tag", "ReadingTime"],
-
-  blog: {
-    name: "VuePress Theme Hope",
-  },
-
-  themeColor: {
-    blue: "#2196f3",
-    red: "#f26d6d",
-    green: "#3eaf7c",
-    orange: "#fb9b5f",
-  },
-  fullscreen: true,
-
-  locales: {
-    "/": {
-      navbar: enNavbarConfig,
-      sidebar: enSidebarConfig,
-    },
-    "/zh/": {
-      navbar: zhNavbarConfig,
-      sidebar: zhSidebarConfig,
-    },
-    "/ru/": {
-      navbar: ruNavbarConfig,
-      sidebar: ruSidebarConfig,
-    },
-  },
-
-  plugins: {
-    blog: true,
-
-    components: ["Badge", "CodePen", "PDF", "StackBlitz", "YouTube"],
-
-    comment: {
-      provider: "Giscus",
-      repo: "vuepress-theme-hope/giscus-discussions",
-      repoId: "R_kgDOG_Pt2A",
-      category: "Announcements",
-      categoryId: "DIC_kwDOG_Pt2M4COD69",
+// The theme wrapper is located in <root>/docs-shared/src/theme-wrapper.ts
+export default theme(
+  "theme",
+  {
+    repo: "vuepress-theme-hope/vuepress-theme-hope",
+    blog: {
+      name: "VuePress Theme Hope",
+      medias: {
+        Baidu: "https://example.com",
+        BiliBili: "https://example.com",
+        Bitbucket: "https://example.com",
+        Dingding: "https://example.com",
+        Discord: "https://example.com",
+        Dribbble: "https://example.com",
+        Email: "mailto:info@example.com",
+        Evernote: "https://example.com",
+        Facebook: "https://example.com",
+        Flipboard: "https://example.com",
+        Gitee: "https://example.com",
+        GitHub: "https://example.com",
+        Gitlab: "https://example.com",
+        Gmail: "mailto:info@example.com",
+        Instagram: "https://example.com",
+        Lark: "https://example.com",
+        Lines: "https://example.com",
+        Linkedin: "https://example.com",
+        Pinterest: "https://example.com",
+        Pocket: "https://example.com",
+        QQ: "https://example.com",
+        Qzone: "https://example.com",
+        Reddit: "https://example.com",
+        Rss: "https://example.com",
+        Steam: "https://example.com",
+        Twitter: "https://example.com",
+        Wechat: "https://example.com",
+        Weibo: "https://example.com",
+        Whatsapp: "https://example.com",
+        Youtube: "https://example.com",
+        Zhihu: "https://example.com",
+      },
     },
 
-    copyright: true,
+    fullscreen: true,
 
-    mdEnhance: {
+    navbarTitle: "",
+
+    extraLocales: {
+      Русский: "https://theme-hope-ru.vuejs.press/:route",
+    },
+
+    locales: {
+      "/": {
+        navbar: enNavbarConfig,
+        sidebar: enSidebarConfig,
+      },
+      "/zh/": {
+        navbar: zhNavbarConfig,
+        sidebar: zhSidebarConfig,
+      },
+    },
+
+    encrypt: {
+      config: {
+        "/demo/encrypt.html": {
+          hint: "Password: 1234",
+          password: "1234",
+        },
+        "/zh/demo/encrypt.html": {
+          hint: "Password: 1234",
+          password: "1234",
+        },
+      },
+    },
+
+    markdown: {
+      alert: true,
       align: true,
       attrs: true,
-      chart: true,
-      codetabs: true,
-      container: true,
-      demo: true,
-      echarts: true,
-      flowchart: true,
+      codeTabs: true,
+      component: true,
+      figure: true,
       gfm: true,
-      imageSize: true,
-      include: true,
-      katex: true,
-      lazyLoad: true,
+      imgLazyload: true,
+      imgMark: true,
+      imgSize: true,
+      include: {
+        deep: true,
+        resolvePath: (file) => {
+          if (file.startsWith("@components/"))
+            return file.replace(
+              "@components",
+              path.resolve(__dirname, "../../../components/src"),
+            );
+
+          if (file.startsWith("@echarts/"))
+            return file.replace(
+              "@echarts",
+              path.resolve(__dirname, "../../../md-enhance/src/echarts"),
+            );
+
+          if (file.startsWith("@md-enhance/"))
+            return file.replace(
+              "@md-enhance",
+              path.resolve(__dirname, "../../../md-enhance/src"),
+            );
+
+          return file;
+        },
+        resolveLinkPath: false,
+      },
+      math: true,
       mark: true,
-      mermaid: true,
-      playground: {
-        presets: ["ts", "vue"],
-      },
-      presentation: {
+      revealjs: {
         plugins: ["highlight", "math", "search", "notes", "zoom"],
+        themes: [
+          "auto",
+          "beige",
+          "black",
+          "blood",
+          "league",
+          "moon",
+          "night",
+          "serif",
+          "simple",
+          "sky",
+          "solarized",
+          "white",
+        ],
       },
+      spoiler: true,
       stylize: [
         {
-          matcher: "Recommanded",
-          replacer: ({ tag }) => {
+          matcher: "Recommended",
+          replacer: ({
+            tag,
+          }): {
+            tag: string;
+            attrs: Record<string, string>;
+            content: string;
+          } | void => {
             if (tag === "em")
               return {
                 tag: "Badge",
                 attrs: { type: "tip" },
-                content: "Recommanded",
+                content: "Recommended",
               };
           },
         },
@@ -115,113 +161,91 @@ export default hopeTheme({
       sub: true,
       sup: true,
       tabs: true,
-      vpre: true,
+      tasklist: true,
+      vPre: true,
+
+      highlighter: {
+        type: "shiki",
+        lineNumbers: 15,
+        notationDiff: true,
+        themes: {
+          light: "one-light",
+          dark: "one-dark-pro",
+        },
+        twoslash: {
+          twoslashOptions: {
+            compilerOptions: {
+              moduleResolution: /* bundler */ 100,
+            },
+          },
+        },
+      },
+
+      chartjs: true,
+      demo: true,
+      echarts: true,
+      flowchart: true,
+      kotlinPlayground: true,
+      markmap: true,
+      mermaid: true,
+      plantuml: true,
+      playground: {
+        presets: ["ts", "vue", "unocss"],
+      },
+      sandpack: true,
       vuePlayground: true,
     },
 
-    pwa: {
-      update: "hint",
-      favicon: "/favicon.ico",
-      themeColor: "#46bd87",
-      appendBase: true,
-      apple: {
-        icon: "/assets/icon/apple-icon-152.png",
-        statusBarColor: "black",
-      },
-      msTile: {
-        image: "/assets/icon/ms-icon-144.png",
-        color: "#ffffff",
-      },
-      manifest: {
-        icons: [
-          {
-            src: "/assets/icon/chrome-mask-512.png",
-            sizes: "512x512",
-            purpose: "maskable",
-            type: "image/png",
-          },
-          {
-            src: "/assets/icon/chrome-mask-192.png",
-            sizes: "192x192",
-            purpose: "maskable",
-            type: "image/png",
-          },
-          {
-            src: "/assets/icon/chrome-512.png",
-            sizes: "512x512",
-            type: "image/png",
-          },
-          {
-            src: "/assets/icon/chrome-192.png",
-            sizes: "192x192",
-            type: "image/png",
-          },
+    plugins: {
+      blog: {
+        excerptLength: 0,
+        type: [
+          getRecentUpdatedArticles({
+            locales: { "/": "Recent Updated", "/zh/": "最近更新" },
+          }),
+          getSlides({
+            locales: { "/": "Slides", "/zh/": "幻灯片" },
+          }),
         ],
-        shortcuts: [
-          {
-            name: "Guide",
-            short_name: "Guide",
-            url: "/guide/",
-            icons: [
-              {
-                src: "/assets/icon/guide-maskable.png",
-                sizes: "192x192",
-                purpose: "maskable",
-                type: "image/png",
-              },
-              {
-                src: "/assets/icon/guide-monochrome.png",
-                sizes: "192x192",
-                purpose: "monochrome",
-                type: "image/png",
-              },
-            ],
-          },
-          {
-            name: "Config",
-            short_name: "Config",
-            url: "/config/",
-            icons: [
-              {
-                src: "/assets/icon/config-maskable.png",
-                sizes: "192x192",
-                purpose: "maskable",
-                type: "image/png",
-              },
-              {
-                src: "/assets/icon/config-monochrome.png",
-                sizes: "192x192",
-                purpose: "monochrome",
-                type: "image/png",
-              },
-            ],
-          },
-          {
-            name: "Cookbook",
-            short_name: "Cookbook",
-            url: "/cookbook/",
-            icons: [
-              {
-                src: "/assets/icon/basic-maskable.png",
-                sizes: "192x192",
-                purpose: "maskable",
-                type: "image/png",
-              },
-              {
-                src: "/assets/icon/basic-monochrome.png",
-                sizes: "192x192",
-                purpose: "monochrome",
-                type: "image/png",
-              },
-            ],
-          },
+      },
+
+      components: {
+        components: [
+          "ArtPlayer",
+          "Badge",
+          "BiliBili",
+          "CodePen",
+          "PDF",
+          "Share",
+          "SiteInfo",
+          "StackBlitz",
+          "VPBanner",
+          "VPCard",
+          "VidStack",
         ],
+
+        componentOptions: {
+          share: {
+            services: AVAILABLE_SERVICES,
+          },
+        },
+      },
+
+      copyright: {
+        license: "MIT",
+      },
+
+      feed: {
+        atom: true,
+        json: true,
+        rss: true,
+      },
+
+      watermark: {
+        enabled: false,
       },
     },
-
-    seo:
-      hostname === "https://vuepress-theme-hope.github.io"
-        ? {}
-        : { canonical: "https://vuepress-theme-hope.github.io/v2/" },
   },
-});
+  "",
+  "theme-v2",
+);

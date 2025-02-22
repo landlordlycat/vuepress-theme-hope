@@ -1,48 +1,23 @@
-import { Logger } from "vuepress-shared";
+import { Logger, ensureEndingSlash, isModuleAvailable } from "@vuepress/helper";
+import { getDirname, path } from "vuepress/utils";
 
-export const MATHML_TAGS = [
-  "math",
-  "maction",
-  "maligngroup",
-  "malignmark",
-  "menclose",
-  "merror",
-  "mfenced",
-  "mfrac",
-  "mglyph",
-  "mi",
-  "mlabeledtr",
-  "mlongdiv",
-  "mmutiscripts",
-  "mn",
-  "mo",
-  "mover",
-  "mpadded",
-  "mphantom",
-  "mroot",
-  "mrow",
-  "ms",
-  "mscarries",
-  "mscarry",
-  "msgroup",
-  "msline",
-  "mspace",
-  "msqrt",
-  "msrow",
-  "mstack",
-  "mstyle",
-  "msub",
-  "msup",
-  "msubsup",
-  "mtable",
-  "mtd",
-  "mtext",
-  "mtr",
-  "munder",
-  "munderover",
-  "semantics",
-  "annotation",
-  "annotation-xml",
-];
+const __dirname = getDirname(import.meta.url);
 
-export const logger = new Logger("vuepress-plugin-md-enhance");
+export const PLUGIN_NAME = "vuepress-plugin-md-enhance";
+
+export const logger = new Logger(PLUGIN_NAME);
+
+export const CLIENT_FOLDER = ensureEndingSlash(
+  path.resolve(__dirname, "../client"),
+);
+
+export const isInstalled = (pkg: string, hint = true): boolean => {
+  const isInstalled = isModuleAvailable(pkg, import.meta);
+
+  if (hint && !isInstalled)
+    logger.error(
+      `Package ${pkg} is not installed, please install it manually!`,
+    );
+
+  return isInstalled;
+};

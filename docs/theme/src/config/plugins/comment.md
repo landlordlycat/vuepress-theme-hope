@@ -1,7 +1,7 @@
 ---
 title: Comment Plugin Config
-icon: comment
-order: 3
+icon: comment-dots
+order: 5
 category:
   - Config
 tag:
@@ -12,22 +12,21 @@ tag:
 
 ## Intro
 
-The theme provide comment support using `vuepress-plugin-comment2`, and it pass `plugin.comment` in theme options to the plugin.
+The theme provide comment support using `@vuepress/plugin-comment`, and it passes `plugins.comment` in theme options to the plugin.
 
-`vuepress-plugin-comment2` currently supports 3 comment services:
+`@vuepress/plugin-comment` currently supports 4 comment services:
 
+- Artalk
 - Giscus
 - Twikoo
 - Waline
 
-::: note
-
-If you don’t need comment feature, ignore this option.
+::: note Ignore this option if you don't need comment feature.
 
 :::
 
 ## Options
 
-For details of each comment service options, please refer to [vuepress-plugin-comment2 documentation][comment-config].
+For details of each comment service options, please refer to [@vuepress/plugin-comment documentation][comment-config].
 
-[comment-config]: https://vuepress-theme-hope.github.io/v2/comment/config/
+[comment-config]: https://ecosystem.vuejs.press/plugins/blog/comment/

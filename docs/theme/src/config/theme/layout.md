@@ -1,6 +1,6 @@
 ---
 title: Theme Layout Options
-icon: config
+icon: object-group
 order: 4
 category:
   - Config
@@ -15,28 +15,25 @@ The following options control theme layout.
 
 ## Navbar Config
 
-For related guide, please see [Layout → Navbar](../../guide/layout/navbar.md).
-
 ### navbar <Badge text="Recommended" type="tip" />
 
-- Type: `HopeThemeNavbarConfig | false`
+- Type: `NavbarOptions | false`
 - Default: `false`
+- Details:
+  - [Layout → Navbar → Navbar links](../../guide/layout/navbar.md#navbar-links)
+  - [Layout → Navbar → Disable Navbar](../../guide/layout/navbar.md#disabling-navbar)
 
-Navbar config
-
-### navbarIcon
-
-- Type: `boolean`
-- Default: `true`
-
-Whether display icons in navbar.
+Navbar config.
 
 ### navbarLayout
 
-- Type: `HopeNavbarLayoutOptions`
+- Type: `NavbarLayoutOptions`
 
   ```ts
-  type HopeThemeNavbarComponent =
+  /**
+   * Built-in Navbar component
+   */
+  type NavbarComponent =
     | "Brand"
     | "Links"
     | "Language"
@@ -44,14 +41,19 @@ Whether display icons in navbar.
     | "Outlook"
     | "Repo";
 
-  interface HopeNavbarLayoutOptions {
-    left: HopeThemeNavbarComponent[];
-    center: HopeThemeNavbarComponent[];
-    right: HopeThemeNavbarComponent[];
+  /**
+   * Navbar layout options
+   */
+  interface NavbarLayoutOptions {
+    start?: (NavbarComponent | string)[];
+    center?: (NavbarComponent | string)[];
+    end?: (NavbarComponent | string)[];
   }
   ```
 
-- Default: `{ left: ["Brand"], center: ["Links"], right: ["Language", "Repo", "Outlook", "Search"] }`
+- Default: `{ start: ["Brand"], center: ["Links"], end: ["Language", "Repo", "Outlook", "Search"] }`
+- Details:
+  - [Layout → Navbar → Navbar layout](../../guide/layout/navbar.md#layout-config)
 
 Customize navbar layout.
 
@@ -65,9 +67,16 @@ Navbar logo, should be absolute path relative to `.vuepress/public` folder.
 ### logoDark
 
 - Type: `string`
-- Required: No
+- Default: `logo`
 
-Navbar logo in darkmode, should be absolute path relative to `.vuepress/public` folder.
+Navbar logo in dark mode, should be absolute path relative to `.vuepress/public` folder.
+
+### navbarTitle
+
+- Type: `string`
+- Default: `$siteLocale.title`
+
+Navbar title, you can set it to an empty string to hide it.
 
 ### repo
 
@@ -103,7 +112,7 @@ The theme can recognize links of GitHub, Gitlab, Gitee and Bitbucket.
 
 Whether to hide navbar when scrolling down.
 
-### hideSiteNameonMobile
+### hideSiteNameOnMobile
 
 - Type: `boolean`
 - Default: `true`
@@ -116,102 +125,98 @@ For guide, see [Layout → Sidebar](../../guide/layout/sidebar.md).
 
 ### sidebar <Badge text="Recommended" type="tip" />
 
-- Type: `HopeThemeSidebarConfig | "structure" | "heading" | false`
+- Type: `SSidebarOptions`
 - Default: `"structure"`
 
 Sidebar Config.
 
-### sidebarIcon
+### sidebarSorter <Badge text="Root only" type="warning" />
 
-- Type: `boolean`
-- Default: `true`
+- Type: `SidebarSorter`
 
-Whether show icons in the sidebar
+  ```ts twoslash
+  import type {
+    ThemeNormalPageFrontmatter,
+    ThemePageData,
+  } from "vuepress-theme-hope";
 
-### sidebarSorter <Badge text="Root Only" />
-
-- Type: `HopeThemeSidebarSorter`
-
-  ```ts
-  export interface HopeThemeSidebarFileInfo {
+  interface SidebarFileInfo {
     type: "file";
-
-    order: number | null;
-    frontmatter: HopeThemeNormalPageFrontmatter;
-    pageData: HopeThemePageData;
+    filename: string;
 
     title: string;
-    path: string;
+    order: number | null;
+    path?: string | null;
+
+    frontmatter: ThemeNormalPageFrontmatter;
+    pageData: ThemePageData;
   }
 
-  export interface HopeThemeSidebarDirInfo {
+  interface SidebarDirInfo {
     type: "dir";
+    dirname: string;
+    children: SidebarInfo[];
 
+    title: string;
     order: number | null;
 
-    frontmatter: HopeThemeNormalPageFrontmatter;
-    pageData: HopeThemePageData;
-
-    info: {
-      prefix: string;
-      text: string;
+    groupInfo: {
       icon?: string;
-      collapsable?: boolean;
+      collapsible?: boolean;
       link?: string;
     };
-    children: HopeThemeSidebarInfo[];
+
+    frontmatter: ThemeNormalPageFrontmatter | null;
+    pageData: ThemePageData | null;
   }
 
-  export type HopeThemeSidebarInfo =
-    | HopeThemeSidebarFileInfo
-    | HopeThemeSidebarDirInfo;
+  type SidebarInfo = SidebarFileInfo | SidebarDirInfo;
 
-  export type HopeThemeSidebarSorterKeyWord =
+  type SidebarSorterKeyword =
     | "readme"
     | "order"
     | "date"
     | "date-desc"
     | "filename"
-    | "file-number"
-    | "file-number-desc"
-    | "title"
-    | "title-number"
-    | "title-number-desc";
+    | "title";
 
-  export type HopeThemeSidebarSorterFunction = (
-    infoA: HopeThemeSidebarInfo,
-    infoB: HopeThemeSidebarInfo
+  type SidebarSorterFunction = (
+    infoA: SidebarInfo,
+    infoB: SidebarInfo,
   ) => number;
+
+  type SidebarSorter =
+    | SidebarSorterFunction
+    | SidebarSorterFunction[]
+    | SidebarSorterKeyword
+    | SidebarSorterKeyword[];
   ```
 
-- Default: `["readme", "order", "title"]`
+- Default: `["readme", "order", "title", "filename"]`
 
 Structure sidebar sorter.
 
 You can:
 
 - fill in a custom function
-- provide one or an array of sorter keywords
+- provide one sorter keyword
+- provide an array of custom function or sorter keyword
 
 Available keywords are:
 
 - `readme`: `README.md` or `readme.md` first
-- `order`: possitive order first with its value ascendingly, negative order last with its value descendingly
-- `date`: sort by date ascendingly
-- `date-desc`: sort by date descendingly
+- `order`: positive order first with its value ascending, negative order last with its value descending
+- `date`: sort by date ascending
+- `date-desc`: sort by date descending
 - `title`: alphabetically sort by title
-- `title-number`: alphabetically sort according to title and ascendingly sort same titles with different number label
-- `title-number-desc`: alphabetically sort according to title and descendingly sort same titles with different number label
 - `filename`: alphabetically sort by filename
-- `file-number`: alphabetically sort according to filename and ascendingly sort same filenames with different number label
-- `file-number-desc`: alphabetically sort according to filename and descendingly sort same filenames with different number label
 
 ### headerDepth
 
 - Type: `number`
 - Default: `2`
 
-Nested headings depth in sidebar
+Nested headings depth
 
 ## Route Navigation
 
@@ -301,7 +306,7 @@ Pattern of edit link. While `:repo` `:branch` `:path` will be automatically repl
 
 ::: note
 
-The theme provide built-in support for GitHub, Gitlab, Gitee and Bitbucket.
+The theme provides built-in support for GitHub, Gitlab, Gitee and Bitbucket.
 
 :::
 
@@ -331,13 +336,13 @@ Docs dir location in repo
 ### footer
 
 - Type: `string`
-- Required: false
+- Required: No
 
 The default content for the footer, can accept HTMLString.
 
 ### copyright
 
-- Type: `string | boolean`
+- Type: `string | false`
 - Default: `"Copyright © <author>"`
 
 The default copyright info, set it to `false` to disable it by default.
@@ -358,9 +363,16 @@ Whether to display footer by default.
 
 Home path of current locale, used as the link of back-to-home and navbar logo.
 
+### rtl
+
+- Type: `boolean`
+- Default: `false`
+
+Whether to use RTL layout.
+
 ### toc {#toc-heading}
 
 - Type: `boolean`
 - Default: `true`
 
-Whether show toc list in desktop mode.
+Whether show toc list.

@@ -1,6 +1,7 @@
 ---
 title: FAQ
-icon: question
+icon: circle-question
+star: true
 category:
   - FAQ
 ---
@@ -9,13 +10,13 @@ Frequency asked questions and corresponding solutions using the theme are includ
 
 ## Catalog
 
+- [Common Question](common-question.md)
+
 - [Troubleshooting](troubleshooting.md)
 
 - [Common Errors](common-error.md)
 
 - [Vite Problems](vite.md)
-
-- [Safari Problems](safari.md)
 
 ## Contact Us
 
@@ -35,7 +36,8 @@ If necessary, provide a minimal reproduction Repo[^minimal-reproduction-repo] li
 
 - If you have questions about learning and using Vue, TypeScript, Sass, or you don't know how to write what you want, you may want to ask questions on the Vue forums, Stack Overflow, etc.
 
-- If you have questions about VuePress, please [open a new discussion](https://github.com/vuepress/vuepress-next/discussions/new) in VuePress repo, as a member of the VuePress team, Mr.Hope will try to answer in his spare time.
+- If you have questions about VuePress itself, please [open a new discussion](https://github.com/vuepress/core/discussions/new) in VuePress core repo.
+- If you have questions about VuePress official plugins, please [open a new discussion](https://github.com/vuepress/ecosystem/discussions/new) in VuePress ecosystem repo, as a member of the VuePress team, Mr.Hope will try to answer in his spare time.
 
 Please only start discussions about the VuePress Theme Hope and plugins written by Mr.Hope in theme repository.
 
@@ -47,19 +49,19 @@ Please only start discussions about the VuePress Theme Hope and plugins written 
   - error screenshot in browser console (if there are errors)
   - if your problem is related to display, please also provide related screenshots.
 
-- If there is something you don’t know how to solve, welcome to [open a discussion](https://github.com/vuepress-theme-hope/vuepress-theme-hope/discussions/new). Questions are always welcome, no matter **they are simple or not**. You only need to make sure three points:
+- If there is something you don't know how to solve, welcome to [open a discussion](https://github.com/vuepress-theme-hope/vuepress-theme-hope/discussions/new). Questions are always welcome, no matter **they are simple or not**. You only need to make sure three points:
 
   1. You have tried searching related docs through search box.
 
   1. You are providing a detailed description in the discussion.
 
-     - If you don’t know how to configure something, please describe what you want, and what you search or what section are you expecting to see the guidelines (so that we can improve our docs).
+     - If you don't know how to configure something, please describe what you want, and what you search or what section are you expecting to see the guidelines (so that we can improve our docs).
 
   1. You are not asking question unrelated to VuePress or asking for a "technical support".
 
      For customization, we only support "how can you customize something (in which way)". "How to customize something" (what you should write in your own codes) is NOT SUPPORTED. Unless you are donating this project, please do not insist asking help for that part.
 
-     Mr.Hope is a postgraduate student majored in theoretical physics, and really busy. He is not expecting to "be a doc provider" or "teach you how to write code".
+     Mr.Hope is really busy. He is not expecting to "be a doc provider" or "teach you how to write code".
 
 ## Social Group
 

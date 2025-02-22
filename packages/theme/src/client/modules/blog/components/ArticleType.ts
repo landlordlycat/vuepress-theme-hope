@@ -1,56 +1,72 @@
+import type { VNode } from "vue";
 import { computed, defineComponent, h } from "vue";
-import { RouterLink, useRoute } from "vue-router";
+import {
+  RouteLink,
+  resolveRoute,
+  usePageData,
+  useRouteLocale,
+} from "vuepress/client";
 
-import { useThemeLocaleData } from "@theme-hope/composables/index.js";
 import {
   useArticles,
-  useEncryptedArticles,
-  useSlides,
+  useBlogLocaleData,
   useStars,
-} from "@theme-hope/modules/blog/composables/index.js";
+} from "@theme-hope/modules/blog/composables/index";
 
-import type { VNode } from "vue";
+import { PageInfo } from "../../../../shared/index.js";
 
 import "../styles/article-type.scss";
+
+declare const __VP_BLOG_TYPES__: { key: string; path: string }[];
 
 export default defineComponent({
   name: "ArticleType",
 
   setup() {
-    const themeLocale = useThemeLocaleData();
-    const route = useRoute();
+    const page = usePageData();
+    const localePath = useRouteLocale();
     const articles = useArticles();
-    const encryptedArticles = useEncryptedArticles();
-    const slides = useSlides();
     const stars = useStars();
+    const blogLocale = useBlogLocaleData();
 
     const types = computed(() => {
-      const locale = themeLocale.value.blogLocales;
-
       return [
         {
-          text: locale.all,
+          text: blogLocale.value.all,
           path: articles.value.path,
         },
-        { text: locale.star, path: stars.value.path },
-        { text: locale.slides, path: slides.value.path },
-        { text: locale.encrypt, path: encryptedArticles.value.path },
+        { text: blogLocale.value.star, path: stars.value.path },
+        ...__VP_BLOG_TYPES__.map(({ key, path }) => {
+          const routePath = path.replace(/^\//, localePath.value);
+
+          return {
+            text:
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+              blogLocale.value[key] ??
+              resolveRoute(routePath).meta[PageInfo.title] ??
+              key,
+            path: routePath,
+          };
+        }),
       ];
     });
 
     return (): VNode =>
       h(
         "ul",
-        { class: "article-type-wrapper" },
+        { class: "vp-article-type-wrapper" },
         types.value.map((type) =>
           h(
             "li",
             {
-              class: ["article-type", { active: type.path === route.path }],
+              class: [
+                "vp-article-type",
+                { active: type.path === page.value.path },
+              ],
             },
-            h(RouterLink, { to: type.path }, () => type.text)
-          )
-        )
+            h(RouteLink, { to: type.path }, () => type.text),
+          ),
+        ),
       );
   },
 });

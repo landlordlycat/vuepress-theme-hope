@@ -1,6 +1,7 @@
 ---
 title: Feed 支持
 icon: rss
+order: 4
 category:
   - 高级
 tag:
@@ -8,11 +9,11 @@ tag:
   - Feed
 ---
 
-`vuepress-theme-hope` 通过内置 [`vuepress-plugin-feed2`][feed2] 插件来为你提供 feed 支持。
+`vuepress-theme-hope` 通过内置 [`@vuepress/plugin-feed`][feed] 插件来为你提供 feed 支持。想使用它，你应该手动在你的项目中安装 `@vuepress/plugin-feed`。
 
 ::: info
 
-`vuepress-theme-hope` 将主题选项中的 `plugins.feed` 选项作为插件选项提供给 `vuepress-plugin-feed2`。
+`vuepress-theme-hope` 将主题选项中的 `plugins.feed` 选项作为插件选项提供给 `@vuepress/plugin-feed`。
 
 :::
 
@@ -20,17 +21,13 @@ tag:
 
 ## 使用
 
-`vuepress-plugin-feed2` 插件可为你生成以下三种格式的 feed 文件:
+`@vuepress/plugin-feed` 插件可为你生成以下三种格式的 feed 文件:
 
 - Atom 1.0
 - JSON 1.1
 - RSS 2.0
 
-::: tip
-
-Atom 和 JSON 是为了提供更多 Feed 软件的适配而提供的。
-
-如果可以，请尽可能使用 RSS。
+::: tip 如果可以，请尽可能使用 RSS。Atom 和 JSON 是为了最好的兼容性而提供的。
 
 :::
 
@@ -65,7 +62,7 @@ Atom 和 JSON 是为了提供更多 Feed 软件的适配而提供的。
 
 :::
 
-详细的选项及其默认值详见 [配置 → 频道设置][feed2-channel]
+详细的选项及其默认值详见 [Feed 频道文档][feed-channel]。
 
 ## 生成控制
 
@@ -73,19 +70,9 @@ Atom 和 JSON 是为了提供更多 Feed 软件的适配而提供的。
 
 默认情况下，所有文章均会被添加至 feed 流。
 
-关于默认情况下读取的内容，详见 [配置 → 项目控制][feed2-item]
+你可以通过配置 frontmatter 中的 `feed` 选项，对特定文章的 feed 项目生成的内容进行控制，详见 [Feed frontmatter 文档][feed-frontmatter]。
 
-### 自定义页面
-
-你可以通过配置 frontmatter 中的 `feed` 选项，对特定文章的 feed 项目生成的内容进行控制。
-
-详细的选项及其默认值详见 [配置 → 项目设置][feed2-item]
-
-### 自定义 Feed 生成
-
-你可以通过配置插件选项中的 `getter`，完全控制 Feed 项目的生成逻辑。
-
-详细的选项及其默认值详见 [配置 → Feed 获取器][feed2-getter]
+你可以通过配置插件选项中的 `getter`，完全控制 Feed 项目的生成逻辑，详见 [Feed 获取器文档][feed-getter]。
 
 ### 多语言配置
 
@@ -93,7 +80,7 @@ Atom 和 JSON 是为了提供更多 Feed 软件的适配而提供的。
 
 你可以通过插件选项中的 `locales` 分别对不同语言提供不同的默认设置。
 
-[feed2]: https://vuepress-theme-hope.github.io/v2/feed/zh/
-[feed2-channel]: https://vuepress-theme-hope.github.io/v2/feed/zh/config/channel.html
-[feed2-item]: https://vuepress-theme-hope.github.io/v2/feed/zh/config/item.html
-[feed2-getter]: https://vuepress-theme-hope.github.io/v2/feed/zh/config/getter.html
+[feed]: https://ecosystem.vuejs.press/zh/plugins/blog/feed/
+[feed-channel]: https://ecosystem.vuejs.press/zh/plugins/blog/feed/channel.html
+[feed-frontmatter]: https://ecosystem.vuejs.press/zh/plugins/blog/feed/frontmatter.html
+[feed-getter]: https://ecosystem.vuejs.press/zh/plugins/blog/feed/getter.html

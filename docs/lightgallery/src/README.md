@@ -2,18 +2,20 @@
 home: true
 title: Home
 icon: home
-heroImage: /logo.svg
 heroText: vuepress-plugin-lightgallery
 tagline: Light gallery plugin for VuePress2
 actions:
-  - text: Guide 💡
-    link: /guide.html
+  - text: Guide
+    icon: lightbulb
+    link: ./guide.html
     type: primary
 
-  - text: Config 🛠
-    link: /config.html
+  - text: Config
+    icon: tools
+    link: ./config.html
 
-footer: MIT Licensed | Copyright © 2019-present Mr.Hope
+footer: Theme by <a href="https://theme-hope.vuejs.press" target="_blank">VuePress Theme Hope</a> | MIT Licensed, Copyright © 2019-present Mr.Hope
+
 copyright: false
 ---
 
@@ -26,19 +28,19 @@ copyright: false
 @tab pnpm
 
 ```bash
-pnpm add -D vuepress-plugin-lightgallery@next
+pnpm add -D vuepress-plugin-lightgallery
 ```
 
 @tab yarn
 
 ```bash
-yarn add -D vuepress-plugin-lightgallery@next
+yarn add -D vuepress-plugin-lightgallery
 ```
 
 @tab npm
 
 ```bash
-npm i -D vuepress-plugin-lightgallery@next
+npm i -D vuepress-plugin-lightgallery
 ```
 
 :::
@@ -49,8 +51,7 @@ npm i -D vuepress-plugin-lightgallery@next
 
 @tab TS
 
-```ts
-// .vuepress/config.ts
+```ts title=".vuepress/config.ts"
 import { lightgalleryPlugin } from "vuepress-plugin-lightgallery";
 
 export default {
@@ -64,8 +65,7 @@ export default {
 
 @tab JS
 
-```js
-// .vuepress/config.js
+```js title=".vuepress/config.js"
 import { lightgalleryPlugin } from "vuepress-plugin-lightgallery";
 
 export default {
@@ -79,7 +79,7 @@ export default {
 
 :::
 
-::: danger LICENSE RESTRICTIONS
+::: caution LICENSE RESTRICTIONS
 
 Please note that although this plugin release under MIT license, we are currently making this possible with a built-in [organization license of lightgallery](https://www.lightgalleryjs.com/license/) of VuePress Theme Hope, and we would like to admit you are a member of our organization if you are using it for non-commercial usage.
 
@@ -89,4 +89,8 @@ But PLEASE DO AWARE that organizational license can only be used on one product.
 
 YOU ARE WARNED!
 
+If you are worried about this, please consider using [@vuepress/plugin-photo-swipe][photo-swipe] instead.
+
 :::
+
+[photo-swipe]: https://ecosystem.vuejs.press/plugins/features/photo-swipe.html

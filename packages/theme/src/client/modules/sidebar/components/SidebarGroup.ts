@@ -1,12 +1,13 @@
-import { computed, defineComponent, h } from "vue";
-import { RouterLink, useRoute } from "vue-router";
-
-import Icon from "@theme-hope/components/Icon.js";
-import SidebarLinks from "@theme-hope/modules/sidebar/components/SidebarLinks.js";
-import { isActiveSidebarItem } from "@theme-hope/modules/sidebar/utils/index.js";
-
 import type { PropType, VNode } from "vue";
-import type { ResolvedHopeThemeSidebarGroupItem } from "../../../../shared/index.js";
+import { computed, defineComponent, h, ref, resolveComponent } from "vue";
+import { useRoute } from "vuepress/client";
+
+import AutoLink from "@theme-hope/components/AutoLink";
+import SidebarLinks from "@theme-hope/modules/sidebar/components/SidebarLinks";
+import { isActiveSidebarItem } from "@theme-hope/modules/sidebar/utils/index";
+import { isActiveItem } from "@theme-hope/utils/index";
+
+import type { SidebarGroupItem } from "../utils/index.js";
 
 import "../styles/sidebar-group.scss";
 
@@ -14,26 +15,45 @@ export default defineComponent({
   name: "SidebarGroup",
 
   props: {
+    /**
+     * Sidebar group item config
+     *
+     * 侧边栏分组配置
+     */
     config: {
-      type: Object as PropType<ResolvedHopeThemeSidebarGroupItem>,
+      type: Object as PropType<SidebarGroupItem>,
       required: true,
     },
-    open: { type: Boolean, required: true },
+
+    /**
+     * Whether current group is open
+     *
+     * 当前分组是否展开
+     */
+    open: {
+      type: Boolean,
+      required: true,
+    },
   },
 
   emits: ["toggle"],
 
   setup(props, { emit }) {
     const route = useRoute();
+
+    const hasBeenToggled = ref(false);
+
     const active = computed(() => isActiveSidebarItem(route, props.config));
 
-    const exact = computed(() =>
-      isActiveSidebarItem(route, props.config, true)
+    const exact = computed(() => isActiveItem(route, props.config));
+
+    const shouldOpen = computed(
+      () => props.open || (props.config.expanded && !hasBeenToggled.value),
     );
 
     return (): VNode => {
       const {
-        collapsable,
+        collapsible,
         children = [],
         icon,
         prefix,
@@ -41,42 +61,49 @@ export default defineComponent({
         text,
       } = props.config;
 
-      return h("section", { class: "sidebar-group" }, [
+      return h("section", { class: "vp-sidebar-group" }, [
         h(
-          collapsable ? "button" : "p",
+          collapsible ? "button" : "p",
           {
             class: [
-              "sidebar-heading",
+              "vp-sidebar-header",
               {
-                clickable: collapsable || link,
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                clickable: collapsible || link,
                 exact: exact.value,
                 active: active.value,
               },
             ],
-            ...(collapsable
+            ...(collapsible
               ? {
-                  onClick: () => emit("toggle"),
-                  onKeydown: (event: KeyboardEvent): void => {
-                    if (event.key === "Enter") emit("toggle");
+                  type: "button",
+                  onClick: (): void => {
+                    hasBeenToggled.value = true;
+                    emit("toggle");
                   },
                 }
               : {}),
           },
           [
-            // icon
-            h(Icon, { icon }),
-            // title
+            // Icon
+            h(resolveComponent("VPIcon"), { icon, sizing: "both" }),
+            // Title
             link
-              ? h(RouterLink, { to: link, class: "title" }, () => text)
-              : h("span", { class: "title" }, text),
-            // arrow
-            collapsable
-              ? h("span", { class: ["arrow", props.open ? "down" : "right"] })
+              ? h(AutoLink, {
+                  class: "vp-sidebar-title no-external-link-icon",
+                  config: { text, link },
+                })
+              : h("span", { class: "vp-sidebar-title" }, text),
+            // Arrow
+            collapsible
+              ? h("span", {
+                  class: ["vp-arrow", shouldOpen.value ? "down" : "end"],
+                })
               : null,
-          ]
+          ],
         ),
 
-        props.open || !collapsable
+        shouldOpen.value || !collapsible
           ? h(SidebarLinks, { key: prefix, config: children })
           : null,
       ]);

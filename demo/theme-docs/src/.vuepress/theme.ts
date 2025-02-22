@@ -1,132 +1,109 @@
 import { hopeTheme } from "vuepress-theme-hope";
+
 import { enNavbar, zhNavbar } from "./navbar/index.js";
 import { enSidebar, zhSidebar } from "./sidebar/index.js";
 
 const hostname =
-  process.env.HOSTNAME || "https://vuepress-theme-hope-docs-demo.netlify.app";
+  process.env.HOSTNAME ?? "https://theme-hope-docs-demo.vuejs.press";
 
-export default hopeTheme({
-  hostname,
+export default hopeTheme(
+  {
+    hostname,
 
-  author: {
-    name: "Mr.Hope",
-    url: "https://mrhope.site",
-  },
+    author: {
+      name: "Mr.Hope",
+      url: "https://mister-hope.com",
+    },
 
-  iconAssets: "iconfont",
+    logo: "https://theme-hope-assets.vuejs.press/logo.svg",
 
-  logo: "/logo.svg",
+    repo: "vuepress-theme-hope/vuepress-theme-hope",
 
-  repo: "vuepress-theme-hope/vuepress-theme-hope",
+    docsDir: "demo/theme-docs/src",
 
-  docsDir: "demo/theme-docs/src",
+    locales: {
+      "/": {
+        // Navbar
+        navbar: enNavbar,
 
-  pageInfo: ["Author", "Original", "Date", "Category", "Tag", "ReadingTime"],
+        // Sidebar
+        sidebar: enSidebar,
 
-  locales: {
-    "/": {
-      // navbar
-      navbar: enNavbar,
+        footer: "Default footer",
 
-      // sidebar
-      sidebar: enSidebar,
+        displayFooter: true,
 
-      footer: "Default footer",
+        metaLocales: {
+          editLink: "Edit this page on GitHub",
+        },
+      },
 
-      displayFooter: true,
+      /**
+       * Chinese locale config
+       */
+      "/zh/": {
+        // Navbar
+        navbar: zhNavbar,
 
-      metaLocales: {
-        editLink: "Edit this page on GitHub",
+        // Sidebar
+        sidebar: zhSidebar,
+
+        footer: "默认页脚",
+
+        displayFooter: true,
+
+        // Page meta
+        metaLocales: {
+          editLink: "在 GitHub 上编辑此页",
+        },
       },
     },
 
-    /**
-     * Chinese locale config
-     */
-    "/zh/": {
-      // navbar
-      navbar: zhNavbar,
-
-      // sidebar
-      sidebar: zhSidebar,
-
-      footer: "默认页脚",
-
-      displayFooter: true,
-
-      // page meta
-      metaLocales: {
-        editLink: "在 GitHub 上编辑此页",
+    encrypt: {
+      config: {
+        "/demo/encrypt.html": {
+          hint: "Password: 1234",
+          password: "1234",
+        },
+        "/zh/demo/encrypt.html": {
+          hint: "Password: 1234",
+          password: "1234",
+        },
       },
     },
-  },
 
-  encrypt: {
-    config: {
-      "/demo/encrypt.html": ["1234"],
-      "/zh/demo/encrypt.html": ["1234"],
-    },
-  },
-
-  plugins: {
-    // If you don't need comment feature, you can remove following option
-    // The following config is for demo ONLY, if you need comment feature, please generate and use your own config, see comment plugin documentation for details.
-    // To avoid disturbing the theme developer and consuming his resources, please DO NOT use the following config directly in your production environment!!!!!
-    comment: {
-      /**
-       * Using Giscus
-       */
-      // provider: "Giscus",
-      // repo: "vuepress-theme-hope/giscus-discussions",
-      // repoId: "R_kgDOG_Pt2A",
-      // category: "Announcements",
-      // categoryId: "DIC_kwDOG_Pt2M4COD69",
-
-      /**
-       * Using Twikoo
-       */
-      // provider: "Twikoo",
-      // envId: "https://twikoo.ccknbc.vercel.app",
-
-      /**
-       * Using Waline
-       */
-      provider: "Waline",
-      serverURL: "https://vuepress-theme-hope-comment.vercel.app",
-    },
-
-    // Disable features you don't want here
-    mdEnhance: {
+    // FIXME: All features are enabled for demo, only preserve features you need here
+    markdown: {
       align: true,
       attrs: true,
-      chart: true,
-      codetabs: true,
-      container: true,
-      demo: true,
-      echarts: true,
-      flowchart: true,
+      codeTabs: true,
+      component: true,
+      figure: true,
       gfm: true,
-      imageSize: true,
+      imgLazyload: true,
+      imgSize: true,
       include: true,
-      katex: true,
-      lazyLoad: true,
       mark: true,
-      mermaid: true,
-      playground: {
-        presets: ["ts", "vue"],
-      },
-      presentation: {
+      math: true,
+      revealjs: {
         plugins: ["highlight", "math", "search", "notes", "zoom"],
       },
+      spoiler: true,
       stylize: [
         {
-          matcher: "Recommanded",
-          replacer: ({ tag }) => {
+          matcher: "Recommended",
+          replacer: ({
+            tag,
+          }): {
+            tag: string;
+            attrs: Record<string, string>;
+            content: string;
+          } | void => {
             if (tag === "em")
               return {
                 tag: "Badge",
                 attrs: { type: "tip" },
-                content: "Recommanded",
+                content: "Recommended",
               };
           },
         },
@@ -134,75 +111,99 @@ export default hopeTheme({
       sub: true,
       sup: true,
       tabs: true,
-      vpre: true,
+      tasklist: true,
+      vPre: true,
+
+      chartjs: true,
+      demo: true,
+      echarts: true,
+      flowchart: true,
+      kotlinPlayground: true,
+      markmap: true,
+      mermaid: true,
+      playground: {
+        presets: ["ts", "vue", "unocss"],
+      },
+      sandpack: true,
       vuePlayground: true,
     },
 
-    pwa: {
-      favicon: "/favicon.ico",
-      cacheHTML: true,
-      cachePic: true,
-      appendBase: true,
-      apple: {
-        icon: "/assets/icon/apple-icon-152.png",
-        statusBarColor: "black",
+    plugins: {
+      comment: {
+        provider: "Giscus",
+        repo: "vuepress-theme-hope/giscus-discussions",
+        repoId: "R_kgDOG_Pt2A",
+        category: "Announcements",
+        categoryId: "DIC_kwDOG_Pt2M4COD69",
       },
-      msTile: {
-        image: "/assets/icon/ms-icon-144.png",
-        color: "#ffffff",
-      },
-      manifest: {
-        icons: [
-          {
-            src: "/assets/icon/chrome-mask-512.png",
-            sizes: "512x512",
-            purpose: "maskable",
-            type: "image/png",
-          },
-          {
-            src: "/assets/icon/chrome-mask-192.png",
-            sizes: "192x192",
-            purpose: "maskable",
-            type: "image/png",
-          },
-          {
-            src: "/assets/icon/chrome-512.png",
-            sizes: "512x512",
-            type: "image/png",
-          },
-          {
-            src: "/assets/icon/chrome-192.png",
-            sizes: "192x192",
-            type: "image/png",
-          },
-        ],
-        shortcuts: [
-          {
-            name: "Demo",
-            short_name: "Demo",
-            url: "/demo/",
-            icons: [
-              {
-                src: "/assets/icon/guide-maskable.png",
-                sizes: "192x192",
-                purpose: "maskable",
-                type: "image/png",
-              },
-              {
-                src: "/assets/icon/guide-monochrome.png",
-                sizes: "192x192",
-                purpose: "monochrome",
-                type: "image/png",
-              },
-            ],
-          },
-        ],
-      },
-    },
 
-    seo:
-      hostname === "https://vuepress-theme-hope.github.io"
-        ? {}
-        : { canonical: "https://vuepress-theme-hope.github.io/docs-demo/" },
+      components: {
+        components: ["Badge", "VPCard"],
+      },
+
+      icon: {
+        prefix: "fa6-solid:",
+      },
+
+      pwa: {
+        favicon: "/favicon.ico",
+        cacheHTML: true,
+        cacheImage: true,
+        appendBase: true,
+        apple: {
+          icon: "/assets/icon/apple-icon-152.png",
+          statusBarColor: "black",
+        },
+
+        manifest: {
+          icons: [
+            {
+              src: "/assets/icon/chrome-mask-512.png",
+              sizes: "512x512",
+              purpose: "maskable",
+              type: "image/png",
+            },
+            {
+              src: "/assets/icon/chrome-mask-192.png",
+              sizes: "192x192",
+              purpose: "maskable",
+              type: "image/png",
+            },
+            {
+              src: "/assets/icon/chrome-512.png",
+              sizes: "512x512",
+              type: "image/png",
+            },
+            {
+              src: "/assets/icon/chrome-192.png",
+              sizes: "192x192",
+              type: "image/png",
+            },
+          ],
+          shortcuts: [
+            {
+              name: "Demo",
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              short_name: "Demo",
+              url: "/demo/",
+              icons: [
+                {
+                  src: "/assets/icon/guide-maskable.png",
+                  sizes: "192x192",
+                  purpose: "maskable",
+                  type: "image/png",
+                },
+              ],
+            },
+          ],
+        },
+      },
+
+      seo:
+        hostname === "https://theme-hope-docs-demo.vuejs.press"
+          ? {}
+          : { canonical: "https://theme-hope-docs-demo.vuejs.press" },
+    },
   },
-});
+  { custom: true },
+);

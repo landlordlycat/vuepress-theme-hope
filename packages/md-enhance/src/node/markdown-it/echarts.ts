@@ -1,8 +1,7 @@
-import { utoa } from "vuepress-shared";
-import { container } from "./container.js";
-import type { default as Token } from "markdown-it/lib/token.js";
-
+import { container } from "@mdit/plugin-container";
+import { encodeData } from "@vuepress/helper";
 import type { PluginSimple } from "markdown-it";
+import type Token from "markdown-it/lib/token.mjs";
 
 const echartsRender = (tokens: Token[], index: number): string => {
   const token = tokens[index];
@@ -10,14 +9,14 @@ const echartsRender = (tokens: Token[], index: number): string => {
   const { content, info } = token;
   const title = info.trim().split(":", 2)[1];
 
-  return `<ECharts id="${key}" config="${utoa(content)}"${
+  return `<ECharts id="${key}" config="${encodeData(content)}"${
     title ? ` title="${encodeURIComponent(title)}"` : ""
   }></ECharts>`;
 };
 
 export const echarts: PluginSimple = (md) => {
   // Handle ```echarts blocks
-  const fence = md.renderer.rules.fence;
+  const { fence } = md.renderer.rules;
 
   md.renderer.rules.fence = (...args): string => {
     const [tokens, index] = args;
@@ -26,10 +25,11 @@ export const echarts: PluginSimple = (md) => {
 
     if (realInfo === "echarts") return echartsRender(tokens, index);
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return fence!(...args);
   };
 
-  md.renderer.rules["echarts"] = echartsRender;
+  md.renderer.rules.echarts = echartsRender;
 
   container(md, {
     name: "echarts",
@@ -52,21 +52,21 @@ export const echarts: PluginSimple = (md) => {
         if (type === "container_echarts_close") break;
 
         if (!content) continue;
-        if (type === "fence") {
-          if (info === "json") config = content;
-          else if (info === "js" || info === "javascript") {
+        if (type === "fence")
+          if (info === "json") {
+            config = content;
+          } else if (info === "js" || info === "javascript") {
             config = content;
             isJavaScript = true;
           }
-        }
 
-        // set to an unexisit token type
+        // Set to an unknown token type
         tokens[i].type = "echarts_empty";
-        // hide token
+        // Hide token
         tokens[i].hidden = true;
       }
 
-      return `<ECharts id="${key}" config="${utoa(config)}"${
+      return `<ECharts id="${key}" config="${encodeData(config)}"${
         title ? ` title="${encodeURIComponent(title)}"` : ""
       }${isJavaScript ? ' type="js"' : ""}>`;
     },

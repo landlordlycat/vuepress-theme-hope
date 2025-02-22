@@ -1,18 +1,52 @@
-import { Logger } from "vuepress-shared";
+import { Logger, ensureEndingSlash, isModuleAvailable } from "@vuepress/helper";
+import { getDirname, path } from "vuepress/utils";
 
-export const logger = new Logger("vuepress-plugin-components");
+import type {
+  AvailableComponent,
+  DeprecatedComponent,
+} from "./options/index.js";
 
-export const getIconPrefix = (iconAssetsLink = ""): string => {
-  if (
-    iconAssetsLink === "fontawesome" ||
-    iconAssetsLink.match(/^(?:https:)?\/\/kit\.fontawesome\.com\//)
-  )
-    return "fas fa-";
-  if (
-    iconAssetsLink === "iconfont" ||
-    iconAssetsLink.match(/^(?:https:)?\/\/at\.alicdn\.com\/t\//)
-  )
-    return "iconfont icon-";
+const __dirname = getDirname(import.meta.url);
 
-  return "";
+export const AVAILABLE_COMPONENTS: (
+  | AvailableComponent
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  | DeprecatedComponent
+)[] = [
+  "ArtPlayer",
+  "Badge",
+  "BiliBili",
+  "CodePen",
+  "PDF",
+  "Share",
+  "SiteInfo",
+  "StackBlitz",
+  "VPBanner",
+  "VPCard",
+  "VidStack",
+  "XiGua",
+
+  // deprecated
+  "AudioPlayer",
+  "Replit",
+  "VideoPlayer",
+  "YouTube",
+];
+
+export const COMPONENT_PKG: Record<string, string[]> = {
+  ArtPlayer: ["artplayer"],
+  AudioPlayer: ["vidstack"],
+  VidStack: ["vidstack"],
+  VideoPlayer: ["vidstack"],
 };
+
+export const CLIENT_FOLDER = ensureEndingSlash(
+  path.resolve(__dirname, "../client"),
+);
+
+export const PLUGIN_NAME = "vuepress-plugin-components";
+
+export const logger = new Logger(PLUGIN_NAME);
+
+export const isInstalled = (pkg: string): boolean =>
+  isModuleAvailable(pkg, import.meta);

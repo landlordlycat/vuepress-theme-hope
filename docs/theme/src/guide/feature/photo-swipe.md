@@ -1,6 +1,6 @@
 ---
 title: Image Preview
-icon: preview
+icon: image
 category:
   - Feature
 tag:
@@ -8,15 +8,9 @@ tag:
   - Image Preview
 ---
 
-By including [vuepress-plugin-photo-swipe][photo-swipe], vuepress-theme-hope will make the pictures in the body of the page enter the preview mode when clicked.
+By using [@vuepress/plugin-photo-swipe][photo-swipe], clicking images in pages will enter preview mode.
 
-If you don’t need this feature, you can set `plugins.photoSwipe: false` in theme options to disable it.
-
-::: info
-
-`vuepress-theme-hope` passes `plugins.photoSwipe` in theme options as plugin options to `vuepress-plugin-photo-swipe`.
-
-:::
+If you don't need this feature, you can set `plugins.photoSwipe: false` in theme options to disable it.
 
 <!-- more -->
 
@@ -40,16 +34,18 @@ In preview mode, you can:
 
 ## Customize Config
 
-You can check the [plugin documentation][photo-swipe] for advanced configuration.
+`vuepress-theme-hope` passes `plugins.photoSwipe` in theme options as plugin options to `@vuepress/plugin-photo-swipe`.
+
+You can check the [photo-swipe plugin documentation][photo-swipe] for advanced configuration.
 
 ## Demo
 
 <!-- markdownlint-disable -->
 
 <div class="image-preview">
-  <img src="/assets/image/1.jpg" />
-  <img src="/assets/image/2.jpg" />
-  <img src="/assets/image/3.jpg" />
+  <img src="//theme-hope-assets.vuejs.press/files/img/1.jpg" />
+  <img src="//theme-hope-assets.vuejs.press/files/img/2.jpg" />
+  <img src="//theme-hope-assets.vuejs.press/files/img/3.jpg" />
 </div>
 
 <style>
@@ -59,16 +55,12 @@ You can check the [plugin documentation][photo-swipe] for advanced configuration
     align-items: center;
     flex-wrap: wrap;
   }
+
   .image-preview > img {
      box-sizing: border-box;
+     width: 33.3% !important;
      padding: 9px;
      border-radius: 16px;
-   }
-
-  @media (max-width: 1440px){
-    .image-preview > img {
-      width: 33.3% !important;
-    }
   }
 
   @media (max-width: 719px){
@@ -82,9 +74,8 @@ You can check the [plugin documentation][photo-swipe] for advanced configuration
       width: 100% !important;
     }
   }
-
 </style>
 
 <!-- markdownlint-restore -->
 
-[photo-swipe]: https://vuepress-theme-hope.github.io/v2/photo-swipe/
+[photo-swipe]: https://ecosystem.vuejs.press/zh/plugins/features/photo-swipe.html

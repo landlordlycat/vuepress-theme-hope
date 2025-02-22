@@ -1,60 +1,60 @@
 import type {
-  HopeThemeBlogPluginHelper,
-  HopeThemeCommentPluginHelper,
-  HopeThemeCopyCodePluginHelper,
-  HopeThemeCopyrightPluginHelper,
-  HopeThemeFeedPluginHelper,
-  HopeThemeGitPluginHelper,
-  HopeThemeMdEnhancePluginHelper,
-  HopeThemeNavbarHelper,
-  HopeThemePhotoSwipePluginHelper,
-  HopeThemePWAPluginHelper,
-  HopeThemeReadingTimePluginHelper,
-  HopeThemeSEOPluginHelper,
-  HopeThemeSidebarArrayHelper,
-  HopeThemeSidebarHelper,
-  HopeThemeSidebarObjectHelper,
-  HopeThemeSitemapPluginHelper,
-} from "../shared/index.js";
+  ThemeBackToTopPluginHelper,
+  ThemeBlogPluginHelper,
+  ThemeCatalogPluginHelper,
+  ThemeCommentPluginHelper,
+  ThemeComponentPluginHelper,
+  ThemeCopyCodePluginHelper,
+  ThemeCopyrightPluginHelper,
+  ThemeFeedPluginHelper,
+  ThemeGitPluginHelper,
+  ThemeLinksCheckPluginHelper,
+  ThemeNavbarHelper,
+  ThemeNoticePluginHelper,
+  ThemePhotoSwipePluginHelper,
+  ThemePrismJsPluginHelper,
+  ThemePwaPluginHelper,
+  ThemeReadingTimePluginHelper,
+  ThemeRedirectPluginHelper,
+  ThemeRevealPluginHelper,
+  ThemeSEOPluginHelper,
+  ThemeShikiPluginHelper,
+  ThemeSidebarArrayHelper,
+  ThemeSidebarHelper,
+  ThemeSidebarObjectHelper,
+  ThemeSitemapPluginHelper,
+  ThemeWatermarkPluginHelper,
+} from "./typings/index.js";
 
-export const navbar: HopeThemeNavbarHelper = (navbarConfig) => navbarConfig;
+export const navbar: ThemeNavbarHelper = (options) => options;
 
-export const sidebar: HopeThemeSidebarHelper = (sidebarConfig) => sidebarConfig;
+export const sidebar: ThemeSidebarHelper = (options) => options;
 
-export const arraySidebar: HopeThemeSidebarArrayHelper = (sidebarConfig) =>
+export const arraySidebar: ThemeSidebarArrayHelper = (sidebarConfig) =>
   sidebarConfig;
 
-export const objectSidebar: HopeThemeSidebarObjectHelper = (sidebarConfig) =>
+export const objectSidebar: ThemeSidebarObjectHelper = (sidebarConfig) =>
   sidebarConfig;
 
-export const blog: HopeThemeBlogPluginHelper = (blogConfig) => blogConfig;
-
-export const comment: HopeThemeCommentPluginHelper = (commentConfig) =>
-  commentConfig;
-
-export const copyCode: HopeThemeCopyCodePluginHelper = (copyCodeConfig) =>
-  copyCodeConfig;
-
-export const copyright: HopeThemeCopyrightPluginHelper = (copyrightConfig) =>
-  copyrightConfig;
-
-export const feed: HopeThemeFeedPluginHelper = (feedConfig) => feedConfig;
-
-export const git: HopeThemeGitPluginHelper = (gitConfig) => gitConfig;
-
-export const mdEnhance: HopeThemeMdEnhancePluginHelper = (mdEnhanceConfig) =>
-  mdEnhanceConfig;
-
-export const photoSwipe: HopeThemePhotoSwipePluginHelper = (photoSwipeConfig) =>
-  photoSwipeConfig;
-
-export const pwa: HopeThemePWAPluginHelper = (pwaConfig) => pwaConfig;
-
-export const readingTime: HopeThemeReadingTimePluginHelper = (
-  readingTimeConfig
-) => readingTimeConfig;
-
-export const seo: HopeThemeSEOPluginHelper = (seoConfig) => seoConfig;
-
-export const sitemap: HopeThemeSitemapPluginHelper = (sitemapConfig) =>
-  sitemapConfig;
+export const backToTop: ThemeBackToTopPluginHelper = (backToTopConfig) =>
+  backToTopConfig;
+export const blog: ThemeBlogPluginHelper = (options) => options;
+export const catalog: ThemeCatalogPluginHelper = (options) => options;
+export const comment: ThemeCommentPluginHelper = (options) => options;
+export const components: ThemeComponentPluginHelper = (options) => options;
+export const copyCode: ThemeCopyCodePluginHelper = (options) => options;
+export const copyright: ThemeCopyrightPluginHelper = (options) => options;
+export const feed: ThemeFeedPluginHelper = (options) => options;
+export const git: ThemeGitPluginHelper = (options) => options;
+export const linksCheck: ThemeLinksCheckPluginHelper = (options) => options;
+export const notice: ThemeNoticePluginHelper = (options) => options;
+export const photoSwipe: ThemePhotoSwipePluginHelper = (options) => options;
+export const prismjs: ThemePrismJsPluginHelper = (options) => options;
+export const pwa: ThemePwaPluginHelper = (options) => options;
+export const readingTime: ThemeReadingTimePluginHelper = (options) => options;
+export const redirect: ThemeRedirectPluginHelper = (options) => options;
+export const revealjs: ThemeRevealPluginHelper = (options) => options;
+export const seo: ThemeSEOPluginHelper = (options) => options;
+export const shiki: ThemeShikiPluginHelper = (options) => options;
+export const sitemap: ThemeSitemapPluginHelper = (options) => options;
+export const watermark: ThemeWatermarkPluginHelper = (options) => options;

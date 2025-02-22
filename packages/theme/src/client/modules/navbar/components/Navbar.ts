@@ -1,40 +1,54 @@
+import { hasGlobalComponent } from "@vuepress/helper/client";
+import noopComponent from "@vuepress/helper/noopComponent";
+import type {
+  Component,
+  ComponentOptions,
+  FunctionalComponent,
+  SlotsType,
+  VNode,
+} from "vue";
 import { computed, defineComponent, h, ref, resolveComponent } from "vue";
-import { isComponentRegistered } from "vuepress-shared/lib/client";
 
 import {
-  useMobile,
   useThemeLocaleData,
-} from "@theme-hope/composables/index.js";
-import LanguageDropdown from "@theme-hope/modules/navbar/components/LanguageDropdown.js";
-import NavbarBrand from "@theme-hope/modules/navbar/components/NavbarBrand.js";
-import NavbarLinks from "@theme-hope/modules/navbar/components/NavbarLinks.js";
-import NavScreen from "@theme-hope/modules/navbar/components/NavScreen.js";
-import OutlookButton from "@theme-hope/modules/outlook/components/OutlookButton.js";
-import ToggleNavbarButton from "@theme-hope/modules/navbar/components/ToggleNavbarButton.js";
-import ToggleSidebarButton from "@theme-hope/modules/navbar/components/ToggleSidebarButton.js";
-import RepoLink from "@theme-hope/modules/navbar/components/RepoLink.js";
+  useWindowSize,
+} from "@theme-hope/composables/index";
+import LanguageDropdown from "@theme-hope/modules/navbar/components/LanguageDropdown";
+import NavScreen from "@theme-hope/modules/navbar/components/NavScreen";
+import NavbarBrand from "@theme-hope/modules/navbar/components/NavbarBrand";
+import NavbarLinks from "@theme-hope/modules/navbar/components/NavbarLinks";
+import RepoLink from "@theme-hope/modules/navbar/components/RepoLink";
+import ToggleNavbarButton from "@theme-hope/modules/navbar/components/ToggleNavbarButton";
+import ToggleSidebarButton from "@theme-hope/modules/navbar/components/ToggleSidebarButton";
+import OutlookButton from "@theme-hope/modules/outlook/components/OutlookButton";
 
-import type { VNode } from "vue";
-import type {
-  HopeThemeNavbarComponent,
-  HopeThemeNavbarLocaleOptions,
-} from "../../../../shared/index.js";
+import type { NavbarLayoutOptions } from "../../../../shared/index.js";
 
 import "../styles/navbar.scss";
+
+declare const __VP_MULTI_LANGUAGES__: boolean;
 
 export default defineComponent({
   name: "NavBar",
 
-  emits: ["toggle-sidebar"],
+  emits: ["toggleSidebar"],
+
+  slots: Object as SlotsType<{
+    default: () => VNode[] | VNode | null;
+
+    // Navbar
+    screenTop?: () => VNode[] | VNode | null;
+    screenBottom?: () => VNode[] | VNode | null;
+  }>,
 
   setup(_props, { emit, slots }) {
     const themeLocale = useThemeLocaleData();
+    const { isMobile } = useWindowSize();
 
-    const isMobile = useMobile();
     const showScreen = ref(false);
 
     const autoHide = computed(() => {
-      const { navbarAutoHide } = themeLocale.value;
+      const { navbarAutoHide = "mobile" } = themeLocale.value;
 
       return (
         navbarAutoHide !== "none" &&
@@ -42,92 +56,99 @@ export default defineComponent({
       );
     });
 
-    const navbarLayout = computed<
-      Exclude<HopeThemeNavbarLocaleOptions["navbarLayout"], undefined>
-    >(
+    const navbarLayout = computed(
       () =>
-        themeLocale.value.navbarLayout || {
-          left: ["Brand"],
+        themeLocale.value.navbarLayout ??
+        ({
+          start: ["Brand"],
           center: ["Links"],
-          right: ["Language", "Repo", "Outlook", "Search"],
-        }
+          end: ["Language", "Repo", "Outlook", "Search"],
+        } as NavbarLayoutOptions),
     );
 
-    return (): VNode[] => {
-      const map: Record<HopeThemeNavbarComponent, VNode | null> = {
-        Brand: h(NavbarBrand),
-        Language: h(LanguageDropdown),
-        Links: h(NavbarLinks),
-        Repo: h(RepoLink),
-        Outlook: h(OutlookButton),
-        Search: isComponentRegistered("Docsearch")
-          ? h(resolveComponent("Docsearch"))
-          : isComponentRegistered("SearchBox")
-          ? h(resolveComponent("SearchBox"))
-          : null,
-      };
-
-      return [
-        h(
-          "header",
-          {
-            class: [
-              "navbar",
-              {
-                "auto-hide": autoHide.value,
-                "hide-icon": !themeLocale.value.navbarIcon,
-              },
-            ],
-          },
-          [
-            h("div", { class: "navbar-left" }, [
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              h(ToggleSidebarButton, {
-                onToggle: () => {
-                  if (showScreen.value) showScreen.value = false;
-                  emit("toggle-sidebar");
-                },
-              }),
-              slots["left-start"]?.(),
-              ...navbarLayout.value.left.map((item) => map[item]),
-              slots["left-end"]?.(),
-            ]),
-
-            h("div", { class: "navbar-center" }, [
-              slots["center-start"]?.(),
-              ...navbarLayout.value.center.map((item) => map[item]),
-              slots["center-end"]?.(),
-            ]),
-
-            h("div", { class: "navbar-right" }, [
-              slots["right-start"]?.(),
-              ...navbarLayout.value.right.map((item) => map[item]),
-              slots["right-start"]?.(),
-
-              h(ToggleNavbarButton, {
-                active: showScreen.value,
-                onToggle: () => {
-                  showScreen.value = !showScreen.value;
-                },
-              }),
-            ]),
-          ]
-        ),
-        h(
-          NavScreen,
-          {
-            active: showScreen.value,
-            onClose: () => {
-              showScreen.value = false;
-            },
-          },
-          {
-            before: () => slots["screenTop"]?.(),
-            after: () => slots["screenBottom"]?.(),
-          }
-        ),
-      ];
+    const navbarComponentMap: Record<string, Component | string> = {
+      Brand: NavbarBrand,
+      Language: __VP_MULTI_LANGUAGES__ ? LanguageDropdown : noopComponent,
+      Links: NavbarLinks,
+      Repo: RepoLink,
+      Outlook: OutlookButton,
+      Search: hasGlobalComponent("SearchBox")
+        ? resolveComponent("SearchBox")
+        : noopComponent,
     };
+
+    const getNavbarComponent = (component: string): Component | string =>
+      navbarComponentMap[component] ??
+      (hasGlobalComponent(component)
+        ? resolveComponent(component)
+        : noopComponent);
+
+    return (): VNode[] => [
+      h(
+        "header",
+        {
+          key: "navbar",
+          id: "navbar",
+          class: ["vp-navbar", { "auto-hide": autoHide.value }],
+          "vp-navbar": "",
+        },
+        [
+          h("div", { class: "vp-navbar-start" }, [
+            h(ToggleSidebarButton, {
+              onToggle: () => {
+                if (showScreen.value) showScreen.value = false;
+                emit("toggleSidebar");
+              },
+            }),
+            navbarLayout.value.start?.map((item) =>
+              h(
+                getNavbarComponent(item) as
+                  | ComponentOptions
+                  | FunctionalComponent,
+              ),
+            ),
+          ]),
+
+          h("div", { class: "vp-navbar-center" }, [
+            navbarLayout.value.center?.map((item) =>
+              h(
+                getNavbarComponent(item) as
+                  | ComponentOptions
+                  | FunctionalComponent,
+              ),
+            ),
+          ]),
+
+          h("div", { class: "vp-navbar-end" }, [
+            navbarLayout.value.end?.map((item) =>
+              h(
+                getNavbarComponent(item) as
+                  | ComponentOptions
+                  | FunctionalComponent,
+              ),
+            ),
+            h(ToggleNavbarButton, {
+              active: showScreen.value,
+              onToggle: () => {
+                showScreen.value = !showScreen.value;
+              },
+            }),
+          ]),
+        ],
+      ),
+      h(
+        NavScreen,
+        {
+          show: showScreen.value,
+          onClose: () => {
+            showScreen.value = false;
+          },
+        },
+        {
+          before: slots.screenTop,
+          after: slots.screenBottom,
+        },
+      ),
+    ];
   },
 });

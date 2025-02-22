@@ -1,27 +1,24 @@
-import type { HopeThemePageFrontmatter } from "./base.js";
+import type { ThemePageFrontmatter } from "./base.js";
 
-export interface HopeThemeHomeActionOptions {
-  text: string;
-  link: string;
-  type?: "primary" | "secondary";
-}
-
-export interface HopeThemeHomeFeatureOptions {
-  icon?: string;
-  title: string;
-  details: string;
-  link?: string;
-}
-
-export interface HopeThemeProjectHomePageFrontmatter
-  extends HopeThemePageFrontmatter {
+export interface ThemeHomePageFrontmatter extends ThemePageFrontmatter {
   home: true;
+
+  /**
+   * @default false
+   */
+  heroFullScreen?: boolean;
+
   heroImage?: string;
   heroImageDark?: string;
-  heroAlt?: string;
-  heroText?: string | false;
-  tagline?: string | false;
+  heroImageStyle?: Record<string, string> | string;
 
-  actions?: HopeThemeHomeActionOptions[];
-  features?: HopeThemeHomeFeatureOptions[];
+  heroAlt?: string;
+
+  heroText?: string;
+
+  tagline?: string;
+
+  bgImage?: string | false;
+  bgImageDark?: string | false;
+  bgImageStyle?: Record<string, string> | string;
 }

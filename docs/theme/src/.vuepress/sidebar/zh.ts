@@ -1,25 +1,28 @@
 import { sidebar } from "docs-shared";
 
+// region config
 export const zhSidebarConfig = sidebar({
   "/zh/": [
     "",
+    "get-started/",
     {
       text: "指南",
-      icon: "creative",
+      icon: "lightbulb",
       prefix: "guide/",
       children: [
-        "get-started/",
+        "intro/",
         "interface/",
         "layout/",
         "markdown/",
         "feature/",
         "blog/",
+        "customize/",
         "advanced/",
       ],
     },
     {
       text: "配置",
-      icon: "config",
+      icon: "gears",
       prefix: "config/",
       children: [
         "intro",
@@ -32,77 +35,26 @@ export const zhSidebarConfig = sidebar({
     },
     {
       text: "教程",
-      icon: "guide",
+      icon: "signs-post",
       prefix: "cookbook/",
-      children: ["tutorial/", "markdown/", "vuepress/", "advanced/"],
+      children: ["markdown/", "vuepress/"],
     },
-    {
-      text: "迁移",
-      icon: "change",
-      prefix: "migration/",
-      children: ["highlight", "config", "page", "style"],
-    },
-    {
-      text: "常见问题",
-      icon: "question",
-      prefix: "faq/",
-      children: ["", "troubleshooting", "common-error", "vite", "safari"],
-    },
-    "demo",
+    "demo/",
+    "faq/",
     "changelog",
     "contribution",
   ],
+
+  "/zh/get-started/": "structure",
 
   "/zh/guide/": "structure",
 
   "/zh/config/": "structure",
 
-  "/zh/cookbook/": [
-    {
-      text: "教程",
-      icon: "guide",
-      prefix: "tutorial/",
-      children: [
-        "env",
-        "create",
-        "command",
-        "content",
-        "config",
-        "structure",
-        "deploy",
-      ],
-    },
-    {
-      text: "Markdown",
-      icon: "markdown",
-      prefix: "markdown/",
-      collapsable: true,
-      children: [
-        "",
-        "demo",
-        {
-          text: "Emoji",
-          icon: "emoji",
-          link: "emoji/",
-          prefix: "emoji/",
-          collapsable: true,
-          children: "structure",
-        },
-      ],
-    },
-    {
-      text: "VuePress",
-      icon: "vue",
-      prefix: "vuepress/",
-      collapsable: true,
-      children: ["", "file", "markdown", "config", "plugin", "theme"],
-    },
-    {
-      text: "高级",
-      icon: "advance",
-      prefix: "advanced/",
-      collapsable: true,
-      children: ["component", "style", "replace", "extend"],
-    },
-  ],
+  "/zh/cookbook/": "structure",
+
+  "/zh/demo/": "structure",
+
+  "/zh/faq/": "structure",
 });
+// #endregion config

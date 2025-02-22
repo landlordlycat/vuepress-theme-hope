@@ -1,8 +1,7 @@
 {
   "name": "vuepress-theme-hope-root",
-  "version": "2.0.0-beta.108",
   "private": true,
-  "description": "A vuepress theme with tons of features",
+  "description": "A VuePress theme with tons of features",
   "type": "module",
   "workspaces": [
     "demo/*",
@@ -11,7 +10,7 @@
   ],
   "scripts": {
     "build": "cross-env NODE_ENV=production pnpm run --stream -r build",
-    "build:nobundle": "concurrently \"tsc -b tsconfig.build.json\" \"pnpm run copy\"",
+    "build:no-bundle": "concurrently \"tsc -b tsconfig.build.json\" \"pnpm run copy\"",
     "clean": "pnpm run --stream -r clean",
     "commit": "pnpm git-cz",
     "copy": "pnpm run --parallel -r copy",
@@ -19,41 +18,29 @@
     "dev:copy": "pnpm run --parallel -r dev:copy",
     "docs:vite-build": "pnpm run -r docs:vite-build",
     "docs:webpack-build": "pnpm run -r docs:vite-build",
-    "postinstall": "husky install",
-    "lint": "pnpm lint:prettier --write && pnpm lint:eslint --fix && pnpm lint:stylelint --fix",
-    "lint:check": "pnpm lint:prettier && pnpm lint:eslint && pnpm lint:stylelint",
-    "lint:eslint": "eslint . --ext .js,.ts,.vue",
-    "lint:md": "markdownlint **/*.md",
-    "lint:prettier": "prettier --check .",
-    "lint:stylelint": "stylelint packages/*/src/**/*.scss",
-    "packages:bootstrap": "ts-node -O {\\\"module\\\":\\\"commonjs\\\"} scripts/bootstrap.ts",
-    "packages:check-update": "ncu --deep --timeout 600000",
+    "lint": "prettier . --check --write && eslint . --fix && pnpm lint:stylelint --fix",
+    "lint:check": "prettier . --check && eslint . && pnpm lint:stylelint",
+    "lint:md": "markdownlint-cli2 '**/*.md'",
+    "lint:stylelint": "stylelint \"**/*.{css,scss}\" \"**/.vuepress/**/*.{css,scss}\"",
+    "packages:check-update": "pnpm dlx npm-check-updates -u --deep --timeout 600000",
     "packages:update": "pnpm up -r",
-    "release": "pnpm clean && pnpm build && pnpm release:bump && pnpm release:publish && pnpm release:sync",
-    "release:bump": "bumpp package.json demo/*/package.json docs/*/package.json packages/*/package.json --execute=\"pnpm standard-version --skip.bump --skip.commit --skip.tag && git add CHANGELOG.md\" --commit \"chore(release): publish v%s\" --all --tag --push",
-    "release:publish": "cross-env NODE_OPTIONS=\"--experimental-json-modules\" ts-node-esm  -O {\\\"module\\\":\\\"ESNext\\\"} scripts/release",
-    "release:sync": "cross-env NODE_OPTIONS=\"--experimental-json-modules\" ts-node-esm  -O {\\\"module\\\":\\\"ESNext\\\"} scripts/sync",
-    "test": "vitest --coverage"
+    "prepare": "husky",
+    "release": "pnpm clean && pnpm build && pnpm release:version && pnpm release:publish && pnpm release:sync",
+    "release:publish": "lerna publish from-package --yes",
+    "release:sync": "cross-env NODE_OPTIONS=\"--experimental-json-modules\" tsx scripts/sync.ts",
+    "release:version": "lerna version",
+    "test": "cross-env TZ=Etc/UTC vitest --coverage"
   },
-  "lint-staged": {
-    "*.vue": [
+  "nano-staged": {
+    "**/*": "prettier --write -u",
+    "*.vue": "eslint --fix",
+    "*.{cjs,mjs,js,ts}": [
       "eslint --fix",
-      "prettier --write"
+      "cross-env TZ=Etc/UTC vitest related --run"
     ],
-    "*.{js,ts}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.{md,json,yml}": [
-      "prettier --write"
-    ],
-    "*.scss": [
-      "stylelint --fix",
-      "prettier --write"
-    ],
-    "package.json": [
-      "sort-package-json"
-    ]
+    "*.md": "markdownlint-cli2 --fix",
+    "*.scss": "stylelint --fix",
+    "package.json": "sort-package-json"
   },
   "config": {
     "commitizen": {
@@ -61,78 +48,59 @@
     }
   },
   "devDependencies": {
-    "@commitlint/cli": "17.1.2",
-    "@commitlint/config-conventional": "17.1.0",
-    "@rollup/plugin-commonjs": "22.0.2",
-    "@rollup/plugin-node-resolve": "14.1.0",
-    "@types/inquirer": "9.0.2",
-    "@types/node": "18.7.23",
-    "@typescript-eslint/eslint-plugin": "5.39.0",
-    "@typescript-eslint/parser": "5.39.0",
-    "@vitest/coverage-c8": "0.23.4",
-    "@vue/eslint-config-typescript": "11.0.2",
-    "bumpp": "8.2.1",
-    "c8": "7.12.0",
-    "chalk": "5.1.0",
-    "commitizen": "4.2.5",
-    "concurrently": "7.4.0",
-    "cpx2": "4.2.0",
+    "@commitlint/cli": "19.7.1",
+    "@commitlint/config-conventional": "19.7.1",
+    "@lerna-lite/cli": "3.12.0",
+    "@lerna-lite/publish": "3.12.0",
+    "@rollup/plugin-alias": "5.1.1",
+    "@rollup/plugin-commonjs": "28.0.2",
+    "@rollup/plugin-node-resolve": "16.0.0",
+    "@rollup/plugin-replace": "6.0.2",
+    "@types/node": "22.13.4",
+    "@types/webpack-env": "1.18.8",
+    "@vitest/coverage-istanbul": "3.0.5",
+    "concurrently": "9.1.2",
+    "conventional-changelog-conventionalcommits": "7.0.2",
+    "cpx2": "8.0.0",
     "cross-env": "7.0.3",
-    "cz-git": "1.3.11",
-    "esbuild": "0.15.10",
-    "eslint": "8.24.0",
-    "eslint-config-prettier": "8.5.0",
-    "eslint-plugin-prettier": "4.2.1",
-    "eslint-plugin-vue": "9.6.0",
-    "execa": "6.1.0",
-    "husky": "8.0.1",
-    "inquirer": "9.1.2",
-    "lint-staged": "13.0.3",
-    "markdownlint-cli": "0.32.2",
-    "npm-check-updates": "16.3.8",
-    "ora": "6.1.2",
-    "prettier": "2.7.1",
-    "rollup": "2.79.1",
-    "rollup-plugin-copy": "3.4.0",
-    "rollup-plugin-dts": "4.2.2",
-    "rollup-plugin-esbuild": "4.10.1",
-    "sort-package-json": "2.0.0",
-    "standard-version": "9.5.0",
-    "stylelint": "14.13.0",
-    "stylelint-config-prettier": "9.0.3",
-    "stylelint-config-standard": "28.0.0",
-    "stylelint-config-standard-scss": "5.0.0",
-    "stylelint-order": "5.0.0",
-    "ts-node": "10.9.1",
-    "tslib": "2.4.0",
-    "typescript": "4.7.4",
-    "vitest": "0.23.4"
+    "cz-git": "1.11.0",
+    "eslint": "9.20.1",
+    "eslint-config-mister-hope": "0.7.1",
+    "eslint-plugin-vue": "9.32.0",
+    "gulp": "5.0.0",
+    "http-server": "14.1.1",
+    "husky": "9.1.7",
+    "markdownlint-cli2": "0.17.2",
+    "nano-staged": "0.8.0",
+    "ora": "8.2.0",
+    "prettier": "3.5.1",
+    "rimraf": "6.0.1",
+    "rollup": "4.34.8",
+    "rollup-plugin-copy": "3.5.0",
+    "rollup-plugin-dts": "6.1.1",
+    "rollup-plugin-esbuild": "6.2.0",
+    "rollup-plugin-resolve-shebang": "1.0.1",
+    "sort-package-json": "2.14.0",
+    "stylelint": "16.14.1",
+    "stylelint-config-hope": "8.0.0",
+    "through2": "4.0.2",
+    "tslib": "2.8.1",
+    "tsx": "4.19.2",
+    "typescript": "5.7.3",
+    "vite": "6.0.11",
+    "vitest": "3.0.5"
   },
-  "packageManager": "pnpm@7.13.2",
+  "packageManager": "pnpm@10.4.1",
   "engines": {
-    "node": ">=14",
-    "pnpm": ">=7"
+    "node": ">=20"
   },
   "pnpm": {
-    "peerDependencyRules": {
-      "ignoreMissing": [
-        "@algolia/client-search",
-        "@types/react",
-        "eslint-plugin-import",
-        "eslint-plugin-n",
-        "eslint-plugin-promise",
-        "postcss",
-        "react",
-        "react-dom",
-        "webpack"
-      ]
-    },
-    "patchedDependencies": {
-      "@vuepress/theme-default@2.0.0-beta.51": "patches/@vuepress__theme-default@2.0.0-beta.51.patch",
-      "chart.js@3.9.1": "patches/chart.js@3.9.1.patch",
-      "mitt@3.0.0": "patches/mitt@3.0.0.patch",
-      "fflate@0.7.3": "patches/fflate@0.7.3.patch",
-      "lit@2.3.1": "patches/lit@2.3.1.patch"
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "nodejs-jieba"
+    ],
+    "overrides": {
+      "esbuild": "^0.25.0"
     }
   }
 }

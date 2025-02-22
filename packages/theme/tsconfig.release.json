@@ -2,12 +2,14 @@
   "extends": "../../tsconfig.build.base.json",
   "compilerOptions": {
     "baseUrl": "./",
-    "lib": ["dom", "es2021"],
+    "lib": ["DOM", "ESNext"],
     "rootDir": "./src",
     "outDir": "./lib",
+    "inlineSources": true,
     "paths": {
-      "@theme-hope/*": ["./src/client/*"]
-    }
+      "@theme-hope/*": ["./src/client/*.js"]
+    },
+    "types": ["vuepress/client-types", "vite/client", "webpack-env"]
   },
-  "include": ["./src", "./src/*.d.ts"]
+  "include": ["./src/client", "./src/shared", "./src/presets", "./src/*.d.ts"]
 }

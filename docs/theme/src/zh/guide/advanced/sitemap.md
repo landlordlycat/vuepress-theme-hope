@@ -1,6 +1,7 @@
 ---
 title: Sitemap
 icon: sitemap
+order: 2
 category:
   - 高级
 tag:
@@ -8,7 +9,7 @@ tag:
   - Sitemap
 ---
 
-`vuepress-theme-hope` 通过内置 [vuepress-plugin-sitemap2`][sitemap2] 为你提供 Sitemap 生成。
+`vuepress-theme-hope` 通过内置 [`@vuepress/plugin-sitemap`][sitemap] 为你提供 Sitemap 生成。
 
 插件会为你的网站自动生成 Sitemap，它会自动根据页面的 Git 的时间戳生成页面的最后更新时间，同时会根据站点的多语言配置声明页面的其他语言替代版本地址。
 
@@ -56,4 +57,4 @@ Google 引入了 Google 网站地图使得网页开发者可以发布整个站�
 
 :::
 
-[sitemap2]: https://vuepress-theme-hope.github.io/v2/sitemap/zh/
+[sitemap]: https://ecosystem.vuejs.press/zh/plugins/seo/sitemap/

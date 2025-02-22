@@ -1,12 +1,13 @@
-import { computed, defineComponent, h } from "vue";
-import { useLocaleConfig } from "vuepress-shared/lib/client";
-
-import { WordIcon } from "@theme-hope/modules/info/components/icons.js";
-import { useMetaLocale } from "@theme-hope/modules/info/composables/index.js";
-import { readingTimeLocales } from "@theme-hope/modules/info/utils/index.js";
-
+import type {
+  ReadingTime,
+  ReadingTimeLocale,
+} from "@vuepress/plugin-reading-time/client";
 import type { PropType, VNode } from "vue";
-import type { ReadingTime } from "vuepress-plugin-reading-time2";
+import { defineComponent, h } from "vue";
+
+import { usePure } from "@theme-hope/composables/index";
+import { WordIcon } from "@theme-hope/modules/info/components/icons";
+import { useMetaLocale } from "@theme-hope/modules/info/composables/index";
 
 export default defineComponent({
   name: "ReadTimeInfo",
@@ -14,43 +15,44 @@ export default defineComponent({
   inheritAttrs: false,
 
   props: {
-    readingTime: {
-      type: Object as PropType<ReadingTime | null>,
-      default: () => null,
-    },
+    /**
+     * Reading time information
+     *
+     * 阅读时间信息
+     */
+    readingTime: Object as PropType<ReadingTime | null>,
 
-    pure: Boolean,
+    /**
+     * Reading time locale
+     *
+     * 阅读时间语言环境
+     */
+    readingTimeLocale: Object as PropType<ReadingTimeLocale | null>,
   },
 
   setup(props) {
     const metaLocale = useMetaLocale();
-    const readingTimeLocale = useLocaleConfig(readingTimeLocales);
-
-    const words = computed(() => props.readingTime?.words.toString());
-
-    const wordText = computed(() =>
-      readingTimeLocale.value.word.replace("$word", words.value || "")
-    );
+    const isPure = usePure();
 
     return (): VNode | null =>
-      words.value
+      props.readingTimeLocale?.words
         ? h(
             "span",
             {
-              class: "words-info",
+              class: "page-word-info",
               "aria-label": `${metaLocale.value.words}${
-                props.pure ? "" : "🔠"
+                isPure.value ? "" : "🔠"
               }`,
-              ...(props.pure ? {} : { "data-balloon-pos": "down" }),
+              ...(isPure.value ? {} : { "data-balloon-pos": "up" }),
             },
             [
               h(WordIcon),
-              h("span", wordText.value),
+              h("span", props.readingTimeLocale.words),
               h("meta", {
                 property: "wordCount",
-                content: words.value,
+                content: props.readingTime?.words,
               }),
-            ]
+            ],
           )
         : null;
   },

@@ -1,98 +1,35 @@
-import type { HopeThemeFooterLocaleOptions } from "./footer.js";
-import type { HopeThemeDocsLocaleOptions } from "./info.js";
-import type {
-  HopeThemeMetaLocateData,
-  HopeThemeMetaLocaleOptions,
-} from "./meta.js";
-import type {
-  HopeThemeNavbarLocaleData,
-  HopeThemeNavbarLocaleOptions,
-} from "./navbar.js";
-import type { HopeThemeSidebarLocaleOptions } from "./sidebar.js";
-import type { HopeThemeRouteLocaleData } from "./route.js";
-import type { HopeThemeNormalPageFrontmatter } from "../../frontmatter/index.js";
-import type { PageInfo } from "../../info.js";
-import type { HopeThemePageData } from "../../page.js";
+import type { FooterLocaleOptions } from "./footer.js";
+import type { DocsRepoLocaleOptions } from "./info.js";
+import type { MetaLocaleOptions, MetaLocateData } from "./meta.js";
+import type { NavbarLocaleData, NavbarLocaleOptions } from "./navbar.js";
+import type { RouteLocaleData } from "./route.js";
+import type { SidebarLocaleOptions, SidebarSorter } from "./sidebar.js";
+import type { PageInfoType } from "../../info.js";
 
-export interface HopeThemeSidebarFileInfo {
-  type: "file";
-
-  order: number | null;
-  frontmatter: HopeThemeNormalPageFrontmatter;
-  pageData: HopeThemePageData;
-
-  title: string;
-  path: string;
-}
-
-export interface HopeThemeSidebarDirInfo {
-  type: "dir";
-
-  order: number | null;
-
-  frontmatter: HopeThemeNormalPageFrontmatter;
-  pageData: HopeThemePageData;
-
-  info: {
-    prefix: string;
-    text: string;
-    icon?: string;
-    collapsable?: boolean;
-    link?: string;
-  };
-  children: HopeThemeSidebarInfo[];
-}
-
-export type HopeThemeSidebarInfo =
-  | HopeThemeSidebarFileInfo
-  | HopeThemeSidebarDirInfo;
-
-export type HopeThemeSidebarSorterKeyWord =
-  | "readme"
-  | "order"
-  | "date"
-  | "date-desc"
-  | "filename"
-  | "file-number"
-  | "file-number-desc"
-  | "title"
-  | "title-number"
-  | "title-number-desc";
-
-export type HopeThemeSidebarSorterFunction = (
-  infoA: HopeThemeSidebarInfo,
-  infoB: HopeThemeSidebarInfo
-) => number;
-
-export type HopeThemeSidebarSorter =
-  | HopeThemeSidebarSorterFunction
-  | HopeThemeSidebarSorterKeyWord
-  | HopeThemeSidebarSorterKeyWord[];
-
-export interface HopeThemeLayoutLocaleData {
+export interface LayoutLocaleData {
   /**
    * Navbar related i18n config
    */
-  navbarLocales: HopeThemeNavbarLocaleData;
+  navbarLocales: NavbarLocaleData;
 
   /**
    * Meta related i18n config
    */
 
-  metaLocales: HopeThemeMetaLocateData;
+  metaLocales: MetaLocateData;
 
   /**
    * Router related i18n config
    */
-  routeLocales: HopeThemeRouteLocaleData;
+  routeLocales: RouteLocaleData;
 }
 
-export interface HopeThemeLayoutLocaleOptions
-  extends HopeThemeNavbarLocaleOptions,
-    HopeThemeSidebarLocaleOptions,
-    HopeThemeDocsLocaleOptions,
-    HopeThemeMetaLocaleOptions,
-    HopeThemeFooterLocaleOptions {
+export interface LayoutLocaleOptions
+  extends NavbarLocaleOptions,
+    SidebarLocaleOptions,
+    DocsRepoLocaleOptions,
+    MetaLocaleOptions,
+    FooterLocaleOptions {
   /**
    * Home path of current locale
    *
@@ -134,22 +71,33 @@ export interface HopeThemeLayoutLocaleOptions
   /**
    * Article Info display configuration
    *
-   * @see https://vuepress-theme-hope.github.io/v2/components/guide/article-info.html
+   * @see https://theme-hope.vuejs.press/guide/feature/page-info.html
    *
    * 文章信息配置
    *
-   * @see https://vuepress-theme-hope.gitee.io/v2/components/zh/guide/article-info.html
+   * @see https://theme-hope.vuejs.press/zh/guide/feature/page-info.html
    *
-   * @default ["Author", "Original", "Date", "Category", "Tag", "ReadingTime"]
+   * @default ["Author", "Original", "Date", "PageView", "ReadingTime", "Category", "Tag"]
    */
-  pageInfo?: PageInfo[] | false;
+  pageInfo?: PageInfoType[] | false;
 
   /**
    * Whether show toc list in desktop mode
    *
    * 是否在桌面模式下展示标题列表
+   *
+   * @default true
    */
   toc?: boolean;
+
+  /**
+   * Whether rtl layout should be used
+   *
+   * 是否使用 rtl 布局
+   *
+   * @default false
+   */
+  rtl?: boolean;
 
   /**
    * Whether display nextLink
@@ -170,41 +118,18 @@ export interface HopeThemeLayoutLocaleOptions
   prevLink?: boolean;
 }
 
-export type HopeThemeLayoutLocaleConfig = HopeThemeLayoutLocaleOptions;
+export type LayoutLocaleConfig = LayoutLocaleOptions;
 
-export interface HopeThemeLayoutRootOptions {
-  /**
-   * Wether display back to top button
-   *
-   * If it’s set with a number, then it will be the threshold
-   *
-   * 是否显示返回顶部按钮
-   *
-   * 如果设置为数字，则该数字为触发临界值 (默认临界值为 300px)
-   *
-   * @default true
-   */
-  backToTop?: boolean | number;
-
-  /**
-   * Window width switching mobile view and desktop view in pixels.
-   *
-   * @description This should be the same value with `$tablet` value in `config.scss`.
-   *
-   * 切换桌面布局和移动布局的窗口宽度，单位像素。
-   *
-   * @description 该值应与 `config.scss` 中的 `$tablet` 值相同。
-   *
-   * @default 719
-   */
-  mobileBreakPoint?: number;
-
+/**
+ * @kind root
+ */
+export interface LayoutOptions {
   /**
    * Sorter of structure sidebar
    *
    * 结构化侧边栏排序器
    *
-   * @default 'order'
+   * @default ["readme", "order", "title", "filename"]
    */
-  sidebarSorter?: HopeThemeSidebarSorter;
+  sidebarSorter?: SidebarSorter;
 }

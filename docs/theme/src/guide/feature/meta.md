@@ -1,6 +1,6 @@
 ---
 title: Page Meta
-icon: time
+icon: clock
 category:
   - Feature
 tag:
@@ -18,7 +18,7 @@ The theme also provides navigation buttons for previous and next pages depending
 
 `vuepress-theme-hope` uses the built-in [`@vuepress/plugin-git`][git] plugin to automatically generate page create time, last update time and contributors.
 
-The plugin will automatically generate the page creation time and last update time from the UNIX timestamp (ms) of the last `git` commit of the page file, and generate contributors based on the commit record.
+The plugin will automatically generate the page creation time and last update time from the UNIX timestamp (ms) of `git` commit history of the page file, and generate contributors based on the commit record.
 
 The theme will display last update time in the appropriate date format, along with all page contributors at the bottom of the page.
 
@@ -28,17 +28,12 @@ The theme will use `Date.toLocaleString(pageLang)` to automatically localize the
 
 :::
 
-::: warning Usage Notes
+::: warning Limitations
 
-Since the last update time is `git` based, you can only enable it in a `git` based project. Also, since the timestamp used is from a git commit, it will only be displayed after the first commit on a given page, and will only be updated when subsequent commits change to that page.
+1. Since the contributors, last update time, and file creation time information are based on `git`, you can only enable it in a `git` based project.
+1. Since related information are from git commits, they will only be displayed after the first commit for a given page, and will only be updated when some commits change that page.
 
-:::
-
-::: danger Not available in dev server
-
-Since the `git` plugin has a serious performance impact, the theme will not enable it in dev server by default.
-
-If you need those info, please set `plugins.git: true` in theme options, or add the `--debug` flag to run dev command.
+1. Since the `git` plugin needs to call Git binary and involves file IO, this function will seriously affect the startup and hot update speed, so by default **theme will not be enabled in devServer**. Set `plugins.git: true` or `hotReload: true` in theme options if needed.
 
 :::
 
@@ -52,10 +47,10 @@ You can automatically generate edit links for each page by setting the following
 
 ## Display Control
 
-To hide these items globally, set the corresponding items below to `false` in theme options. You can also enable/disable specific pages by setting these items in `YAML front matter`:
+To hide these items globally, set the corresponding items below to `false` in theme options. You can also enable/disable specific pages by setting these items in page frontmatter:
 
 - `lastUpdated`: whether to display last update time of the page
 - `contributors`: whether to show page contributors
 - `editLink`: whether to display "edit page" link
 
-[git]: https://v2.vuepress.vuejs.org/reference/plugin/git.html
+[git]: https://ecosystem.vuejs.press/plugins/development/git.html

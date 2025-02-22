@@ -1,82 +1,78 @@
-.sidebar {
+.vp-sidebar {
   position: fixed;
+  inset-inline-start: 0;
   top: 0;
   bottom: 0;
-  left: 0;
-  z-index: 125;
+
+  // this prevents footer issue on tablet
+  z-index: 1;
 
   overflow-y: auto;
-  box-sizing: border-box;
 
   width: var(--sidebar-width);
   margin: 0;
+  padding-inline-start: calc(var(--sidebar-space) - var(--sidebar-width));
 
-  background: var(--sidebar-bg-color);
-  box-shadow: 2px 0 8px var(--card-shadow);
+  background: var(--sidebar-c-bg);
+  box-shadow: 2px 0 8px var(--vp-c-shadow);
 
-  font-size: 16px;
-
-  transition: background-color var(--color-transition),
-    box-shadow var(--color-transition), transform var(--transform-transition);
+  font-size: 0.94rem;
 
   backdrop-filter: saturate(150%) blur(12px);
-  scrollbar-color: var(--theme-color) var(--border-color);
+
+  transition:
+    padding var(--vp-t-transform),
+    transform var(--vp-t-transform);
+
+  scrollbar-color: var(--vp-c-accent-bg) var(--vp-c-border);
   scrollbar-width: thin;
+
   @media (max-width: hope-config.$pad) {
-    font-size: 15px;
+    font-size: 0.86em;
   }
 
   // on mobile
   @media (max-width: hope-config.$tablet) {
+    z-index: 125;
+
     // a collapsed sidebar should not have box shadow
-    box-shadow: 2px 0 8px var(--card-shadow);
+    box-shadow: none;
 
     // sidebar should be collapsed by default
     transform: translateX(-100%);
+
+    [dir="rtl"] & {
+      transform: translateX(100%);
+    }
+  }
+
+  @media (min-width: hope-config.$pc) {
+    // WARNING: this value should be greater than footer height, and users should manually override it
+    padding-bottom: 3rem;
+    box-shadow: none;
+    font-size: 1rem;
+  }
+
+  @media print {
+    display: none;
   }
 
   a {
     display: inline-block;
-    color: var(--text-color);
+    color: var(--vp-c-text);
     font-weight: normal;
   }
 
-  .icon {
-    margin-right: 0.25em;
-  }
-
-  &.hide-icon .icon {
-    display: none !important;
-  }
-
-  .blogger-info.mobile {
-    display: none;
-
-    @media (max-width: hope-config.$tablet) {
-      display: block;
-    }
-
-    + hr {
-      display: none;
-
-      @media (max-width: hope-config.$tablet) {
-        display: block;
-        margin-top: 16px;
-      }
-    }
+  .vp-icon {
+    margin-inline-end: 0.25em;
   }
 }
 
-.sidebar-mask {
+.vp-sidebar-mask {
   position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 9;
-
-  width: 100vw;
-  height: 100vh;
-
-  background-color: rgb(0 0 0 / 15%);
+  inset: 0;
+  z-index: 100;
+  background: rgb(0 0 0 / 15%);
 
   &.fade-enter-active,
   &.fade-leave-active {

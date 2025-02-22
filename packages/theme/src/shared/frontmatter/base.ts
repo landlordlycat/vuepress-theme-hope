@@ -1,10 +1,14 @@
 import type { BasePageFrontMatter } from "vuepress-shared";
 
-export interface HopeThemePageFrontmatter extends BasePageFrontMatter {
+import type { SidebarArrayOptions } from "../sidebar.js";
+
+export interface ThemePageFrontmatter extends BasePageFrontMatter {
   /**
    * Whether is home page
    *
    * 是否是主页
+   *
+   * @default false
    */
 
   home?: boolean;
@@ -13,6 +17,8 @@ export interface HopeThemePageFrontmatter extends BasePageFrontMatter {
    * Whether enable navbar
    *
    * 是否启用导航栏
+   *
+   * @default true
    */
   navbar?: boolean;
 
@@ -21,7 +27,7 @@ export interface HopeThemePageFrontmatter extends BasePageFrontMatter {
    *
    * 侧边栏配置
    */
-  sidebar?: "heading" | false;
+  sidebar?: false | SidebarArrayOptions;
 
   /**
    * Additional Class for Page container
@@ -31,9 +37,11 @@ export interface HopeThemePageFrontmatter extends BasePageFrontMatter {
   containerClass?: string;
 
   /**
-   * Whether show toc list in desktop mode
+   * Whether show external link icon
    *
-   * 是否在桌面模式下展示标题列表
+   * 是否启用外部链接图标
+   *
+   * @default true
    */
-  toc?: boolean;
+  externalLinkIcon?: boolean;
 }

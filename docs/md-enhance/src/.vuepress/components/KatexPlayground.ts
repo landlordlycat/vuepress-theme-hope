@@ -1,9 +1,9 @@
-import { useRouteLocale } from "@vuepress/client";
+import { useLocaleConfig } from "@vuepress/helper/client";
 import katex from "katex";
+import type { VNode } from "vue";
 import { defineComponent, h, ref, watch } from "vue";
 
-import type { VNode } from "vue";
-
+import "katex/dist/katex.css";
 import "./katex-playground.scss";
 
 const locales = {
@@ -21,7 +21,7 @@ export default defineComponent({
   name: "KatexPlayground",
 
   setup() {
-    const routeLocale = useRouteLocale();
+    const locale = useLocaleConfig(locales);
     const input =
       ref(`\\frac {\\partial^r} {\\partial \\omega^r} \\left(\\frac {y^{\\omega}} {\\omega}\\right)
 = \\left(\\frac {y^{\\omega}} {\\omega}\\right) \\left\\{(\\log y)^r + \\sum_{i=1}^r \\frac {(-1)^ Ir \\cdots (r-i+1) (\\log y)^{ri}} {\\omega^i} \\right\\}`);
@@ -29,24 +29,27 @@ export default defineComponent({
     const result = ref("");
     const inError = ref(false);
 
-    const katexRender = () => {
-      try {
-        result.value = katex.renderToString(input.value, {
-          displayMode: true,
-          throwOnError: true,
-        });
-        inError.value = false;
-      } catch (err) {
-        result.value = err.toString();
-        inError.value = true;
-      }
-    };
-
-    watch(input, katexRender, { immediate: true });
+    watch(
+      input,
+      () => {
+        try {
+          // eslint-disable-next-line import-x/no-named-as-default-member
+          result.value = katex.renderToString(input.value, {
+            displayMode: true,
+            throwOnError: true,
+          });
+          inError.value = false;
+        } catch (err) {
+          result.value = (err as Error).toString();
+          inError.value = true;
+        }
+      },
+      { immediate: true },
+    );
 
     return (): VNode =>
       h("div", { class: "katex-playground" }, [
-        h("h3", locales[routeLocale.value].input),
+        h("h3", locale.value.input),
         h("textarea", {
           name: "katex-playground",
           id: "katex-playground",
@@ -55,10 +58,10 @@ export default defineComponent({
           placeholder: "Input your tex here",
           value: input.value,
           onInput: ({ target }: InputEvent) => {
-            input.value = (<HTMLInputElement>target).value;
+            input.value = (target as HTMLInputElement).value;
           },
         }),
-        h("h3", locales[routeLocale.value].output),
+        h("h3", locale.value.output),
         h("p", {
           class: ["katex-block", { "katex-error": inError.value }],
           innerHTML: result.value || "Here will be the render result",

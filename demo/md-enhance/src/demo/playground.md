@@ -32,7 +32,7 @@ const speak = (msg: string) => console.log(msg);
 speak(msg);
 ```
 
-@settings
+@setting
 
 ```json
 {
@@ -44,7 +44,7 @@ speak(msg);
 
 ### Vue
 
-::: playground#vue Vue demo with cutomized imports
+::: playground#vue Vue demo with customized imports
 
 @file App.vue
 

@@ -1,11 +1,11 @@
-import type { AutoLink, TextItem } from "./utils.js";
+import type { AutoLinkOptions, NavItemOptions } from "./nav.js";
 
 /**
  * Base nav group, has nav items children
  */
-export interface HopeThemeNavGroup<T> extends TextItem {
+export interface NavGroup<T> extends NavItemOptions {
   /**
-   * Link prefix of currect group
+   * Link prefix of current group
    *
    * 当前分组的页面前缀
    */
@@ -26,21 +26,13 @@ export interface HopeThemeNavGroup<T> extends TextItem {
   children: T[];
 }
 
-/**
- * Navbar types
- */
-// user config
-export type HopeThemeNavbarItem = AutoLink;
-export type HopeThemeNavbarGroup = HopeThemeNavGroup<
-  HopeThemeNavbarGroup | HopeThemeNavbarItem | string
->;
-export type HopeThemeNavbarConfig = (
-  | HopeThemeNavbarItem
-  | HopeThemeNavbarGroup
-  | string
-)[];
+// Navbar types
 
-// resolved
-export type ResolvedHopeThemeNavbarItem =
-  | HopeThemeNavbarItem
-  | HopeThemeNavGroup<AutoLink | HopeThemeNavGroup<AutoLink>>;
+// types for NavbarItem
+export type NavbarLinkOptions = AutoLinkOptions | string;
+// types for NavbarDropdown
+export type NavbarGroupOptions = NavGroup<
+  NavbarLinkOptions | NavGroup<NavbarLinkOptions>
+>;
+// types for navbar options
+export type NavbarOptions = (NavbarLinkOptions | NavbarGroupOptions)[];

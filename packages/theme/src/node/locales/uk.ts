@@ -1,6 +1,6 @@
-import type { HopeThemeLocaleData } from "../../shared/index.js";
+import type { ThemeLocaleData } from "../../shared/index.js";
 
-export const ukLocale: HopeThemeLocaleData = {
+export const ukLocale: ThemeLocaleData = {
   lang: "uk-UA",
 
   navbarLocales: {
@@ -17,12 +17,13 @@ export const ukLocale: HopeThemeLocaleData = {
     tag: "Теги",
     readingTime: "Час читання",
     words: "Слова",
-    toc: "On This Page",
-    prev: "Prev",
-    next: "Next",
+    toc: "На сторінці",
+    prev: "Попередня",
+    next: "Наступна",
     lastUpdated: "Останнє оновлення",
     contributors: "Автори",
     editLink: "Редагувати цю сторінку",
+    print: "Друк",
   },
 
   blogLocales: {
@@ -35,8 +36,7 @@ export const ukLocale: HopeThemeLocaleData = {
     all: "Bce",
     intro: "Особистий вступ",
     star: "Зірка",
-    slides: "Слайди",
-    encrypt: "Зашифровано",
+    empty: "$text порожній",
   },
 
   paginationLocales: {
@@ -50,18 +50,19 @@ export const ukLocale: HopeThemeLocaleData = {
   outlookLocales: {
     themeColor: "Колір теми",
     darkmode: "Тематичний режим",
-    fullscreen: "Full Screen",
+    fullscreen: "Повноекранний",
   },
 
   encryptLocales: {
-    iconLabel: "Page Encrypted",
-    placeholder: "Enter password",
-    remember: "Remember password",
+    iconLabel: "Сторінка зашифрована",
+    placeholder: "Введіть пароль",
+    remember: "Запам'яти пароль",
     errorHint: "Будь ласка, введіть правильний пароль!",
   },
 
   routeLocales: {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+    skipToContent: "Перейти до основного вмісту",
+    notFoundTitle: "Сторінка не знайдена",
     notFoundMsg: [
       "Тут немає нічого.",
       "Як ми сюди потрапили?",
@@ -70,6 +71,5 @@ export const ukLocale: HopeThemeLocaleData = {
     ],
     back: "Повернутися назад",
     home: "Повернутися на головну",
-    openInNewWindow: "Open in new window",
   },
 };

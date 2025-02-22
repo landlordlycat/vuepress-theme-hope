@@ -1,18 +1,19 @@
 // Portuguese (Brazil) [pt-br]
-import type { default as dayjs } from "dayjs";
+import type dayjs from "dayjs";
+
 import type { Locale } from "./locale.js";
 
 const locale: Partial<Locale> = {
   name: "pt-br",
   weekdays:
     "domingo_segunda-feira_terça-feira_quarta-feira_quinta-feira_sexta-feira_sábado".split(
-      "_"
+      "_",
     ),
   weekdaysShort: "dom_seg_ter_qua_qui_sex_sáb".split("_"),
   weekdaysMin: "Do_2ª_3ª_4ª_5ª_6ª_Sá".split("_"),
   months:
     "janeiro_fevereiro_março_abril_maio_junho_julho_agosto_setembro_outubro_novembro_dezembro".split(
-      "_"
+      "_",
     ),
   monthsShort: "jan_fev_mar_abr_mai_jun_jul_ago_set_out_nov_dez".split("_"),
   ordinal: (n) => `${n}º`,
@@ -41,6 +42,6 @@ const locale: Partial<Locale> = {
   },
 };
 
-export const loadPtBrLocale = (extendeddayjs: typeof dayjs): void => {
-  extendeddayjs.locale("pt-br", locale);
+export const loadPtBrLocale = (extendedDayjs: typeof dayjs): void => {
+  extendedDayjs.locale("pt-br", locale);
 };

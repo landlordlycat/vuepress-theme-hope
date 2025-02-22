@@ -1,4 +1,5 @@
-import type { default as dayjs } from "dayjs";
+import type dayjs from "dayjs";
+
 import type { Locale } from "./locale.js";
 
 const locale: Locale = {
@@ -8,7 +9,7 @@ const locale: Locale = {
   weekdaysMin: "日_一_二_三_四_五_六".split("_"),
   months:
     "一月_二月_三月_四月_五月_六月_七月_八月_九月_十月_十一月_十二月".split(
-      "_"
+      "_",
     ),
   monthsShort: "1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月".split("_"),
   ordinal: (number, period) => {
@@ -54,17 +55,17 @@ const locale: Locale = {
     return hm < 600
       ? "凌晨"
       : hm < 900
-      ? "早上"
-      : hm < 1100
-      ? "上午"
-      : hm < 1300
-      ? "中午"
-      : hm < 1800
-      ? "下午"
-      : "晚上";
+        ? "早上"
+        : hm < 1100
+          ? "上午"
+          : hm < 1300
+            ? "中午"
+            : hm < 1800
+              ? "下午"
+              : "晚上";
   },
 };
 
-export const loadZhLocale = (extendeddayjs: typeof dayjs): void => {
-  extendeddayjs.locale("zh", locale);
+export const loadZhLocale = (extendedDayjs: typeof dayjs): void => {
+  extendedDayjs.locale("zh", locale);
 };

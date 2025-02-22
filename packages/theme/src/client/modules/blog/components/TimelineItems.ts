@@ -1,16 +1,17 @@
+import type { VNode } from "vue";
 import { computed, defineComponent, h } from "vue";
-import { RouterLink } from "vue-router";
+import type { PageHeader } from "vuepress/client";
+import { RouteLink } from "vuepress/client";
 
-import DropTransition from "@theme-hope/components/transitions/DropTransition.js";
-import { useThemeLocaleData } from "@theme-hope/composables/index.js";
+import { DropTransition } from "@theme-hope/components/transitions/index";
+import { useThemeLocaleData } from "@theme-hope/composables/index";
 import {
   useBlogOptions,
-  useTimelines,
-} from "@theme-hope/modules/blog/composables/index.js";
-import TOC from "@theme-hope/modules/info/components/TOC.js";
+  useTimeline,
+} from "@theme-hope/modules/blog/composables/index";
+import TOC from "@theme-hope/modules/info/components/TOC";
 
-import type { VNode } from "vue";
-import type { PageHeader } from "@vuepress/shared";
+import { PageInfo } from "../../../../shared/index.js";
 
 import "../styles/timeline-items.scss";
 
@@ -20,12 +21,12 @@ export default defineComponent({
   setup() {
     const blogOptions = useBlogOptions();
     const themeLocale = useThemeLocaleData();
-    const timelines = useTimelines();
+    const timelines = useTimeline();
 
     const hint = computed(
       () =>
-        blogOptions.value.timeline ||
-        themeLocale.value.blogLocales.timelineTitle
+        blogOptions.value.timeline ??
+        themeLocale.value.blogLocales.timelineTitle,
     );
 
     const items = computed(() =>
@@ -34,7 +35,7 @@ export default defineComponent({
         level: 2,
         slug: year.toString(),
         children: [],
-      }))
+      })),
     );
 
     return (): VNode =>
@@ -44,7 +45,7 @@ export default defineComponent({
         h("ul", { class: "timeline-content" }, [
           h(DropTransition, () => h("li", { class: "motto" }, hint.value)),
           h(TOC, { items: items.value as unknown as PageHeader[] }),
-          ...timelines.value.config.map(({ year, items }, index) =>
+          timelines.value.config.map(({ year, items }, index) =>
             h(
               DropTransition,
               { appear: true, delay: 0.08 * (index + 1), type: "group" },
@@ -52,7 +53,7 @@ export default defineComponent({
                 h(
                   "h3",
                   { key: "title", id: year, class: "timeline-year-title" },
-                  h("span", year)
+                  h("span", year),
                 ),
                 h("li", { key: "content", class: "timeline-year-list" }, [
                   h(
@@ -62,21 +63,21 @@ export default defineComponent({
                       h("li", { class: "timeline-item" }, [
                         h("span", { class: "timeline-date" }, date),
                         h(
-                          RouterLink,
+                          RouteLink,
                           {
                             class: "timeline-title",
                             to: path,
                           },
-                          () => info.title
+                          () => info[PageInfo.title],
                         ),
-                      ])
-                    )
+                      ]),
+                    ),
                   ),
                 ]),
-              ]
-            )
+              ],
+            ),
           ),
-        ])
+        ]),
       );
   },
 });

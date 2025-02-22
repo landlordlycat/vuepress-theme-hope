@@ -1,13 +1,10 @@
-type LightGalleryPlugin<T = unknown> = {
-  default: new (
-    instance: LightGallery,
-    $LG: LgQuery
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ) => T;
-};
+interface LightGalleryPlugin<T = unknown> {
+  default: new (instance: LightGallery, $LG: LgQuery) => T;
+}
 
 declare module "lightgallery/lightgallery.es5.js" {
   import { LightGallery } from "lightgallery/lightgallery.js";
+
   export default LightGallery;
 }
 

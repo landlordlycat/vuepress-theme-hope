@@ -1,14 +1,15 @@
-import { defineComponent, h } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { generateIndexfromHash } from "vuepress-shared/lib/client";
-
-import { TagIcon } from "@theme-hope/modules/info/components/icons.js";
-import { useMetaLocale } from "@theme-hope/modules/info/composables/index.js";
-
 import type { PropType, VNode } from "vue";
-import type { PageTag } from "@theme-hope/modules/info/utils/index.js";
+import { defineComponent, h } from "vue";
+import { generateIndexFromHash } from "vuepress-shared/client";
 
-import "../styles/tag.scss";
+import { useNavigate, usePure } from "@theme-hope/composables/index";
+import { TagIcon } from "@theme-hope/modules/info/components/icons";
+import { useMetaLocale } from "@theme-hope/modules/info/composables/index";
+import type { PageTag } from "@theme-hope/modules/info/utils/index";
+
+import cssVariables from "../../../styles/variables.module.scss";
+
+import "../styles/tag-info.scss";
 
 export default defineComponent({
   name: "TagInfo",
@@ -16,64 +17,56 @@ export default defineComponent({
   inheritAttrs: false,
 
   props: {
-    tag: {
-      type: Array as PropType<PageTag[]>,
-      default: () => [],
-    },
-
-    pure: Boolean,
+    /**
+     * Tag information
+     *
+     * 标签信息
+     */
+    tag: Array as PropType<PageTag[]>,
   },
 
   setup(props) {
-    const router = useRouter();
-    const route = useRoute();
     const metaLocale = useMetaLocale();
-
-    const navigate = (path = ""): void => {
-      if (path && route.path !== path) void router.push(path);
-    };
+    const navigate = useNavigate();
+    const isPure = usePure();
 
     return (): VNode | null =>
-      props.tag.length
+      props.tag?.length
         ? h(
             "span",
             {
-              "aria-label": `${metaLocale.value.tag}${props.pure ? "" : "🏷"}`,
-              ...(props.pure ? {} : { "data-balloon-pos": "down" }),
+              class: "page-tag-info",
+              "aria-label": `${metaLocale.value.tag}${isPure.value ? "" : "🏷"}`,
+              ...(isPure.value ? {} : { "data-balloon-pos": "up" }),
             },
             [
               h(TagIcon),
-              h(
-                "ul",
-                { class: "tags-wrapper" },
-                props.tag.map(({ name, path }) =>
-                  h(
-                    "li",
-                    h(
-                      "span",
+
+              props.tag.map(({ name, path }) =>
+                h(
+                  "span",
+                  {
+                    class: [
+                      "page-tag-item",
                       {
-                        class: [
-                          "tag",
-                          {
-                            // TODO: magic number 9 is tricky here
-                            [`tag${generateIndexfromHash(name, 9)}`]:
-                              !props.pure,
-                            clickable: path,
-                          },
-                        ],
-                        role: path ? "navigation" : "",
-                        onClick: () => navigate(path),
+                        [`color${generateIndexFromHash(name, Number(cssVariables.colorNumber))}`]:
+                          !isPure.value,
+                        clickable: path,
                       },
-                      name
-                    )
-                  )
-                )
+                    ],
+                    role: path ? "navigation" : "",
+                    onClick: () => {
+                      if (path) navigate(path);
+                    },
+                  },
+                  name,
+                ),
               ),
               h("meta", {
                 property: "keywords",
                 content: props.tag.map(({ name }) => name).join(","),
               }),
-            ]
+            ],
           )
         : null;
   },

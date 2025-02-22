@@ -1,14 +1,19 @@
-import { utoa } from "vuepress-shared";
-import { container } from "../markdown-it/index.js";
-
+import { container } from "@mdit/plugin-container";
+import { encodeData } from "@vuepress/helper";
 import type { PluginSimple } from "markdown-it";
-import type { default as Token } from "markdown-it/lib/token.js";
+import type Token from "markdown-it/lib/token.mjs";
+
+import { logger } from "../utils.js";
 
 /** @deprecated */
 export const legacyCodeDemo: PluginSimple = (md) => {
   md.use(container, {
     name: "demo",
     openRender: (tokens: Token[], index: number): string => {
+      logger.warn(
+        "demo container is deprecated, you should use normal-demo, react-demo and vue-demo container instead.",
+      );
+
       const { info } = tokens[index];
       const type = /\[(.*)\]/u.exec(info);
       const title = /^ demo\s*(?:\[.*?\])?\s*(.*)\s*$/u.exec(info);
@@ -18,20 +23,23 @@ export const legacyCodeDemo: PluginSimple = (md) => {
 
       for (let i = index; i < tokens.length; i++) {
         const { type, content, info } = tokens[i];
+        const language = info
+          ? (/^([^ :[{]+)/.exec(md.utils.unescapeAll(info).trim())?.[1] ??
+            "text")
+          : "";
 
         if (type === `container_demo_close`) break;
         if (!content) continue;
-        if (type === "fence") {
-          if (info === "json") config = utoa(content);
-          else code[info] = content;
-        }
+        if (type === "fence")
+          if (language === "json") config = encodeData(content);
+          else code[language] = content;
       }
 
       return `
-<CodeDemo id="code-demo-${index}" type="${type?.[1] || "normal"}"${
+<CodeDemo id="code-demo-${index}" type="${type?.[1] ?? "normal"}"${
         title ? ` title="${encodeURIComponent(title[1])}"` : ""
-      }${config ? ` config="${config}"` : ""} code="${utoa(
-        JSON.stringify(code)
+      }${config ? ` config="${config}"` : ""} code="${encodeData(
+        JSON.stringify(code),
       )}">
 `;
     },

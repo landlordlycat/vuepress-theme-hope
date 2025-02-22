@@ -1,4 +1,4 @@
-export interface HopeThemeEncryptLocaleData {
+export interface EncryptLocaleData {
   /**
    * Aria label for encrypt icon
    *
@@ -21,21 +21,31 @@ export interface HopeThemeEncryptLocaleData {
   remember: string;
 
   /**
-   * Passwrod error hint
+   * Password error hint
    *
    * 密码错误提示
    */
   errorHint: string;
 }
 
+export type PasswordOptions =
+  | string
+  | string[]
+  | {
+      password: string | string[];
+      hint: string;
+    };
+
 /**
  * Encrypt Options
  *
  * 加密选项
+ *
+ * @kind root
  */
-export interface HopeThemeEncryptOptions {
+export interface EncryptOptions {
   /**
-   * Whether encrypt gloablly
+   * Whether encrypt globally
    *
    * 是否全局加密
    *
@@ -48,43 +58,58 @@ export interface HopeThemeEncryptOptions {
    *
    * 最高权限密码
    */
-  admin?: string | string[];
+  admin?: PasswordOptions;
   /**
    * Encrypt Configuration
    *
-   * E.g.:
+   * @example
    *
    * ```json
    * {
    *   // This will encrypt the entire guide directory and both passwords will be available
    *   "/guide/": ["1234", "5678"],
-   *   // this will only encrypt config/page.html
-   *   "/config/page.html": "1234"
+   *   // this will only encrypt /config/page.html
+   *   "/config/page.html": {
+   *     password: "1234"
+   *     hint: "This is a hint"
+   *   }
    * }
    * ```
    *
    * 加密配置
    *
+   * @example
+   *
    * ```json
    * {
    *   // 这会加密整个 guide 目录，并且两个密码都是可用的
    *   "/guide/": ["1234", "5678"],
-   *   // 这只会加密 config/page.html
-   *   "/config/page.html": "1234"
+   *   // 这只会加密 /config/page.html
+   *   "/config/page.html": {
+   *     password: "1234"
+   *     hint: "这是一个提示"
+   *   }
    * }
    * ```
    */
-  config?: Record<string, string | string[]>;
+  config?: Record<string, PasswordOptions>;
+}
+
+export interface PasswordConfig {
+  tokens: string[];
+  hint?: string;
 }
 
 /**
- * Encrypt Options
+ * Encrypt Config
  *
- * 加密选项
+ * 加密配置
+ *
+ * @kind root
  */
-export interface HopeThemeEncryptConfig {
+export interface EncryptConfig {
   /**
-   * Whether encrypt gloablly
+   * Whether encrypt globally
    *
    * 是否全局加密
    *
@@ -97,11 +122,12 @@ export interface HopeThemeEncryptConfig {
    *
    * 最高权限密码
    */
-  admin?: string[];
+  admin?: PasswordConfig;
+
   /**
    * Encrypt Configuration
    *
    * 加密配置
    */
-  config?: Record<string, string[]>;
+  config?: Record<string, PasswordConfig>;
 }

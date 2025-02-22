@@ -1,6 +1,6 @@
-import type { PageInfo } from "../../info.js";
+import type { PageInfoType } from "../../info.js";
 
-export interface HopeThemeBlogLocaleData {
+export interface BlogLocaleData extends Record<string, string> {
   /** 文章文字 */
   article: string;
   /** 文章列表文字 */
@@ -17,15 +17,13 @@ export interface HopeThemeBlogLocaleData {
   all: string;
   /** 个人介绍 */
   intro: string;
-  /** 搜藏文字 */
+  /** 星标文章 */
   star: string;
-  /** 幻灯片 */
-  slides: string;
-  /** 加密 */
-  encrypt: string;
+  /** 空文字 */
+  empty: string;
 }
 
-export interface HopeThemePaginationLocaleData {
+export interface PaginationLocaleData {
   /**
    * Previous page button label text
    *
@@ -66,12 +64,29 @@ export interface HopeThemePaginationLocaleData {
   errorText: string;
 }
 
+/** @deprecated */
+export interface DeprecatedBlogLocaleData {
+  /**
+   * @deprecated Add the following styles to `.vuepress/styles/index.scss`:
+   *
+   * ```css
+   * .vp-blogger-avatar {
+   *   border-radius: 50%;
+   * }
+   * ```
+   */
+  roundAvatar?: never;
+}
+
 /**
  * 博客选项
  *
  * Blog configuration
+ *
+ * @kind locale
  */
-export interface HopeThemeBlogOptions {
+// eslint-disable-next-line @typescript-eslint/no-deprecated
+export interface BlogLocaleOptions extends DeprecatedBlogLocaleData {
   /**
    * Name of the Blogger
    *
@@ -109,7 +124,7 @@ export interface HopeThemeBlogOptions {
    *
    * Media links configuration
    *
-   * E.g.
+   * @example
    *
    * ```js
    * {
@@ -122,23 +137,14 @@ export interface HopeThemeBlogOptions {
    * }
    * ```
    */
-  medias?: Record<string, [string, string] | string>;
-
-  /**
-   * Whether cliping the avatar with round shape
-   *
-   * 是否剪裁头像为圆形形状
-   *
-   * @default false
-   */
-  roundAvatar?: boolean;
+  medias?: Record<string, { icon: string; link: string } | string>;
 
   /**
    * Whether to display blogger info in sidebar
    *
    * 是否在侧边栏展示博主信息
    *
-   * @default 'mobile'
+   * @default "mobile"
    */
   sidebarDisplay?: "mobile" | "none" | "always";
 
@@ -147,7 +153,7 @@ export interface HopeThemeBlogOptions {
    *
    * 时间轴自定义文字
    *
-   * @default 'Yesterday once more'
+   * @default "Yesterday once more"
    */
   timeline?: string;
 
@@ -165,9 +171,9 @@ export interface HopeThemeBlogOptions {
    *
    * 文章列表中展示的文章信息
    *
-   * @default ["Author", "Original", "Date", "PageView", "Category", "Tag", "ReadingTime"]
+   * @default ["Author", "Original", "Date", "PageView", "ReadingTime", "Category", "Tag"]
    */
-  articleInfo?: PageInfo[];
+  articleInfo?: PageInfoType[];
 }
 
-export type HopeThemeBlogConfig = HopeThemeBlogOptions;
+export type BlogLocaleConfig = BlogLocaleOptions;

@@ -1,22 +1,19 @@
-import { useSiteLocaleData, withBase } from "@vuepress/client";
+import { keys } from "@vuepress/helper/client";
+import type { VNode } from "vue";
 import { computed, defineComponent, h } from "vue";
-import { getAuthor } from "vuepress-shared/lib/client";
+import { RouteLink, useSiteLocaleData, withBase } from "vuepress/client";
+import { getAuthor } from "vuepress-shared/client";
 
-import SocialMedia from "@theme-hope/modules/blog/components/SocialMedia.js";
-import {
-  useNavigate,
-  useThemeLocaleData,
-} from "@theme-hope/composables/index.js";
-
+import { useNavigate, useThemeLocaleData } from "@theme-hope/composables/index";
+import SocialMedias from "@theme-hope/modules/blog/components/SocialMedias";
 import {
   useArticles,
+  useBlogLocaleData,
   useBlogOptions,
   useCategoryMap,
   useTagMap,
-  useTimelines,
-} from "@theme-hope/modules/blog/composables/index.js";
-
-import type { VNode } from "vue";
+  useTimeline,
+} from "@theme-hope/modules/blog/composables/index";
 
 import "../styles/blogger-info.scss";
 
@@ -24,35 +21,43 @@ export default defineComponent({
   name: "BloggerInfo",
 
   setup() {
+    const blogLocale = useBlogLocaleData();
     const blogOptions = useBlogOptions();
     const siteLocale = useSiteLocaleData();
     const themeLocale = useThemeLocaleData();
     const articles = useArticles();
     const categoryMap = useCategoryMap();
     const tagMap = useTagMap();
-    const timelines = useTimelines();
+    const timelines = useTimeline();
     const navigate = useNavigate();
 
     const bloggerName = computed(
       () =>
-        blogOptions.value.name ||
-        getAuthor(themeLocale.value.author)[0]?.name ||
-        siteLocale.value.title
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        blogOptions.value.name ??
+        getAuthor(themeLocale.value.author)[0]?.name ??
+        siteLocale.value.title,
     );
 
     const bloggerAvatar = computed(
-      () => blogOptions.value.avatar || themeLocale.value.logo
+      () => blogOptions.value.avatar ?? themeLocale.value.logo,
     );
-
-    const locale = computed(() => themeLocale.value.blogLocales);
 
     const intro = computed(() => blogOptions.value.intro);
 
-    return (): VNode =>
-      h(
+    return (): VNode => {
+      const { article, category, tag, timeline } = blogLocale.value;
+      const countItems: [string, number, string][] = [
+        [articles.value.path, articles.value.items.length, article],
+        [categoryMap.value.path, keys(categoryMap.value.map).length, category],
+        [tagMap.value.path, keys(tagMap.value.map).length, tag],
+        [timelines.value.path, timelines.value.items.length, timeline],
+      ];
+
+      return h(
         "div",
         {
-          class: "blogger-info",
+          class: "vp-blogger-info",
           vocab: "https://schema.org/",
           typeof: "Person",
         },
@@ -60,73 +65,60 @@ export default defineComponent({
           h(
             "div",
             {
-              class: "blogger",
+              class: "vp-blogger",
               ...(intro.value
                 ? {
-                    style: { cursor: "pointer" },
-                    "aria-label": locale.value.intro,
+                    "aria-label": blogLocale.value.intro,
                     "data-balloon-pos": "down",
-                    role: "navigation",
-                    onClick: () => navigate(intro.value!),
+                    role: "link",
+                    onClick: (): void => {
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      navigate(intro.value!);
+                    },
                   }
                 : {}),
             },
             [
               bloggerAvatar.value
                 ? h("img", {
-                    class: [
-                      "blogger-avatar",
-                      {
-                        round: blogOptions.value.roundAvatar,
-                      },
-                    ],
+                    class: "vp-blogger-avatar",
                     src: withBase(bloggerAvatar.value),
                     property: "image",
                     alt: "Blogger Avatar",
+                    loading: "lazy",
                   })
                 : null,
               bloggerName.value
                 ? h(
                     "div",
-                    { class: "blogger-name", property: "name" },
-                    bloggerName.value
+                    { class: "vp-blogger-name", property: "name" },
+                    bloggerName.value,
                   )
                 : null,
               blogOptions.value.description
                 ? h("div", {
-                    class: "blogger-description",
+                    class: "vp-blogger-description",
                     innerHTML: blogOptions.value.description,
                   })
                 : null,
               intro.value
                 ? h("meta", { property: "url", content: withBase(intro.value) })
                 : null,
-            ]
+            ],
           ),
-          h("div", { class: "num-wrapper" }, [
-            h("div", { onClick: () => navigate(articles.value.path) }, [
-              h("div", { class: "num" }, articles.value.items.length),
-              h("div", locale.value.article),
-            ]),
-            h("div", { onClick: () => navigate(categoryMap.value.path) }, [
-              h(
-                "div",
-                { class: "num" },
-                Object.keys(categoryMap.value.map).length
-              ),
-              h("div", locale.value.category),
-            ]),
-            h("div", { onClick: () => navigate(tagMap.value.path) }, [
-              h("div", { class: "num" }, Object.keys(tagMap.value.map).length),
-              h("div", locale.value.tag),
-            ]),
-            h("div", { onClick: () => navigate(timelines.value.path) }, [
-              h("div", { class: "num" }, timelines.value.items.length),
-              h("div", locale.value.timeline),
-            ]),
-          ]),
-          h(SocialMedia),
-        ]
+          h(
+            "div",
+            { class: "vp-blog-counts" },
+            countItems.map(([path, count, locale]) =>
+              h(RouteLink, { class: "vp-blog-count", to: path }, () => [
+                h("div", { class: "count" }, count),
+                h("div", locale),
+              ]),
+            ),
+          ),
+          h(SocialMedias),
+        ],
       );
+    };
   },
 });

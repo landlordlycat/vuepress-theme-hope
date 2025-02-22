@@ -9,13 +9,13 @@ tag:
   - 主题色
 ---
 
-主题允许您自定义主题颜色，甚至提供选择器。
+主题允许你自定义主题颜色，甚至提供选择器。
 
 <!-- more -->
 
 ## 设置默认主题色
 
-您应该在 `.vuepress/styles/palette.scss` 中设置站点的默认主题颜色：
+你应该在 `.vuepress/styles/config.scss` 中通过 `$theme-color` 设置站点的默认主题颜色：
 
 ```scss
 $theme-color: #f00;
@@ -23,54 +23,13 @@ $theme-color: #f00;
 
 ## 主题色选择器
 
-你需要按照 `{ 颜色名1: 颜色值, 颜色名2: 颜色值, ... }` 的格式在主题选项中配置 `themeColor`:
+想要使用它，在 `.vuepress/styles/config.scss` 中通过 `$theme-colors` 设置一系列你想要启用的其他主题色：
 
-第一个颜色为上方设置的默认主题色。
-
-:::: details 例子
-
-::: code-tabs#language
-
-@tab TS
-
-```ts {7-12}
-// .vuepress/config.ts
-import { defineUserConfig } from "vuepress";
-import { hopeTheme } from "vuepress-theme-hope";
-
-export default defineUserConfig({
-  theme: hopeTheme({
-    themeColor: {
-      blue: "#2196f3",
-      red: "#f26d6d",
-      green: "#3eaf7c",
-      orange: "#fb9b5f",
-    },
-  }),
-});
+```scss
+$theme-colors: #2196f3, #f26d6d, #3eaf7c, #fb9b5f;
 ```
 
-@tab JS
-
-```js {6-11}
-// .vuepress/config.js
-import { hopeTheme } from "vuepress-theme-hope";
-
-export default {
-  theme: hopeTheme({
-    themeColor: {
-      blue: "#2196f3",
-      red: "#f26d6d",
-      green: "#3eaf7c",
-      orange: "#fb9b5f",
-    },
-  }),
-};
-```
-
-:::
-
-::::
+上方的默认主题色会成为选择器的第一个颜色。
 
 ### 尝试
 
@@ -82,14 +41,12 @@ export default {
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { useThemeData } from "@theme-hope/composables/index.js";
-import ThemeColorPicker from "@theme-hope/modules/outlook/components/ThemeColorPicker.js";
+import { entries, fromEntries } from '@vuepress/helper/client';
+import cssVariables from "vuepress-theme-hope/styles/variables.module.scss";
 
-const themeData = useThemeData();
+import ThemeColorPicker from "@theme-hope/modules/outlook/components/ThemeColorPicker";
 
-const themeColor = computed(() => {
-  const { themeColor } = themeData.value;
-
-  return themeColor === false ? null : themeColor;
-});
+const themeColor = fromEntries(
+  entries(cssVariables).filter(([key]) => key.startsWith("theme-"))
+)
 </script>

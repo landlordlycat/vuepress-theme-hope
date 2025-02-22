@@ -1,10 +1,12 @@
-import { defineComponent, h } from "vue";
-
-import { AuthorIcon } from "@theme-hope/modules/info/components/icons.js";
-import { useMetaLocale } from "@theme-hope/modules/info/composables/index.js";
-
 import type { PropType, VNode } from "vue";
-import type { AuthorInfo } from "vuepress-shared";
+import { defineComponent, h } from "vue";
+import type { AuthorInfo } from "vuepress-shared/client";
+
+import { usePure } from "@theme-hope/composables/index";
+import { AuthorIcon } from "@theme-hope/modules/info/components/icons";
+import { useMetaLocale } from "@theme-hope/modules/info/composables/index";
+
+import "../styles/author-info.scss";
 
 export default defineComponent({
   name: "AuthorInfo",
@@ -12,27 +14,31 @@ export default defineComponent({
   inheritAttrs: false,
 
   props: {
+    /**
+     * Author information
+     *
+     * 作者信息
+     */
     author: {
       type: Array as PropType<AuthorInfo[]>,
       required: true,
     },
-
-    pure: Boolean,
   },
 
   setup(props) {
     const metaLocale = useMetaLocale();
+    const isPure = usePure();
 
     return (): VNode | null =>
       props.author.length
         ? h(
             "span",
             {
-              class: "author-info",
+              class: "page-author-info",
               "aria-label": `${metaLocale.value.author}${
-                props.pure ? "" : "🖊"
+                isPure.value ? "" : "🖊"
               }`,
-              ...(props.pure ? {} : { "data-balloon-pos": "down" }),
+              ...(isPure.value ? {} : { "data-balloon-pos": "up" }),
             },
             [
               h(AuthorIcon),
@@ -43,21 +49,21 @@ export default defineComponent({
                     ? h(
                         "a",
                         {
-                          class: "author-item",
+                          class: "page-author-item",
                           href: item.url,
                           target: "_blank",
                           rel: "noopener noreferrer",
                         },
-                        item.name
+                        item.name,
                       )
-                    : h("span", { class: "author-item" }, item.name)
-                )
+                    : h("span", { class: "page-author-item" }, item.name),
+                ),
               ),
               h("span", {
                 property: "author",
                 content: props.author.map((item) => item.name).join(", "),
               }),
-            ]
+            ],
           )
         : null;
   },

@@ -1,67 +1,58 @@
-import { pwa, theme } from "docs-shared";
-import { enNavbarConfig, zhNavbarConfig } from "./navbar.js";
-import { enSidebarConfig, zhSidebarConfig } from "./sidebar.js";
+import { theme } from "docs-shared";
+import { getDirname, path } from "vuepress/utils";
+
+import { enNavbar, zhNavbar } from "./navbar.js";
+import { enSidebar, zhSidebar } from "./sidebar.js";
+
+const __dirname = getDirname(import.meta.url);
 
 export default theme("md-enhance", {
   locales: {
     "/": {
-      navbar: enNavbarConfig,
-      sidebar: enSidebarConfig,
+      navbar: enNavbar,
+      sidebar: enSidebar,
     },
 
     "/zh/": {
-      navbar: zhNavbarConfig,
-      sidebar: zhSidebarConfig,
+      navbar: zhNavbar,
+      sidebar: zhSidebar,
     },
   },
 
-  plugins: {
-    mdEnhance: {
-      align: true,
-      attrs: true,
-      chart: true,
-      codetabs: true,
-      container: true,
-      demo: true,
-      echarts: true,
-      flowchart: true,
-      gfm: true,
-      imageSize: true,
-      include: true,
-      katex: true,
-      lazyLoad: true,
-      mark: true,
-      mermaid: true,
-      playground: {
-        presets: ["ts", "vue"],
-      },
-      presentation: {
-        plugins: ["highlight", "math", "search", "notes", "zoom"],
-      },
-      stylize: [
-        {
-          matcher: "Recommanded",
-          replacer: ({ tag }) => {
-            if (tag === "em")
-              return {
-                tag: "Badge",
-                attrs: { type: "tip" },
-                content: "Recommanded",
-              };
-          },
-        },
-      ],
-      sub: true,
-      sup: true,
-      tabs: true,
-      vpre: true,
-      vuePlayground: true,
-    },
+  markdown: {
+    codeTabs: true,
+    figure: true,
+    imgLazyload: true,
+    imgMark: true,
+    include: {
+      resolvePath: (file) => {
+        if (file.startsWith("@echarts"))
+          return file.replace(
+            "@echarts",
+            path.resolve(__dirname, "../echarts"),
+          );
 
-    pwa: pwa({
-      name: "vuepress-plugin-md-enhance",
-      shortName: "VuePress2 Markdown Enhance plugin",
-      guide: "/guide/",
-    }),
+        return file;
+      },
+    },
+    chartjs: true,
+    demo: true,
+    echarts: true,
+    flowchart: true,
+    kotlinPlayground: true,
+    markmap: true,
+    mermaid: true,
+    plantuml: true,
+    playground: {
+      presets: ["ts", "vue", "unocss"],
+    },
+    sandpack: true,
+    vuePlayground: true,
+  },
+
+  plugins: {
+    components: {
+      components: ["Badge", "VPCard"],
+    },
   },
 });

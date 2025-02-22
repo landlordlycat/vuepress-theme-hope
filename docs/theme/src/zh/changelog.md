@@ -1,10 +1,10 @@
 ---
 title: 变更日志
-icon: time
+icon: clock
 ---
 
-该文件包含 `vuepress-theme-hope` 及其插件的所有显着更改。
+<!-- @include: ../../../../packages/theme/CHANGELOG.md#recent-change -->
 
-<!-- more -->
+## 更多
 
-@include(../../../../CHANGELOG.md{5-})
+详见 [Github 仓库变更日志](https://github.com/vuepress-theme-hope/vuepress-theme-hope/blob/main/CHANGELOG.md)。

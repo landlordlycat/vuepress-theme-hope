@@ -1,6 +1,7 @@
 ---
 title: Feed Support
 icon: rss
+order: 4
 category:
   - Advanced
 tag:
@@ -8,11 +9,11 @@ tag:
   - Feed
 ---
 
-The theme adds feed suport using [`vuepress-plugin-feed2`][feed2].
+The theme adds feed support with [`@vuepress/plugin-feed`][feed]. To use it, install `@vuepress/plugin-feed` manually in your project.
 
 ::: info
 
-`vuepress-theme-hope` provides `plugins.feed` in theme options to `vuepress-plugin-feed2`.
+`vuepress-theme-hope` provides `plugins.feed` in theme options to `@vuepress/plugin-feed`.
 
 :::
 
@@ -20,17 +21,13 @@ The theme adds feed suport using [`vuepress-plugin-feed2`][feed2].
 
 ## Enable Feed Output
 
-The `vuepress-plugin-feed2` plugin can generate feed files in the following three formats for you:
+The `@vuepress/plugin-feed` plugin can generate feed files in the following three formats for you:
 
 - Atom 1.0
 - JSON 1.1
 - RSS 2.0
 
-::: tip
-
-Atom and JSON are provided to improve more feed software adaptation.
-
-Please use RSS if possible.
+::: tip Please use RSS if possible. Atom and JSON are only provided for best compatibility.
 
 :::
 
@@ -38,11 +35,11 @@ Please set `plugins.feed.atom`, `plugins.feed.json` or `plugins.feed.rss` to `tr
 
 ::: tip
 
-Of course you can enable them all. This is not a choose 1 from 3 situation.
+Of course, you can enable them all. This is not a "choose 1 from 3" situation.
 
 :::
 
-Considering that rare people stick to feed now, this plugin provides a minimal configuration to adjust the automatic generation of detailed feed files. Also it allows you to freely define the output content of the feed.
+Considering that rare people stick to feed now, this plugin provides a minimal configuration to adjust the automatic generation of detailed feed files. Also, it allows you to freely define the output content of the feed.
 
 ## Channel Settings
 
@@ -63,27 +60,15 @@ We recommend the following settings:
 
 :::
 
-For detailed options and their default values, see [Feed Channel Config][feed2-channel]
+For detailed options and their default values, see [Feed Channel Docs][feed-channel].
 
 ## Generation Control
 
-### Default Generation
-
 By default, all articles are added to the feed stream.
 
-For the content read by default, see [Configuration → Item Control][feed2-item]
+You can control how feed item is generated in specific article by configuring the `feed` option in frontmatter, check [Feed frontmatter Docs][feed-frontmatter] for details.
 
-### Customize Feed item
-
-You can control how feed item is generated in specific article by configuring the `feed` option in frontmatter.
-
-For detailed options and their default values, see [Configuration → Project Settings][feed2-item].
-
-### Customize Feed Generation
-
-You can take full control of feed items generation by configuring the `plugins.feed.getter`.
-
-For detailed options and their default values, see [Configuration → Feed Getter][feed2-getter].
+You can take full control of feed items generation by configuring the `plugins.feed.getter`, check [Feed Getter Docs][feed-getter] for details.
 
 ### I18n Config
 
@@ -91,7 +76,7 @@ The plugin generates separate feeds for each language.
 
 You can provide different settings for different languages via `plugins.feed.locales`.
 
-[feed2]: https://vuepress-theme-hope.github.io/v2/feed/
-[feed2-channel]: https://vuepress-theme-hope.github.io/v2/feed/config/channel.html
-[feed2-item]: https://vuepress-theme-hope.github.io/v2/feed/config/item.html
-[feed2-getter]: https://vuepress-theme-hope.github.io/v2/feed/config/getter.html
+[feed]: https://ecosystem.vuejs.press/plugins/blog/feed/
+[feed-channel]: https://ecosystem.vuejs.press/plugins/blog/feed/channel.html
+[feed-frontmatter]: https://ecosystem.vuejs.press/plugins/blog/feed/frontmatter.html
+[feed-getter]: https://ecosystem.vuejs.press/plugins/blog/feed/getter.html

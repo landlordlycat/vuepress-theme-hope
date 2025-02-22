@@ -1,6 +1,6 @@
 ---
 title: 主题配置
-icon: config
+icon: gears
 index: false
 dir:
   order: 3
@@ -10,17 +10,7 @@ tag:
   - 主题配置
 ---
 
-## 目录
-
-- [主题基本配置](basic.md)
-
-- [主题功能配置](feature.md)
-
-- [主题布局配置](layout.md)
-
-- [主题外观配置](appearance.md)
-
-- [主题多语言配置](i18n.md)
+<Catalog />
 
 ## 案例
 
